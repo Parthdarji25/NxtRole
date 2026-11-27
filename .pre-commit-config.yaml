@@ -1,0 +1,49 @@
+# Checks that run on your changed files before each commit.
+# Install once, from the repository root:   uv run --project api pre-commit install
+# Run by hand on everything tracked by git: uv run --project api pre-commit run --all-files
+
+# The mocks are design files: never rewrite them.
+exclude: ^docs/mocks/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c # v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+        exclude: ^web/src/styles/tokens\.css$
+      - id: check-added-large-files
+        args: [--maxkb=600]
+        # Lockfiles are large by nature.
+        exclude: ^(api/uv\.lock|web/pnpm-lock\.yaml)$
+      - id: check-yaml
+        # pnpm's lockfile holds two YAML documents.
+        exclude: ^web/pnpm-lock\.yaml$
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: detect-private-key
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e # v8.30.1
+    hooks:
+      # Secret scanner: blocks a commit that contains a key or password.
+      - id: gitleaks
+
+  # Python and web tools come from the project's lockfiles, so every machine uses the same versions.
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check (api)
+        language: system
+        entry: uv run --project api --frozen ruff check --fix
+        files: ^api/.*\.py$
+      - id: ruff-format
+        name: ruff format (api)
+        language: system
+        entry: uv run --project api --frozen ruff format
+        files: ^api/.*\.py$
+      - id: web-lint
+        name: eslint and prettier (web)
+        language: system
+        entry: pnpm --dir web run lint
+        files: ^web/
+        pass_filenames: false

@@ -1,0 +1,11 @@
+# One line ending everywhere (LF), so Windows and Linux (CI, containers) agree.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary

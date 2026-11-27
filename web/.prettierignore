@@ -1,0 +1,10 @@
+.next
+out
+node_modules
+next-env.d.ts
+pnpm-lock.yaml
+playwright-report
+test-results
+coverage
+# Kept identical to docs/mocks/design-tokens.css, the source of truth.
+src/styles/tokens.css

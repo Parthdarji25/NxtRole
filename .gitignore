@@ -1,0 +1,43 @@
+# Secrets: never commit. Only the *.example templates are tracked.
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Node and Next.js
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.pnpm-store/
+web/coverage/
+web/playwright-report/
+web/test-results/
+
+# Local data and uploads (may hold personal files)
+uploads/
+var/
+*.dump
+*.sql.gz
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.claude/settings.local.json
+
+# Logs
+*.log

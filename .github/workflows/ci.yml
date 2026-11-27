@@ -1,0 +1,172 @@
+# Runs on GitHub after you push. Actions are pinned to a commit hash (docs/SECURITY.md T-OPS-4).
+# The database password below protects only a throw-away database that exists during one run.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_ENV: test
+  DATABASE_URL: postgresql+psycopg://nxtrole:ci-only-password@127.0.0.1:5432/nxtrole
+  TEST_DATABASE_URL: postgresql+psycopg://nxtrole:ci-only-password@127.0.0.1:5432/nxtrole_test
+  REDIS_URL: redis://127.0.0.1:6379/0
+  TEST_REDIS_URL: redis://127.0.0.1:6379/1
+  API_URL: http://127.0.0.1:8000
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  api:
+    name: API lint, types, tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: nxtrole
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: nxtrole
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U nxtrole"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+          enable-cache: true
+          cache-dependency-glob: api/uv.lock
+      - name: Install from the lockfile
+        run: uv sync --frozen
+      - name: Create the test database
+        run: psql -h 127.0.0.1 -U nxtrole -d nxtrole -c "CREATE DATABASE nxtrole_test"
+        env:
+          PGPASSWORD: ci-only-password
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy app tests migrations
+      - run: uv run alembic upgrade head
+      - run: uv run python -m app.cli check-config
+      - run: uv run pytest
+      - name: Check dependencies for known vulnerabilities
+        run: uv run pip-audit
+
+  web:
+    name: Web lint, types, tests, build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - name: Check dependencies for known vulnerabilities
+        run: pnpm audit --audit-level high
+
+  e2e:
+    name: Browser smoke test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    needs: [api, web]
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: nxtrole
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: nxtrole
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U nxtrole"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+          enable-cache: true
+          cache-dependency-glob: api/uv.lock
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Prepare the API
+        working-directory: api
+        run: |
+          uv sync --frozen
+          uv run alembic upgrade head
+      - name: Build the web app and run the browser test
+        working-directory: web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+          pnpm build
+          pnpm e2e
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: playwright-report
+          path: web/playwright-report
+          retention-days: 7
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Scan the whole history for keys and passwords
+        run: >-
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1
+          git --redact --no-banner /repo
