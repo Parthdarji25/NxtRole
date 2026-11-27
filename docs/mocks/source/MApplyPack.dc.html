@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Application pack (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+main.scroll > *{flex-shrink:0}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 14px 20px 20px; display: flex; flex-direction: column; gap: 14px">
+    <a href="MJobs.dc.html" style="align-self: flex-start; min-height: 40px; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">‹ Marigold Fintech</a>
+    <header style="display: flex; flex-direction: column; gap: 6px">
+      <span class="mono" style="font-size: 12px; letter-spacing: .08em; color: var(--ink-3)">APPLICATION PACK · 41 SECONDS</span>
+      <h1 class="serif" style="margin: 0; font-size: 28px; line-height: 1.1">{{title}}</h1>
+    </header>
+
+    <section aria-label="Agent run" style="display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule)">
+      <span style="font-size: 14px"><span style="color: var(--green); font-weight: 700">✓</span> Researched company · <span style="color: var(--green); font-weight: 700">✓</span> Picked 9 facts</span>
+      <span style="font-size: 14px"><span style="color: var(--green); font-weight: 700">✓</span> Wrote pack · <span style="color: var(--green); font-weight: 700">✓</span> Checked 14 claims, 0 invented</span>
+      <span class="mono" style="font-size: 11px; color: var(--ink-3)">5 OF 6 TOOL CALLS · 1 REWRITE · NAME AND PHONE REMOVED BEFORE AI</span>
+    </section>
+
+    <div role="tablist" aria-label="Pack parts" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; border: 1px solid var(--rule)">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+        <button type="button" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{showBullets}}" hint-placeholder-val="{{ true }}">
+      <sc-for list="{{bullets}}" as="b" hint-placeholder-count="3">
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--rule)"><span style="font-size: 14px">{{b.t}}</span><span class="mono" style="font-size: 11px; color: var(--ink-3)">{{b.f}}</span></div>
+      </sc-for>
+    </sc-if>
+    <sc-if value="{{showNote}}" hint-placeholder-val="{{ false }}">
+      <p style="margin: 0; padding: 14px; border-radius: 12px; border: 1px solid var(--rule); font-size: 14px">Hi Marigold team, I build React and TypeScript dashboards that people use every day. At Northwind Labs I rebuilt our expense dashboard in Next.js and cut its load time from 4.1 to 1.6 seconds. Your finance teams live in the dashboard, so speed and clear tables matter. I would like to talk about how I could help. Thank you, [Your name]</p>
+    </sc-if>
+    <sc-if value="{{showAnswers}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--rule)"><span style="font-size: 12px; font-weight: 600; color: var(--ink-3)">Notice period?</span><span style="font-size: 14px">30 days · from your profile</span></div>
+      <div style="{{ctcBox}}">
+        <span style="font-size: 12px; font-weight: 600; color: var(--ink-3)">Expected CTC?</span>
+        <sc-if value="{{ctcMissing}}" hint-placeholder-val="{{ true }}">
+          <span style="font-size: 14px; font-weight: 600; color: var(--red-ink)">[1] Not in your profile, so it was left blank.</span>
+          <button type="button" onClick="{{fill}}" style="min-height: 44px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px">Use ₹18–20 L from settings</button>
+        </sc-if>
+        <sc-if value="{{ctcFilled}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px">₹18–20 L, open to discussion</span></sc-if>
+      </div>
+    </sc-if>
+  </main>
+
+  <div style="flex: 0 0 auto; display: flex; flex-direction: column; gap: 6px; padding: 12px 20px; border-top: 1px solid var(--rule); background: var(--paper)">
+    <sc-if value="{{notApproved}}" hint-placeholder-val="{{ true }}">
+      <button type="button" onClick="{{approve}}" disabled="{{approveDisabled}}" style="{{approveStyle}}">{{approveLabel}}</button>
+    </sc-if>
+    <sc-if value="{{approved}}" hint-placeholder-val="{{ false }}">
+      <a href="https://example.com" style="min-height: 50px; border-radius: 12px; background: var(--blue); color: var(--on-blue); display: flex; align-items: center; justify-content: center; font-weight: 600; text-decoration: none">Open Marigold’s page ↗</a>
+      <span style="font-size: 12px; color: var(--ink-3); text-align: center">Approved and saved. You submit it yourself.</span>
+    </sc-if>
+  </div>
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="more" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { tab: 'answers', ctc: false, ok: false }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var T = [['bullets', 'Bullets'], ['note', 'Note'], ['answers', s.ctc ? 'Answers' : 'Answers · 1']];
+    return {
+      theme: this._jpT,
+      title: s.ok ? 'Approved. Apply when ready.' : (s.ctc ? 'Ready to approve.' : 'One answer needs you.'),
+      tabs: T.map(function (t) { var on = t[0] === s.tab;
+        return { label: t[1], sel: on ? 'true' : 'false', pick: function () { self.setState({ tab: t[0] }); },
+          style: 'min-height: 40px; border-radius: 9px; border: none; font-size: 14px; font-weight: 600; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)') }; }),
+      showBullets: s.tab === 'bullets', showNote: s.tab === 'note', showAnswers: s.tab === 'answers',
+      bullets: [
+        { t: 'Rebuilt the expense dashboard in Next.js, cutting load time from 4.1 s to 1.6 s for 2,000 daily users.', f: 'FACT 7 · NORTHWIND DASHBOARD' },
+        { t: 'Built a virtualised table that renders 50,000 rows smoothly, now used by 4 teams.', f: 'FACT 12 · TABLE COMPONENT' },
+        { t: 'Brought all finance screens to WCAG AA through review checks.', f: 'FACT 15 · ACCESSIBILITY' }
+      ],
+      ctcMissing: !s.ctc, ctcFilled: s.ctc,
+      ctcBox: 'display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 12px; border: 1px ' + (s.ctc ? 'solid var(--rule)' : 'dashed var(--red)') + '; background: ' + (s.ctc ? 'transparent' : 'var(--red-soft)'),
+      fill: function () { self.setState({ ctc: true }); },
+      notApproved: !s.ok, approved: s.ok, approveDisabled: !s.ctc,
+      approveLabel: s.ctc ? 'Approve pack' : 'Fill 1 blank to approve',
+      approveStyle: 'min-height: 50px; border-radius: 12px; border: none; font-weight: 600; font-size: 16px; ' + (s.ctc ? 'background: var(--blue); color: var(--on-blue)' : 'background: var(--rule); color: var(--ink-3)'),
+      approve: function () { if (self.state.ctc) self.setState({ ok: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

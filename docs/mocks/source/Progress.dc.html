@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Progress</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--scrim:rgba(24,24,28,.28);--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--scrim:rgba(0,0,0,.55);--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.bar{transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+input,select,textarea{font-family:inherit}
+@keyframes slide{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.slide{animation:slide .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet{animation:up .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.fade{animation:fadein .25s ease both}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="progress" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 64px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
+        <header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; border-bottom: 2px solid var(--ink); padding-bottom: 16px">
+          <h1 class="serif" style="margin: 0; font-size: 52px; line-height: 1">Progress</h1>
+          <div role="group" aria-label="Period" style="display: flex; gap: 20px">
+            <sc-for list="{{periods}}" as="p" hint-placeholder-count="2"><button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="{{p.style}}">{{p.label}}</button></sc-for>
+          </div>
+        </header>
+        <div role="tablist" aria-label="Progress views" style="display: flex; gap: 28px; border-bottom: 1px solid var(--rule); margin-top: -16px">
+          <sc-for list="{{ptabs}}" as="t" hint-placeholder-count="3"><button type="button" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button></sc-for>
+        </div>
+
+        <sc-if value="{{tabOverview}}" hint-placeholder-val="{{ true }}">
+        <!-- funnel -->
+        <section class="rise" aria-label="Funnel" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); border-bottom: 1px solid var(--rule)">
+          <sc-for list="{{funnel}}" as="f" hint-placeholder-count="4">
+            <div style="{{f.style}}">
+              <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">{{f.k}}</span>
+              <span class="serif" style="font-size: 80px; line-height: .95">{{f.v}}</span>
+              <span style="font-size: 13px; color: var(--ink-2)">{{f.rate}}</span>
+            </div>
+          </sc-for>
+        </section>
+        </sc-if>
+
+        <!-- interview log -->
+        <sc-if value="{{tabLog}}" hint-placeholder-val="{{ false }}"><section aria-label="Interview log" style="display: flex; flex-direction: column; gap: 18px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">INTERVIEW LOG · {{ivCount}} COMPANIES · {{qCount}} QUESTIONS</span>
+              <h2 class="serif" style="margin: 0; font-size: 36px; line-height: 1.05">What they asked, and how to answer next time</h2>
+            </div>
+            <button type="button" onClick="{{openLog}}" style="min-height: 42px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px">+ Log an interview</button>
+          </div>
+
+          <div style="padding: 18px 20px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule); display: flex; flex-direction: column; gap: 12px">
+            <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--red)">IMPROVE NEXT · PATTERNS ACROSS YOUR INTERVIEWS</span>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px">
+              <sc-for list="{{weakSpots}}" as="w" hint-placeholder-count="3">
+                <div style="display: flex; flex-direction: column; gap: 4px">
+                  <span class="serif" style="font-size: 21px; line-height: 1.15">{{w.title}}</span>
+                  <span style="font-size: 13px; color: var(--ink-2)">{{w.why}}</span>
+                  <a href="Prepare.dc.html" style="font-size: 13px; font-weight: 600; text-decoration: none; padding-top: 2px">Practise in a mock interview →</a>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 12px; overflow: hidden">
+            <div role="group" aria-label="Companies" style="flex: 1 1 240px; max-width: 300px; min-width: 0; border-right: 1px solid var(--rule); display: flex; flex-direction: column">
+              <sc-for list="{{ivCos}}" as="c" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{c.selected}}" onClick="{{c.pick}}" style="{{c.style}}">
+                  <span style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline"><span style="font-weight: 600; font-size: 16px">{{c.name}}</span><span style="{{c.outStyle}}">{{c.outcome}}</span></span>
+                  <span style="font-size: 13px; color: var(--ink-2)">{{c.role}} · {{c.date}}</span>
+                  <span class="mono" style="font-size: 11px; letter-spacing: .04em; color: var(--ink-3)">{{c.qs}} QUESTIONS · {{c.weak}} TO IMPROVE</span>
+                </button>
+              </sc-for>
+            </div>
+
+            <div class="rise" style="flex: 999 1 480px; min-width: 0; padding: 24px 28px; background: var(--card); display: flex; flex-direction: column; gap: 16px">
+              <div style="display: flex; flex-direction: column; gap: 6px">
+                <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{ivc.metaUpper}}</span>
+                <h3 class="serif" style="margin: 0; font-size: 34px; line-height: 1.05">{{ivc.name}}</h3>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <sc-for list="{{ivc.rounds}}" as="r" hint-placeholder-count="2"><span style="{{r.style}}">{{r.label}}</span></sc-for>
+              </div>
+              <div style="padding: 12px 14px; border-radius: 10px; background: var(--paper-2); display: flex; flex-direction: column; gap: 2px">
+                <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">WHAT THEY SAID</span>
+                <span style="font-size: 14px">{{ivc.feedback}}</span>
+              </div>
+              <div role="group" aria-label="Filter questions" style="display: flex; gap: 8px">
+                <sc-for list="{{ivFilters}}" as="f" hint-placeholder-count="2"><button type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="{{f.style}}">{{f.label}}</button></sc-for>
+              </div>
+              <div style="display: flex; flex-direction: column">
+                <sc-for list="{{ivQs}}" as="q" hint-placeholder-count="3">
+                  <div style="border-top: 1px solid var(--rule)">
+                    <button type="button" onClick="{{q.toggle}}" aria-expanded="{{q.expanded}}" style="display: flex; gap: 14px; align-items: flex-start; width: 100%; padding: 16px 0; background: none; border: none; text-align: left; color: var(--ink)">
+                      <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+                        <span class="mono" style="font-size: 11px; letter-spacing: .06em; color: var(--ink-3)">{{q.meta}}</span>
+                        <span style="font-size: 16px; font-weight: 600; line-height: 1.4">{{q.text}}</span>
+                      </span>
+                      <span style="{{q.rateStyle}}">{{q.rating}}</span>
+                      <span aria-hidden="true" style="flex: 0 0 auto; font-size: 20px; line-height: 1.2; color: var(--ink-3)">{{q.chev}}</span>
+                    </button>
+                    <sc-if value="{{q.open}}" hint-placeholder-val="{{ false }}">
+                      <div class="rise" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; padding: 0 0 20px">
+                        <div style="display: flex; flex-direction: column; gap: 14px">
+                          <div style="display: flex; flex-direction: column; gap: 4px">
+                            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">WHAT YOU SAID</span>
+                            <span style="font-size: 14px; color: var(--ink-2)">{{q.said}}</span>
+                          </div>
+                          <div style="display: flex; flex-direction: column; gap: 4px">
+                            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--red)">TO IMPROVE</span>
+                            <span style="font-size: 14px">{{q.improve}}</span>
+                          </div>
+                          <sc-if value="{{q.hasRes}}" hint-placeholder-val="{{ true }}">
+                            <div style="display: flex; flex-direction: column; gap: 6px">
+                              <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">RESOURCES</span>
+                              <sc-for list="{{q.res}}" as="r" hint-placeholder-count="2">
+                                <span style="font-size: 14px"><a href="{{r.url}}" target="_blank" rel="noopener noreferrer" style="font-weight: 600; text-decoration: none">{{r.label}} ↗</a> <span style="color: var(--ink-3); font-size: 12px">{{r.src}}</span></span>
+                              </sc-for>
+                            </div>
+                          </sc-if>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px">
+                          <div style="padding: 14px 16px; border-radius: 10px; background: var(--green-soft); display: flex; flex-direction: column; gap: 6px">
+                            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--green)">A BETTER ANSWER</span>
+                            <span style="font-size: 15px; line-height: 1.55">{{q.better}}</span>
+                          </div>
+                          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+                            <a href="Prepare.dc.html" style="min-height: 40px; padding: 0 14px; border-radius: 8px; display: inline-flex; align-items: center; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 13px; text-decoration: none">Practise this</a>
+                            <sc-if value="{{q.canMark}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{q.mark}}" style="{{q.markStyle}}">{{q.markLabel}}</button></sc-if>
+                          </div>
+                        </div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ivNone}}" hint-placeholder-val="{{ false }}"><span style="padding: 16px 0; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-3)">Nothing left to improve here.</span></sc-if>
+              </div>
+            </div>
+          </div>
+        </section></sc-if>
+
+        <!-- what's working -->
+        <sc-if value="{{tabOverview}}" hint-placeholder-val="{{ true }}"><section style="display: flex; flex-direction: column; gap: 4px">
+          <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3); padding-bottom: 10px">WHAT’S WORKING</span>
+          <sc-for list="{{findings}}" as="f" hint-placeholder-count="3">
+            <div class="rise" style="display: flex; flex-wrap: wrap; gap: 40px; padding: 24px 0; border-top: 1px solid var(--rule)">
+              <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 8px">
+                <p class="serif" style="margin: 0; font-size: 28px; line-height: 1.2">{{f.headline}}</p>
+                <span style="font-size: 14px; color: var(--ink-2)">{{f.so}}</span>
+                <sc-if value="{{f.hasAction}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{f.act}}" style="{{f.actStyle}}">{{f.actLabel}}</button></sc-if>
+              </div>
+              <div role="img" aria-label="{{f.alt}}" style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 8px; justify-content: center">
+                <sc-for list="{{f.bars}}" as="b" hint-placeholder-count="3">
+                  <div style="display: grid; grid-template-columns: 130px 1fr 40px; gap: 12px; align-items: center; font-size: 13px">
+                    <span style="color: var(--ink-2)">{{b.k}}</span>
+                    <span style="height: 10px; display: block"><span class="bar" style="{{b.bar}}"></span></span>
+                    <span class="mono" style="font-size: 12px; text-align: right">{{b.v}}%</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </section></sc-if>
+
+        <sc-if value="{{tabLearn}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+          <!-- skills -->
+          <section style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column">
+            <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3); padding-bottom: 10px">WORTH LEARNING NEXT</span>
+            <sc-for list="{{skills}}" as="k" hint-placeholder-count="3">
+              <div style="display: flex; gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--rule)">
+                <span style="flex: 1; display: flex; flex-direction: column"><span class="serif" style="font-size: 22px">{{k.name}}</span><span style="font-size: 13px; color: var(--ink-2)">In {{k.pct}}% of your matches · {{k.how}}</span></span>
+                <span class="mono" style="font-size: 13px; color: var(--green)">+{{k.jobs}} jobs</span>
+                <button type="button" onClick="{{k.toggle}}" style="{{k.btnStyle}}">{{k.btn}}</button>
+              </div>
+            </sc-for>
+          </section>
+
+          <!-- market + cold -->
+          <section style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">YOUR MARKET · FRONTEND · MUMBAI · 84 POSTINGS</span>
+              <span class="serif" style="font-size: 44px; line-height: 1">₹11–18 L <span style="font-size: 20px; color: var(--ink-2)">typical · median ₹14.5 L</span></span>
+              <div style="position: relative; height: 30px">
+                <div style="position: absolute; left: 0; right: 0; top: 12px; height: 6px; border-radius: 3px; background: var(--rule)"></div>
+                <div style="position: absolute; top: 12px; height: 6px; border-radius: 3px; background: var(--blue); left: 20.8%; width: 29.2%"></div>
+                <div style="position: absolute; top: 5px; width: 3px; height: 20px; background: var(--red); left: 41.7%"></div>
+              </div>
+              <span style="font-size: 13px; color: var(--ink-2)"><span style="display: inline-block; width: 10px; height: 10px; background: var(--red); margin-right: 6px"></span>Your target, ₹16 L, is above the median and realistic.</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3); padding-bottom: 10px">GOING COLD</span>
+              <sc-for list="{{cold}}" as="c" hint-placeholder-count="2">
+                <div style="{{c.style}}">
+                  <span style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 600">{{c.co}}</span><span style="font-size: 13px; color: var(--ink-2)">{{c.note}}</span></span>
+                  <sc-if value="{{c.open}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{c.act}}" style="background: none; border: none; padding: 0; color: var(--blue); font-weight: 600; font-size: 13px">{{c.label}}</button></sc-if>
+                  <sc-if value="{{c.done}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: var(--ink-3)">{{c.doneLabel}}</span></sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+        </div></sc-if>
+      </div>
+    </main>
+  </div>
+  <sc-if value="{{logOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{closeLog}}" aria-label="Close" class="fade" style="position: fixed; inset: 0; z-index: 40; border: none; padding: 0; background: var(--scrim); cursor: default"></button>
+    <aside class="slide" role="dialog" aria-modal="true" aria-label="Log an interview" style="position: fixed; z-index: 41; top: 0; right: 0; bottom: 0; width: min(460px, 100vw); padding: 28px; border-left: 1px solid var(--rule); overflow-y: auto; box-sizing: border-box; background: var(--paper); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px; color: var(--ink)">
+      
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">AFTER AN INTERVIEW</span>
+          <h2 class="serif" style="margin: 0; font-size: 32px; line-height: 1.05">Log an interview</h2>
+        </div>
+        <button type="button" onClick="{{closeLog}}" aria-label="Close" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 20px; line-height: 1">×</button>
+      </div>
+      <span style="font-size: 14px; color: var(--ink-2)">Write it down while it’s fresh. NxtRole drafts a better answer and finds resources for each question.</span>
+      <sc-for list="{{logFields}}" as="f" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="{{f.id}}" style="font-size: 13px; font-weight: 600">{{f.label}}</label>
+          <input id="{{f.id}}" class="inp" type="text" value="{{f.value}}" onChange="{{f.on}}" placeholder="{{f.ph}}" style="height: 46px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px">
+        </div>
+      </sc-for>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="lg-out" style="font-size: 13px; font-weight: 600">How did it go?</label>
+        <select id="lg-out" class="inp" onChange="{{onLogOut}}" style="height: 46px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px"><option value="Waiting">Waiting to hear</option><option value="Upcoming">Next round booked</option><option value="Cleared">Cleared</option><option value="Rejected">Rejected</option></select>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="lg-qs" style="font-size: 13px; font-weight: 600">Questions they asked (one per line)</label>
+        <textarea id="lg-qs" class="inp" rows="6" value="{{logQs}}" onChange="{{onLogQs}}" placeholder="Explain the virtual DOM&#10;Build a modal that traps focus&#10;Tell me about a hard bug you fixed" style="padding: 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px; line-height: 1.5; resize: vertical"></textarea>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="lg-said" style="font-size: 13px; font-weight: 600">What they said about you (optional)</label>
+        <textarea id="lg-said" class="inp" rows="3" value="{{logSaid}}" onChange="{{onLogSaid}}" placeholder="Any feedback from the interviewer or recruiter" style="padding: 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px; line-height: 1.5; resize: vertical"></textarea>
+      </div>
+      <sc-if value="{{logErr}}" hint-placeholder-val="{{ false }}"><span style="color: var(--red); font-size: 13px">Add the company and at least one question.</span></sc-if>
+      <button type="button" onClick="{{saveLog}}" style="min-height: 50px; border-radius: 12px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 16px">Save and draft answers</button>
+    </aside>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1450}}'>
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) { super(props); this.state = { ptab: 'overview', ivSel: 0, ivOpen: 'h1', weakOnly: false, improved: {}, ivAdded: [], ivDrafted: {}, logOpen: false, logErr: false, lf: { company: '', role: '', date: '', round: '' }, logQs: '', logSaid: '', logOut: 'Waiting', period: 30, acted: {}, plan: { GraphQL: true }, cold: {} }; }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var long = s.period === 90;
+    var F = long ? [['APPLIED', 112], ['REPLIED', 27], ['INTERVIEWS', 14], ['OFFERS', 2]] : [['APPLIED', 48], ['REPLIED', 15], ['INTERVIEWS', 9], ['OFFERS', 2]];
+    var bar = function (v, max, strong) { return 'display: block; height: 100%; border-radius: 2px; width: ' + Math.round(v / max * 100) + '%; background: ' + (strong ? 'var(--ink)' : 'var(--rule-2)'); };
+    var FIND = [
+      ['ref', 'Referrals get you nine times more replies than Easy Apply.', 'So NxtRole now puts jobs with a referral path at the top of your brief.', 'Reply rate by source: referral 46%, direct to manager 27%, early application 31%, company site 18%, Easy Apply 5%', [['Referral', 46], ['Within 24 h', 31], ['To manager', 27], ['Company site', 18], ['Easy Apply', 5]], 'Show jobs with a referral path', 'Jobs.dc.html'],
+      ['ab', 'Your Next.js-focused resume gets 2.3× more replies.', 'Version B wins for Next.js roles; for general React roles both are equal.', 'Reply rate by resume: version B 29%, version A 13%', [['Resume B', 29], ['Resume A', 13]], 'Make B the default', ''],
+      ['early', 'Applying within a day of posting doubles your chances.', 'Early-bird alerts are on for 6 companies; add more on the Jobs page.', 'Reply rate: within 24 hours 31%, later 14%', [['Within 24 h', 31], ['Later', 14]], '', '']
+    ];
+    var SK = [['GraphQL', 41, 38, 'free tutorial + small project, ~12 h'], ['Testing with Jest', 36, 31, 'docs + 70% coverage on one repo, ~8 h'], ['Storybook', 22, 17, 'document 10 components, ~6 h']];
+    var CO = [['pinecrest', 'Pinecrest Studio', '9 days quiet · they usually reply in 7–10. Worth one follow-up.', 'Review follow-up'], ['lumen', 'Lumen Retail', '14 days quiet · they usually reply within 5. Probably closed.', 'Archive']];
+    var link = function (on) { return 'background: none; border: none; padding: 4px 0; font-size: 14px; font-weight: 600; color: ' + (on ? 'var(--ink)' : 'var(--ink-3)') + '; border-bottom: 2px solid ' + (on ? 'var(--blue)' : 'transparent'); };
+    var R = {
+      loop: ['Event loop: microtasks and macrotasks', 'https://javascript.info/event-loop', 'javascript.info'],
+      micro: ['Using microtasks in JavaScript', 'https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide', 'MDN'],
+      clos: ['Closures', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures', 'MDN'],
+      memo: ['memo', 'https://react.dev/reference/react/memo', 'react.dev'],
+      prof: ['<Profiler>', 'https://react.dev/reference/react/Profiler', 'react.dev'],
+      combo: ['Combobox pattern', 'https://www.w3.org/WAI/ARIA/apg/patterns/combobox/', 'W3C WAI'],
+      abort: ['AbortController', 'https://developer.mozilla.org/en-US/docs/Web/API/AbortController', 'MDN'],
+      gfe: ['500+ front-end interview questions', 'https://www.greatfrontend.com/questions', 'GreatFrontEnd'],
+      sysd: ['Front End System Design Playbook', 'https://www.greatfrontend.com/front-end-system-design-playbook', 'GreatFrontEnd'],
+      star: ['The STAR method', 'https://www.themuse.com/advice/star-interview-method', 'The Muse'],
+      lcp: ['Largest Contentful Paint (LCP)', 'https://web.dev/articles/lcp', 'web.dev'],
+      topk: ['347. Top K Frequent Elements', 'https://leetcode.com/problems/top-k-frequent-elements/', 'LeetCode']
+    };
+    var IV = [
+      { id: 'harbor', name: 'Harbor & Co', role: 'Web Developer', date: '9 Oct 2026', outcome: 'Rejected', tone: 'red',
+        rounds: [['Online test', 'Cleared'], ['Technical', 'Rejected']],
+        feedback: 'Strong on React basics. Needed deeper JavaScript fundamentals and clearer real examples.',
+        qs: [
+          ['h1', 'Technical', 'JavaScript', 'Weak', 'What does this print? console.log(1); setTimeout(() => console.log(2), 0); Promise.resolve().then(() => console.log(3)); console.log(4);',
+            'Said 1, 4, 2, 3. Mixed up the timeout and the promise.',
+            '1, 4, 3, 2. Synchronous code runs first, so 1 and 4. When the call stack is empty, the microtask queue runs completely, so the promise logs 3. Only then does the next task run, so the timeout logs 2. Add: because microtasks drain fully before the browser paints, a long promise chain can freeze the page.',
+            'Before answering, sketch three boxes: call stack, microtasks, tasks. Walk each line into a box out loud.', ['loop', 'micro']],
+          ['h2', 'Technical', 'JavaScript', 'OK', 'Explain closures with a real use case.',
+            'Defined it as a function remembering outer variables and gave a counter example.',
+            'A closure is a function that keeps access to the variables of the scope it was created in, even after that scope has finished. Real use: in my dashboard’s search box, a debounce helper keeps its timer id in a closure, so each keystroke clears the previous timer. Pitfall: in React, an effect can capture stale state through a closure; fix it with the right dependencies or a functional state update.',
+            'Use an example from your own project, not a counter. Mention one pitfall.', ['clos']],
+          ['h3', 'Technical', 'React', 'Weak', 'This list re-renders on every keystroke in the search box. Why, and how would you fix it?',
+            'Said I would wrap everything in useMemo.',
+            'A component re-renders when its state changes, its parent re-renders, or a context it reads changes. Here the search state lives in the parent, so the whole list re-renders. First measure with the React DevTools Profiler. Then move the search state down next to the input, or wrap the list in memo and keep its props stable (useMemo for arrays, useCallback for handlers). Memoize only where the profiler shows real cost.',
+            'Lead with why it re-renders, then measure, then fix. Don’t start with a tool.', ['memo', 'prof']]
+        ] },
+      { id: 'monsoon', name: 'Monsoon Labs', role: 'Frontend Developer', date: '15 Oct 2026', outcome: 'Rejected', tone: 'red',
+        rounds: [['Recruiter screen', 'Cleared'], ['Machine coding', 'Rejected']],
+        feedback: 'Working solution, but no keyboard support and no handling of slow responses.',
+        qs: [
+          ['m1', 'Machine coding', 'Machine coding', 'Weak', 'Build an autocomplete search box that calls an API as the user types. 60 minutes.',
+            'Got it working with a fetch on every keystroke. Ran out of time before keyboard support.',
+            'Spend the first 3 minutes saying the plan: input → debounce about 300 ms → fetch with an AbortController so old requests are cancelled → list with loading, empty and error states → keyboard: Up and Down move the active option, Enter selects, Escape closes → combobox roles for screen readers. Build the simplest working version first, then add one feature at a time, testing each.',
+            'Say the plan before coding. Keep the last 10 minutes for edge cases and keyboard support.', ['combo', 'abort', 'gfe']],
+          ['m2', 'Recruiter screen', 'Behavioural', 'OK', 'Why are you leaving your current job?',
+            'Said I wanted a higher salary.',
+            'Lead with growth, not money: “At Acme I’ve built dashboards end to end for three years. I want to work on a product thousands of people use every day, where performance and accessibility really matter, and Monsoon’s checkout is exactly that.” Talk about pay only when they ask.',
+            'Prepare a 30-second answer that names something specific about the company.', ['star']],
+          ['m3', 'Recruiter screen', 'HR', 'Strong', 'What is your expected CTC and notice period?',
+            '₹18–20 LPA, 30 days, can bring it down to 15.',
+            'This was good: a range based on market data, and a flexible notice period. Keep it.',
+            'Nothing to change.', []]
+        ] },
+      { id: 'tealbrook', name: 'Tealbrook Analytics', role: 'React Developer', date: '20 Oct 2026', outcome: 'Round 2 · 28 Oct', tone: 'blue',
+        rounds: [['Technical', 'Cleared'], ['Frontend system design', 'Upcoming']],
+        feedback: 'Good fundamentals. Round 2 goes deep on designing a dashboard.',
+        qs: [
+          ['t1', 'Technical', 'Behavioural', 'Weak', 'Tell me about a time you disagreed with a designer.',
+            'Gave a general answer with no clear outcome.',
+            'Situation: the designer wanted a heavy animated chart on the main dashboard. Task: I had to keep load time under 2.5 seconds. Action: I showed the Lighthouse numbers, built a lighter version and tested both with five users. Result: we kept the look, load time stayed at 2.3 seconds, and the designer used the same approach on two more pages.',
+            'Use STAR every time and always end with a result and a number.', ['star']],
+          ['t2', 'Technical', 'Performance', 'Strong', 'How did you make your dashboard load faster?',
+            'Split code by route and used next/image. Cut LCP from 4.1 s to 2.3 s.',
+            'Strong, because it had numbers. To make it even better, say how you measured (Lighthouse in the lab, plus real-user data) and what you would do next, such as preloading the largest image.',
+            'Add how you measured it.', ['lcp']],
+          ['t3', 'Technical', 'DSA', 'OK', 'Return the k most frequent items in an array.',
+            'Counted with a map, then sorted the counts: O(n log n).',
+            'Count with a hash map, then keep a min-heap of size k for O(n log k), or bucket items by frequency for O(n). Say the trade-off out loud: the heap uses less memory when k is small; buckets are fastest overall.',
+            'After a working answer, always offer a faster one and explain the trade-off.', ['topk']],
+          ['t4', 'Prep for round 2', 'System design', 'To review', 'Expected next: design a real-time analytics dashboard with filters and live charts.',
+            'Not asked yet.',
+            'Structure: requirements (who uses it, how fresh the data must be) → components (filter bar, chart grid, detail drawer) → data (REST for history, WebSocket or polling for live updates) → state (URL holds filters so views can be shared) → performance (virtualised tables, throttled chart updates, skeletons) → accessibility and error states.',
+            'Practise this one out loud before 28 Oct.', ['sysd']]
+        ] }
+    ];
+    var ALL = IV.concat(s.ivAdded);
+    var RATE = { Strong: ['var(--green)', 'var(--green-soft)'], OK: ['var(--amber)', 'var(--amber-soft)'], Weak: ['var(--red-ink)', 'var(--red-soft)'], 'To review': ['var(--ink-2)', 'var(--paper-2)'], Improved: ['var(--green)', 'var(--green-soft)'] };
+    var OUT = { Cleared: 'var(--green)', Rejected: 'var(--red)', Upcoming: 'var(--blue)', Waiting: 'var(--ink-2)' };
+    var TONE2 = { red: 'var(--red)', blue: 'var(--blue)', green: 'var(--green)', ink: 'var(--ink-2)' };
+    var ivSel = Math.min(s.ivSel, ALL.length - 1);
+    var ivCo = ALL[ivSel];
+    var needsWork = function (q) { return q[3] !== 'Strong' && !s.improved[q[0]]; };
+    var qCount = ALL.reduce(function (n, c) { return n + c.qs.length; }, 0);
+    var shownQs = ivCo.qs.filter(function (q) { return !s.weakOnly || needsWork(q); });
+    var DRAFT = 'Draft: answer in one line first, back it with a real example from your dashboard work at Acme, and finish with a number or a trade-off. Compare it with what you said, then edit.';
+    var ivPill = function (fg, bg) { return 'flex: 0 0 auto; align-self: flex-start; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; color: ' + fg + '; background: ' + bg; };
+    var IVR = {
+      ivCount: ALL.length, qCount: qCount,
+      weakSpots: [
+        { title: 'Explaining how JavaScript runs', why: 'Event loop and closures came up in 2 of 3 interviews; weak once, OK once.' },
+        { title: 'Ending stories with a result', why: 'Behavioural answers lacked an outcome at Tealbrook and Monsoon Labs. Use STAR with a number.' },
+        { title: 'Planning before coding', why: 'The Monsoon Labs machine-coding round ran out of time before keyboard support.' }
+      ],
+      ivCos: ALL.map(function (c, i) { var on = i === ivSel; var w = c.qs.filter(needsWork).length;
+        return { name: c.name, role: c.role, date: c.date, outcome: c.outcome, qs: String(c.qs.length), weak: String(w), selected: on ? 'true' : 'false',
+          pick: function () { self.setState({ ivSel: i, ivOpen: (c.qs[0] || [''])[0] }); },
+          outStyle: 'flex: 0 0 auto; font-size: 12px; font-weight: 600; color: ' + TONE2[c.tone],
+          chipStyle: 'flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 56px; padding: 8px 14px; border-radius: 12px; text-align: left; color: var(--ink); font-size: 14px; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--card)' : 'transparent') + (on ? '; box-shadow: inset 0 -3px 0 var(--blue)' : ''),
+          style: 'display: flex; flex-direction: column; gap: 4px; align-items: stretch; text-align: left; width: 100%; padding: 16px 18px; border: none; border-bottom: 1px solid var(--rule); color: var(--ink); background: ' + (on ? 'var(--card)' : 'transparent') + '; box-shadow: ' + (on ? 'inset 3px 0 0 var(--blue)' : 'none') }; }),
+      ivc: { name: ivCo.name, role: ivCo.role, date: ivCo.date, metaUpper: (ivCo.date + ' · ' + ivCo.role).toUpperCase(), feedback: ivCo.feedback,
+        rounds: ivCo.rounds.map(function (r, i) { var c = OUT[r[1]] || 'var(--ink-2)'; return { label: 'Round ' + (i + 1) + ' · ' + r[0] + ' · ' + r[1], style: 'padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid ' + c + '; color: ' + c }; }) },
+      ivFilters: [['all', 'All questions'], ['weak', 'To improve']].map(function (f) { var on = (f[0] === 'weak') === !!s.weakOnly;
+        return { label: f[1], pressed: on ? 'true' : 'false', pick: function () { self.setState({ weakOnly: f[0] === 'weak' }); },
+          style: 'min-height: 36px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)') }; }),
+      ivQs: shownQs.map(function (q) { var open = s.ivOpen === q[0]; var imp = !!s.improved[q[0]]; var rating = imp ? 'Improved' : q[3]; var rc = RATE[rating] || RATE.OK;
+        var better = ivCo.user && !s.ivDrafted[ivCo.id] ? 'NxtRole is drafting a better answer from your profile and this company’s past questions…' : q[6];
+        return { id: q[0], meta: (q[1] + ' · ' + q[2]).toUpperCase(), text: q[4], said: q[5], better: better, improve: q[7], rating: rating, rateStyle: ivPill(rc[0], rc[1]),
+          res: (q[8] || []).map(function (k) { return { label: R[k][0], url: R[k][1], src: R[k][2] }; }), hasRes: (q[8] || []).length > 0,
+          open: open, expanded: open ? 'true' : 'false', chev: open ? '−' : '+',
+          toggle: function () { self.setState({ ivOpen: open ? '' : q[0] }); },
+          canMark: q[3] !== 'Strong', markLabel: imp ? '✓ Marked as improved' : 'Mark as improved',
+          markStyle: 'min-height: 40px; padding: 0 14px; border-radius: 8px; font-size: 13px; font-weight: 600; border: 1px solid ' + (imp ? 'var(--green)' : 'var(--rule-2)') + '; background: transparent; color: ' + (imp ? 'var(--green)' : 'var(--ink)'),
+          markStyleM: 'min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 14px; font-weight: 600; border: 1px solid ' + (imp ? 'var(--green)' : 'var(--rule-2)') + '; background: transparent; color: ' + (imp ? 'var(--green)' : 'var(--ink)'),
+          mark: function () { var x = Object.assign({}, self.state.improved); x[q[0]] = !x[q[0]]; self.setState({ improved: x }); } }; }),
+      ivNone: shownQs.length === 0,
+      logOpen: s.logOpen,
+      openLog: function () { self.setState({ logOpen: true, logErr: false, lf: { company: '', role: '', date: '', round: '' }, logQs: '', logSaid: '', logOut: 'Waiting' }); },
+      closeLog: function () { self.setState({ logOpen: false }); },
+      logFields: [['company', 'Company', 'e.g. Quill Cloud'], ['role', 'Role', 'e.g. Frontend Engineer'], ['date', 'Date', 'e.g. 22 Oct 2026'], ['round', 'Round', 'e.g. Technical round 1']].map(function (f) {
+        return { id: 'lg-' + f[0], label: f[1], ph: f[2], value: s.lf[f[0]], on: function (e) { var x = Object.assign({}, self.state.lf); x[f[0]] = e.target.value; self.setState({ lf: x, logErr: false }); } }; }),
+      logQs: s.logQs, onLogQs: function (e) { self.setState({ logQs: e.target.value, logErr: false }); },
+      logSaid: s.logSaid, onLogSaid: function (e) { self.setState({ logSaid: e.target.value }); },
+      onLogOut: function (e) { self.setState({ logOut: e.target.value }); },
+      logErr: s.logErr,
+      saveLog: function () {
+        var st = self.state, f = st.lf;
+        var lines = st.logQs.split('\n').map(function (t) { return t.trim(); }).filter(function (t) { return t.length > 2; });
+        if (!f.company.trim() || !lines.length) { self.setState({ logErr: true }); return; }
+        var id = 'u' + (st.ivAdded.length + 1), rd = f.round.trim() || 'Interview';
+        var c = { id: id, user: true, name: f.company.trim(), role: f.role.trim() || 'Role not given', date: f.date.trim() || 'Today', outcome: st.logOut === 'Upcoming' ? 'Next round booked' : st.logOut, tone: st.logOut === 'Rejected' ? 'red' : (st.logOut === 'Cleared' ? 'green' : (st.logOut === 'Upcoming' ? 'blue' : 'ink')),
+          rounds: [[rd, st.logOut]], feedback: st.logSaid.trim() || 'No feedback noted.',
+          qs: lines.map(function (t, k) { return [id + '-' + k, rd, 'New', 'To review', t, 'Add what you said, so NxtRole can compare it.', DRAFT, 'Rate yourself after reading the draft, then practise it once.', []]; }) };
+        var added = st.ivAdded.concat([c]);
+        self.setState({ ivAdded: added, ivSel: IV.length + added.length - 1, ivOpen: c.qs[0][0], weakOnly: false, logOpen: false });
+        window.setTimeout(function () { var d = Object.assign({}, self.state.ivDrafted); d[id] = true; self.setState({ ivDrafted: d }); }, 1400);
+      }
+    };
+    return Object.assign(IVR, {
+      theme: this._jpT,
+      ptabs: [['overview', 'Overview'], ['log', 'Interview log'], ['learn', 'What to learn']].map(function (t) { var on = s.ptab === t[0]; return { label: t[1], sel: on ? 'true' : 'false', pick: function () { self.setState({ ptab: t[0] }); }, style: 'min-height: 44px; padding: 0; margin-bottom: -1px; background: none; border: none; border-bottom: 2px solid ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--ink)' : 'var(--ink-3)') + '; font-weight: 600; font-size: 15px' }; }),
+      tabOverview: s.ptab === 'overview', tabLog: s.ptab === 'log', tabLearn: s.ptab === 'learn',
+      periods: [[30, 'Last 30 days'], [90, 'Last 90 days']].map(function (p) { var on = s.period === p[0]; return { label: p[1], pressed: on ? 'true' : 'false', style: link(on), pick: function () { self.setState({ period: p[0] }); } }; }),
+      funnel: F.map(function (f, i) { var prev = i > 0 ? F[i - 1][1] : 0;
+        return { k: f[0], v: String(f[1]), rate: i === 0 ? (long ? '≈ 9 a week' : '≈ 11 a week') : (prev ? Math.round(f[1] / prev * 100) + '% of the step before' : '—'),
+          style: 'display: flex; flex-direction: column; gap: 6px; padding: 22px 24px 26px ' + (i === 0 ? '0' : '24px') + (i > 0 ? '; border-left: 1px solid var(--rule)' : '') }; }),
+      findings: FIND.map(function (f) { var max = f[4][0][1]; var done = !!s.acted[f[0]];
+        return { headline: f[1], so: f[2], alt: f[3], hasAction: !!f[5],
+          actLabel: done ? '✓ Done' : f[5] + ' →',
+          actStyle: 'align-self: flex-start; background: none; border: none; padding: 4px 0; font-weight: 600; font-size: 14px; color: ' + (done ? 'var(--green)' : 'var(--blue)'),
+          act: function () { var x = Object.assign({}, self.state.acted); x[f[0]] = true; self.setState({ acted: x }); },
+          bars: f[4].map(function (b, i) { return { k: b[0], v: b[1], bar: bar(b[1], max, i === 0) }; }) }; }),
+      skills: SK.map(function (k) { var on = !!s.plan[k[0]];
+        return { name: k[0], pct: k[1], jobs: k[2], how: k[3], btn: on ? 'In plan' : 'Add to plan',
+          btnStyle: 'min-height: 34px; padding: 0 12px; border-radius: 7px; font-size: 13px; font-weight: 600; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink)'),
+          toggle: function () { var x = Object.assign({}, self.state.plan); x[k[0]] = !x[k[0]]; self.setState({ plan: x }); } }; }),
+      cold: CO.map(function (c) { var d = !!s.cold[c[0]];
+        return { co: c[1], note: c[2], label: c[3], open: !d, done: d, doneLabel: c[3] === 'Archive' ? 'Archived' : 'Draft in Studio',
+          style: 'display: flex; gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--rule); opacity: ' + (d ? '0.55' : '1'),
+          act: function () { var x = Object.assign({}, self.state.cold); x[c[0]] = true; self.setState({ cold: x }); } }; })
+    });
+  }
+}
+</script>
+</body>
+</html>

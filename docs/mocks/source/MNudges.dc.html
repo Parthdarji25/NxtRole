@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Follow-ups (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+main.scroll > *{flex-shrink:0}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 16px">
+    <header style="display: flex; flex-direction: column; gap: 6px">
+      <span class="mono" style="font-size: 12px; letter-spacing: .08em; color: var(--ink-3)">FOLLOW-UPS · CHECKED 7:00 AM</span>
+      <h1 class="serif" style="margin: 0; font-size: 30px; line-height: 1.1">{{title}}</h1>
+      <span style="font-size: 13px; color: var(--ink-3)">Day 7 and 14: nudge · Day 21: likely ghosted</span>
+    </header>
+
+    <div style="display: flex; flex-direction: column">
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+        <button type="button" onClick="{{r.pick}}" aria-expanded="{{r.pressed}}" style="{{r.style}}">
+          <span style="display: flex; justify-content: space-between; gap: 10px; align-items: baseline; width: 100%"><span style="font-weight: 600; font-size: 16px; text-align: left">{{r.company}}</span><span style="{{r.tagStyle}}">{{r.tag}}</span></span>
+          <span style="font-size: 13px; color: var(--ink-2); text-align: left">{{r.role}} · day {{r.day}}</span>
+          <span style="display: block; width: 100%; height: 5px; border-radius: 3px; background: var(--rule)"><span style="{{r.bar}}"></span></span>
+        </button>
+        <sc-if value="{{r.open}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; margin-bottom: 8px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule-2)">
+            <span style="font-size: 12px; color: var(--ink-3)">{{r.usual}}</span>
+            <sc-if value="{{r.hasDraft}}" hint-placeholder-val="{{ true }}">
+              <p style="margin: 0; font-size: 14px; white-space: pre-line">{{r.draft}}</p>
+              <button type="button" onClick="{{r.mark}}" style="{{r.markStyle}}">{{r.markLabel}}</button>
+            </sc-if>
+            <sc-if value="{{r.noDraft}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: 14px; color: var(--ink-2)">{{r.note}}</p></sc-if>
+            <span style="display: flex; gap: 8px; flex-wrap: wrap">
+              <button type="button" style="min-height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">They replied</button>
+              <button type="button" style="min-height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">Snooze 3 days</button>
+            </span>
+          </div>
+        </sc-if>
+      </sc-for>
+    </div>
+    <span style="font-size: 12px; color: var(--ink-3)">NxtRole never sends email. Copy a draft and send it yourself.</span>
+  </main>
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="pipeline" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var R = [
+  ['pine', 'Pinecrest Studio', 'Frontend Developer', 9, 'due', 'Usually replies in 6 days · 2 past applications', 'Hi Meera,\n\nI applied for Frontend Developer on 11 October and wanted to check for an update. I am still keen on the design-system work.\n\nThanks,\n[Your name]'],
+  ['copper', 'Copperleaf Insurance', 'Frontend Engineer', 14, 'due', 'No history with this company yet', 'Hi,\n\nFollowing up once more on my Frontend Engineer application from 6 October. If the role is filled, a short note would help.\n\nThank you,\n[Your name]'],
+  ['fern', 'Fernway Travel', 'Frontend Engineer II', 21, 'ghost', '21 days, 2 nudges, no reply', ''],
+  ['banyan', 'Banyan Health', 'UI Engineer', 6, 'wait', 'Usually replies in 5 days · 1 past application', ''],
+  ['quill', 'Quill Learning', 'React Developer', 4, 'wait', 'No history with this company yet', '']
+];
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: 'pine', sent: {} }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var due = R.filter(function (r) { return r[4] === 'due' && !s.sent[r[0]]; }).length;
+    var TG = { due: ['Nudge due', 'var(--red-soft)', 'var(--red-ink)'], ghost: ['Ghosted?', 'var(--paper-2)', 'var(--ink-2)'], wait: ['Waiting', 'transparent', 'var(--ink-3)'], sent: ['Sent', 'var(--green-soft)', 'var(--green)'] };
+    return {
+      theme: this._jpT,
+      title: due === 0 ? 'All nudges done for today.' : (due === 1 ? '1 nudge is due today.' : due + ' nudges are due today.'),
+      rows: R.map(function (r) { var on = r[0] === s.sel, sent = !!s.sent[r[0]], k = sent ? 'sent' : r[4], t = TG[k];
+        return { company: r[1], role: r[2], day: String(r[3]), usual: r[5], draft: r[6], tag: t[0], pressed: on ? 'true' : 'false', open: on,
+          hasDraft: r[4] === 'due', noDraft: r[4] !== 'due',
+          note: r[4] === 'ghost' ? 'NxtRole has stopped reminding you. Mark it closed when you are ready.' : 'Nothing to do yet. A nudge is drafted on day 7.',
+          pick: function () { self.setState({ sel: on ? '' : r[0] }); },
+          mark: function () { var x = Object.assign({}, self.state.sent); x[r[0]] = !sent; if (!x[r[0]]) delete x[r[0]]; self.setState({ sent: x }); },
+          markLabel: sent ? '✓ Copied and marked sent' : 'Copy and mark sent',
+          markStyle: 'min-height: 46px; border-radius: 12px; font-weight: 600; font-size: 15px; ' + (sent ? 'border: 1px solid var(--green); background: var(--green-soft); color: var(--green)' : 'border: none; background: var(--blue); color: var(--on-blue)'),
+          tagStyle: 'flex: 0 0 auto; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; background: ' + t[1] + '; color: ' + t[2] + (k === 'wait' ? '; border: 1px solid var(--rule-2)' : ''),
+          bar: 'display: block; height: 100%; border-radius: 3px; width: ' + Math.min(100, Math.round(r[3] / 21 * 100)) + '%; background: ' + (k === 'due' ? 'var(--red)' : (k === 'ghost' ? 'var(--ink-3)' : 'var(--ink)')),
+          style: 'display: flex; flex-direction: column; gap: 6px; width: 100%; min-height: 72px; padding: 12px 2px; border: none; border-top: 1px solid var(--rule); background: transparent; color: var(--ink); font-size: 15px' };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+/* NxtRole design tokens, taken from the UI mocks (version 77).
+   Fonts: Geist (headings 600, body 400/500) and Geist Mono (numbers, labels).
+   Load in Next.js with: import { Geist, Geist_Mono } from 'next/font/google' (create-next-app already adds these). */
+:root {
+  --paper:#F4F1EA;
+  --paper-2:#EBE6DB;
+  --card:#FBF9F4;
+  --ink:#18181C;
+  --ink-2:#45443F;
+  --ink-3:#625F57;
+  --rule:#DAD4C6;
+  --rule-2:#C4BCAA;
+  --blue:#2443E0;
+  --blue-ink:#1A33B8;
+  --blue-soft:#E4E8FB;
+  --red:#C23E2A;
+  --red-ink:#A8321F;
+  --red-soft:#F7E3DD;
+  --green:#2F6B3A;
+  --green-soft:#E2EDDF;
+  --amber:#8A5B00;
+  --amber-soft:#F4E9CF;
+  --on-blue:#FFFFFF;
+  --shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);
+  color-scheme:light;
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --radius-input: 6px; --radius-button: 8px; --radius-panel: 12px; --radius-hero: 16px;
+}
+[data-theme="dark"] {
+  --paper:#111214;
+  --paper-2:#18191C;
+  --card:#1B1C20;
+  --ink:#ECE7DC;
+  --ink-2:#BEB9AE;
+  --ink-3:#8E8A80;
+  --rule:#2B2C31;
+  --rule-2:#3C3D44;
+  --blue:#8EA2FF;
+  --blue-ink:#B1BEFF;
+  --blue-soft:#1C2342;
+  --red:#FF8A73;
+  --red-ink:#FF8A73;
+  --red-soft:#3A1F19;
+  --green:#8DCB96;
+  --green-soft:#16281A;
+  --amber:#E9C067;
+  --amber-soft:#2F2612;
+  --on-blue:#0D1022;
+  --shadow:0 18px 40px -18px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+/* Rules from the mocks:
+   - One blue (--blue) primary button per screen; everything else outlined or text.
+   - Red (--red) only for things due today or tomorrow, and errors.
+   - Page grid: content max-width 1180px, padding 32px 40px 64px, sidebar 260px.
+   - Headings: Geist 600, letter-spacing -0.025em (h1 -0.035em). Labels: Geist Mono 12px, letter-spacing .05em.
+   - Spacing steps 4 8 12 16 24 32 48 64. Motion 250ms colour, 450ms entrances, respect reduced motion. */

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Company brief</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.src{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;color:var(--ink-3);text-decoration:none}
+.src:hover{color:var(--blue)}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="prepare" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 64px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+        <a href="JobCheck.dc.html" style="align-self: flex-start; min-height: 32px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">‹ Back to the job</a>
+
+        <header style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; align-items: flex-end; border-bottom: 2px solid var(--ink); padding-bottom: 22px">
+          <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0; flex: 1 1 520px">
+            <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">COMPANY BRIEF · RESEARCH AGENT · 18 OCT, 2 DAYS OLD</span>
+            <h1 class="serif" style="margin: 0; font-size: 48px; line-height: 1.05; letter-spacing: -0.035em">Marigold Fintech</h1>
+            <p style="margin: 0; font-size: 18px; color: var(--ink-2); max-width: 720px">Expense cards and spend software for Indian startups. The frontend team is moving its main dashboard to Next.js, which is exactly your recent work.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end">
+            <button type="button" onClick="{{refresh}}" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 14px">{{refreshLabel}}</button>
+            <span style="font-size: 12px; color: var(--ink-3)">Briefs are kept for 7 days, then refreshed</span>
+          </div>
+        </header>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+          <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 30px">
+            <section aria-labelledby="stack-h" style="display: flex; flex-direction: column; gap: 12px">
+              <h2 id="stack-h" class="serif" style="margin: 0; font-size: 26px">Their stack, from their own job posts</h2>
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <sc-for list="{{stack}}" as="t" hint-placeholder-count="6">
+                  <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 70px; gap: 12px; align-items: center">
+                    <span style="font-weight: 600">{{t.name}}</span>
+                    <span style="height: 10px; border-radius: 3px; background: var(--rule)"><span style="{{t.bar}}"></span></span>
+                    <span class="mono" style="font-size: 12px; color: var(--ink-3); text-align: right">{{t.count}}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <a class="src" href="https://example.com">Source: 6 open posts on Marigold’s Ashby board · read 18 Oct</a>
+            </section>
+
+            <section aria-labelledby="news-h" style="display: flex; flex-direction: column; gap: 10px">
+              <h2 id="news-h" class="serif" style="margin: 0; font-size: 26px">What they have said lately</h2>
+              <article style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule)">
+                <span style="font-weight: 600">Engineering blog: “Moving our spend dashboard to Next.js”</span>
+                <span style="font-size: 14px; color: var(--ink-2)">They moved page by page and kept the old app running behind a flag. Good to mention: you did the same at Northwind.</span>
+                <a class="src" href="https://example.com">Company blog · 2 Sep</a>
+              </article>
+              <article style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule)">
+                <span style="font-weight: 600">Open source: 12 public repos, most in TypeScript</span>
+                <span style="font-size: 14px; color: var(--ink-2)">Their table component library had commits 9 days ago.</span>
+                <a class="src" href="https://example.com">GitHub organisation · checked 18 Oct</a>
+              </article>
+              <div style="padding: 14px 16px; border-radius: 10px; border: 1px dashed var(--rule-2); font-size: 14px; color: var(--ink-2)">No Hacker News mentions in the last 90 days.</div>
+            </section>
+
+            <section aria-labelledby="ask-h" style="display: flex; flex-direction: column; gap: 10px">
+              <h2 id="ask-h" class="serif" style="margin: 0; font-size: 26px">Questions worth asking them</h2>
+              <ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px">
+                <li>Which parts of the spend dashboard are still on the old app, and what is blocking them? <a class="src" href="https://example.com">from the blog post</a></li>
+                <li>Do frontend engineers write the end-to-end tests, or is there a QA team? <a class="src" href="https://example.com">from the job post</a></li>
+                <li>How is the team split between cards and spend software? <a class="src" href="https://example.com">from 6 job posts</a></li>
+              </ol>
+            </section>
+          </div>
+
+          <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section style="display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule); box-shadow: var(--shadow)">
+              <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">HIRING NOW</span>
+              <span class="serif" style="font-size: 36px; line-height: 1">6 open roles</span>
+              <span style="font-size: 14px; color: var(--ink-2)">Frontend 2 · Backend 2 · Design 1 · Data 1</span>
+              <a href="JobCheck.dc.html" style="min-height: 36px; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">2 match your rules →</a>
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 8px; padding: 18px 20px; border-radius: 12px; border: 1px solid var(--amber); background: var(--amber-soft)">
+              <span style="font-weight: 600">Not found in any source</span>
+              <span style="font-size: 14px; color: var(--ink-2)">Team size, funding and salary bands. The agent leaves these blank instead of guessing. Ask in the HR call.</span>
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 8px">
+              <span style="font-weight: 600">Your history here</span>
+              <span style="font-size: 14px; color: var(--ink-2)">No past applications. No one from your LinkedIn export works here yet.</span>
+              <a href="Network.dc.html" style="min-height: 36px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Check your network →</a>
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid var(--rule)">
+              <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">HOW THIS WAS MADE</span>
+              <span style="font-size: 13px; color: var(--ink-2)">6 of 6 tool calls · public pages only (careers page, job posts, blog, GitHub, Hacker News search) · nothing about you was sent.</span>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1450}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { fresh: false }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this;
+    var S = [['React', 6], ['TypeScript', 6], ['Next.js', 4], ['Node.js', 3], ['PostgreSQL', 2], ['Playwright', 1]];
+    return {
+      theme: this._jpT,
+      stack: S.map(function (t) { return { name: t[0], count: t[1] + ' of 6 posts', bar: 'display: block; height: 100%; border-radius: 3px; background: var(--ink); width: ' + Math.round(t[1] / 6 * 100) + '%' }; }),
+      refreshLabel: this.state.fresh ? 'Refreshed just now' : 'Refresh brief',
+      refresh: function () { self.setState({ fresh: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

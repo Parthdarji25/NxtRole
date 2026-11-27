@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fresh jobs (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+main.scroll > *{flex-shrink:0}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 18px">
+    <header style="display: flex; flex-direction: column; gap: 6px">
+      <span class="mono" style="font-size: 12px; letter-spacing: .08em; color: var(--ink-3)">FRESH JOBS · CHECKED 9:00 AM</span>
+      <h1 class="serif" style="margin: 0; font-size: 30px; line-height: 1.1">2 new matches in the last hour</h1>
+      <p style="margin: 0; font-size: 14px; color: var(--ink-2)">You are among the first to see these. Early applications get more replies.</p>
+    </header>
+
+    <section aria-label="The alert you got" style="display: flex; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule)">
+      <span aria-hidden="true" style="flex: 0 0 36px; width: 36px; height: 36px; border-radius: 9px; background: var(--blue); color: var(--on-blue); display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM9 12h6M12.5 9l3 3-3 3"></path></svg></span>
+      <span style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 13px; color: var(--ink-3)">NxtRole alert · 9:04 AM</span><span style="font-weight: 600; font-size: 14px">New match 84: Next.js Developer at Cobalt Commerce, posted 6 min ago</span></span>
+    </section>
+
+    <sc-for list="{{jobs}}" as="j" hint-placeholder-count="2">
+      <article style="display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 14px; border: 1px solid var(--rule-2)">
+        <span style="display: flex; justify-content: space-between; gap: 10px; align-items: baseline">
+          <span class="mono" style="font-size: 12px; color: var(--blue)">{{j.age}}</span>
+          <span class="serif" style="font-size: 22px; line-height: 1">{{j.score}}</span>
+        </span>
+        <a href="MJobCheck.dc.html" class="serif" style="font-size: 21px; line-height: 1.15; color: var(--ink); text-decoration: none">{{j.title}}</a>
+        <span style="font-size: 14px; color: var(--ink-2)">{{j.meta}}</span>
+        <span style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center"><span style="padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--green-soft); color: var(--green)">High trust</span><span style="font-size: 13px; color: var(--ink-2)">{{j.why}}</span></span>
+        <sc-if value="{{j.open}}" hint-placeholder-val="{{ true }}">
+          <span style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-top: 4px">
+            <a href="MApplyPack.dc.html" style="min-height: 44px; border-radius: 10px; background: var(--blue); color: var(--on-blue); display: flex; align-items: center; justify-content: center; font-weight: 600; text-decoration: none">Make pack</a>
+            <button type="button" onClick="{{j.skip}}" style="min-height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 15px">Not for me</button>
+          </span>
+        </sc-if>
+        <sc-if value="{{j.skipped}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: var(--ink-3)">Skipped. <button type="button" onClick="{{j.undo}}" style="min-height: 32px; border: none; background: none; padding: 0; color: var(--blue); font-weight: 600; font-size: 14px">Undo</button></span></sc-if>
+      </article>
+    </sc-for>
+
+    <p style="margin: 0; font-size: 13px; color: var(--ink-3)">You get alerts only for score 80+ and High trust, at most 5 a day, never between 11 PM and 7 AM. <a href="MMemory.dc.html" style="font-weight: 600; text-decoration: none">Change alerts</a></p>
+  </main>
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="today" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var J = [
+  ['cobalt', 'POSTED 6 MIN BEFORE THE CHECK', '84', 'Next.js Developer', 'Cobalt Commerce · Remote · ₹15–19 L', 'Uses your exact stack'],
+  ['tide', 'POSTED 38 MIN BEFORE THE CHECK', '82', 'Frontend Engineer, Design Systems', 'Tidewater Labs · Mumbai, hybrid · ₹16–21 L', 'Your component library work fits']
+];
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { skip: {} }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var set = function (id, v) { var x = Object.assign({}, self.state.skip); if (v) x[id] = true; else delete x[id]; self.setState({ skip: x }); };
+    return {
+      theme: this._jpT,
+      jobs: J.map(function (j) { var sk = !!s.skip[j[0]];
+        return { age: j[1], score: j[2], title: j[3], meta: j[4], why: j[5], open: !sk, skipped: sk,
+          skip: function () { set(j[0], true); }, undo: function () { set(j[0], false); } }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

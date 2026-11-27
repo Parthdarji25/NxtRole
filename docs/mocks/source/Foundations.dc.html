@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Design foundations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1760px; box-sizing: border-box; padding: 72px 80px; background: #F4F1EA; color: #18181C; font-family: 'Geist', system-ui, sans-serif; display: flex; flex-direction: column; gap: 56px">
+
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #18181C; padding-bottom: 20px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span class="mono" style="font-size: 12px; letter-spacing: .12em; color: #625F57">NXTROLE · DESIGN FOUNDATIONS · V2</span>
+      <h1 class="serif" style="margin: 0; font-size: 88px; line-height: 1">The Brief</h1>
+    </div>
+    <p style="margin: 0; max-width: 460px; font-size: 17px; color: #45443F">A job search should feel like reading a good morning paper: calm, clear, and decided for you, with the final say still yours.</p>
+  </header>
+
+  <!-- principles -->
+  <section style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid #DAD4C6">
+    <div style="padding: 20px 20px 0 0; display: flex; flex-direction: column; gap: 6px"><span class="serif" style="font-size: 40px; color: #2443E0">1</span><strong>One action per screen</strong><span style="font-size: 14px; color: #45443F">One blue button. Everything else is quieter.</span></div>
+    <div style="padding: 20px 20px 0; border-left: 1px solid #DAD4C6; display: flex; flex-direction: column; gap: 6px"><span class="serif" style="font-size: 40px; color: #2443E0">2</span><strong>Agents stay backstage</strong><span style="font-size: 14px; color: #45443F">They appear as results, the Agent log, or “Needs you”.</span></div>
+    <div style="padding: 20px 20px 0; border-left: 1px solid #DAD4C6; display: flex; flex-direction: column; gap: 6px"><span class="serif" style="font-size: 40px; color: #2443E0">3</span><strong>Rules, not boxes</strong><span style="font-size: 14px; color: #45443F">Hairlines separate content; cards are rare.</span></div>
+    <div style="padding: 20px 20px 0; border-left: 1px solid #DAD4C6; display: flex; flex-direction: column; gap: 6px"><span class="serif" style="font-size: 40px; color: #2443E0">4</span><strong>Details on demand</strong><span style="font-size: 14px; color: #45443F">Panels and drawers, not longer pages.</span></div>
+    <div style="padding: 20px 0 0 20px; border-left: 1px solid #DAD4C6; display: flex; flex-direction: column; gap: 6px"><span class="serif" style="font-size: 40px; color: #2443E0">5</span><strong>Red means now</strong><span style="font-size: 14px; color: #45443F">Vermilion only for deadlines and things waiting on you.</span></div>
+  </section>
+
+  <div style="display: flex; gap: 56px">
+    <!-- color -->
+    <section style="flex: 1.25; display: flex; flex-direction: column; gap: 16px">
+      <span class="mono" style="font-size: 12px; letter-spacing: .12em; color: #625F57">COLOUR · LIGHT / DARK</span>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 72px; border-radius: 8px; border: 1px solid #DAD4C6; display: flex; overflow: hidden"><span style="flex: 1; background: #F4F1EA"></span><span style="flex: 1; background: #111214"></span></div><strong style="font-size: 14px">Paper</strong><span class="mono" style="font-size: 11px; color: #625F57">#F4F1EA / #111214</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 72px; border-radius: 8px; border: 1px solid #DAD4C6; display: flex; overflow: hidden"><span style="flex: 1; background: #FBF9F4"></span><span style="flex: 1; background: #1B1C20"></span></div><strong style="font-size: 14px">Card</strong><span class="mono" style="font-size: 11px; color: #625F57">#FBF9F4 / #1B1C20</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 72px; border-radius: 8px; border: 1px solid #DAD4C6; display: flex; overflow: hidden"><span style="flex: 1; background: #18181C"></span><span style="flex: 1; background: #ECE7DC"></span></div><strong style="font-size: 14px">Ink</strong><span class="mono" style="font-size: 11px; color: #625F57">#18181C / #ECE7DC</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 72px; border-radius: 8px; border: 1px solid #DAD4C6; display: flex; overflow: hidden"><span style="flex: 1; background: #DAD4C6"></span><span style="flex: 1; background: #2B2C31"></span></div><strong style="font-size: 14px">Rule</strong><span class="mono" style="font-size: 11px; color: #625F57">#DAD4C6 / #2B2C31</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 72px; border-radius: 8px; display: flex; overflow: hidden"><span style="flex: 1; background: #2443E0"></span><span style="flex: 1; background: #8EA2FF"></span></div><strong style="font-size: 14px">Cobalt · action</strong><span class="mono" style="font-size: 11px; color: #625F57">#2443E0 / #8EA2FF</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 72px; border-radius: 8px; display: flex; overflow: hidden"><span style="flex: 1; background: #C23E2A"></span><span style="flex: 1; background: #FF8A73"></span></div><strong style="font-size: 14px">Vermilion · urgent</strong><span class="mono" style="font-size: 11px; color: #625F57">#C23E2A / #FF8A73</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 72px; border-radius: 8px; display: flex; overflow: hidden"><span style="flex: 1; background: #2F6B3A"></span><span style="flex: 1; background: #8DCB96"></span></div><strong style="font-size: 14px">Green · done</strong><span class="mono" style="font-size: 11px; color: #625F57">#2F6B3A / #8DCB96</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="height: 72px; border-radius: 8px; display: flex; overflow: hidden"><span style="flex: 1; background: #8A5B00"></span><span style="flex: 1; background: #E9C067"></span></div><strong style="font-size: 14px">Amber · caution</strong><span class="mono" style="font-size: 11px; color: #625F57">#8A5B00 / #E9C067</span></div>
+      </div>
+      <span style="font-size: 13px; color: #625F57">Every text colour passes 4.5:1 on its paper in both themes.</span>
+    </section>
+
+    <!-- type -->
+    <section style="flex: 1; display: flex; flex-direction: column; gap: 14px">
+      <span class="mono" style="font-size: 12px; letter-spacing: .12em; color: #625F57">TYPE</span>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #DAD4C6; padding-bottom: 10px"><span class="serif" style="font-size: 72px; line-height: 1">Display</span><span class="mono" style="font-size: 11px; color: #625F57">Geist 600 · 44–64</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #DAD4C6; padding-bottom: 10px"><span class="serif" style="font-size: 30px; line-height: 1.1">Section &amp; job titles</span><span class="mono" style="font-size: 11px; color: #625F57">Geist 600 · 20–28</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #DAD4C6; padding-bottom: 10px"><span style="font-size: 17px">Body copy is calm and readable.</span><span class="mono" style="font-size: 11px; color: #625F57">Geist 15–17</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #DAD4C6; padding-bottom: 10px"><span style="font-size: 13px; color: #45443F">Meta and helper text</span><span class="mono" style="font-size: 11px; color: #625F57">Geist 13</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px"><span class="mono" style="font-size: 12px; letter-spacing: .12em">LABELS · 92% · 07:00</span><span class="mono" style="font-size: 11px; color: #625F57">Geist Mono 12–13</span></div>
+    </section>
+  </div>
+
+  <!-- components -->
+  <section style="display: flex; flex-direction: column; gap: 18px">
+    <span class="mono" style="font-size: 12px; letter-spacing: .12em; color: #625F57">COMPONENTS</span>
+    <div style="display: flex; gap: 48px; flex-wrap: wrap; align-items: flex-start">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 13px; color: #625F57">Buttons: one primary per screen</span>
+        <div style="display: flex; gap: 14px; align-items: center">
+          <span style="height: 44px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 8px; background: #2443E0; color: #FFFFFF; font-weight: 600; font-size: 14px">Apply →</span>
+          <span style="height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 8px; border: 1px solid #C4BCAA; font-weight: 600; font-size: 14px">Save</span>
+          <span style="height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; background: #18181C; color: #F4F1EA; font-weight: 600; font-size: 13px">Send</span>
+          <span style="font-size: 14px; color: #625F57">Not today</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 13px; color: #625F57">Switch</span>
+        <div style="display: flex; gap: 12px"><span style="width: 44px; height: 24px; border-radius: 999px; padding: 2px; box-sizing: border-box; border: 1.5px solid #18181C; background: #18181C; display: flex"><span style="width: 16px; height: 16px; border-radius: 50%; background: #F4F1EA; transform: translateX(21px)"></span></span><span style="width: 44px; height: 24px; border-radius: 999px; padding: 2px; box-sizing: border-box; border: 1.5px solid #625F57; background: transparent; display: flex"><span style="width: 16px; height: 16px; border-radius: 50%; background: #625F57"></span></span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 13px; color: #625F57">Tabs: underline, never pills (toggle buttons with aria-pressed)</span>
+        <div style="display: flex; gap: 22px; border-bottom: 1px solid #DAD4C6"><span style="padding: 8px 0; font-weight: 600; border-bottom: 2px solid #18181C; font-size: 14px">Why it fits</span><span style="padding: 8px 0; color: #625F57; font-size: 14px">People</span><span style="padding: 8px 0; color: #625F57; font-size: 14px">Company</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 13px; color: #625F57">Match score</span>
+        <div style="display: flex; align-items: baseline; gap: 8px"><span class="serif" style="font-size: 64px; line-height: .9; color: #2443E0">92</span><span class="mono" style="font-size: 11px; color: #625F57">% MATCH</span></div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 18px; align-items: center; padding: 18px 10px; border-top: 1px solid #DAD4C6; border-bottom: 1px solid #DAD4C6; max-width: 900px">
+      <span class="serif" style="font-size: 32px; color: #625F57; width: 34px">1</span>
+      <span style="flex: 1; display: flex; flex-direction: column; gap: 4px"><span class="serif" style="font-size: 24px">Frontend Developer</span><span style="font-size: 14px; color: #45443F">Northwind Labs · Mumbai, hybrid · ₹14–18 L</span><span style="font-size: 13px"><strong style="color: #C23E2A">Closes in 2 days</strong><span style="color: #625F57"> · resume and letter ready</span></span></span>
+      <span class="mono" style="font-size: 13px">92%</span>
+      <span style="height: 40px; display: inline-flex; align-items: center; padding: 0 14px; border-radius: 8px; background: #2443E0; color: #FFFFFF; font-weight: 600; font-size: 14px">Apply →</span>
+    </div>
+    <span style="font-size: 13px; color: #625F57">The list row is the core pattern: large numeral, bold title, one line of meta, one coloured reason, score, one action.</span>
+  </section>
+
+  <!-- spacing -->
+  <section style="display: flex; gap: 56px; border-top: 1px solid #DAD4C6; padding-top: 24px">
+    <div style="display: flex; flex-direction: column; gap: 8px"><span class="mono" style="font-size: 12px; letter-spacing: .12em; color: #625F57">SPACING</span><span style="font-size: 15px">4 · 8 · 12 · 16 · 24 · 32 · 48 · 64</span></div>
+    <div style="display: flex; flex-direction: column; gap: 8px"><span class="mono" style="font-size: 12px; letter-spacing: .12em; color: #625F57">RADIUS</span><span style="font-size: 15px">6 inputs · 8 buttons · 12 panels · 16 hero cards</span></div>
+    <div style="display: flex; flex-direction: column; gap: 8px"><span class="mono" style="font-size: 12px; letter-spacing: .12em; color: #625F57">MOTION</span><span style="font-size: 15px">250 ms colour · 450 ms entrances · drawers slide 24 px · respects reduced motion</span></div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1760}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

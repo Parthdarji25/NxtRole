@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sources, alerts and memory</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="settings" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 64px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+        <nav aria-label="Settings sections" style="display: flex; gap: 6px; flex-wrap: wrap">
+          <a href="Settings.dc.html" style="min-height: 40px; padding: 0 14px; border-radius: 8px; display: inline-flex; align-items: center; font-weight: 600; font-size: 14px; text-decoration: none; color: var(--ink-2)">General</a>
+          <a href="Settings.dc.html" style="min-height: 40px; padding: 0 14px; border-radius: 8px; display: inline-flex; align-items: center; font-weight: 600; font-size: 14px; text-decoration: none; color: var(--ink-2)">AI models and usage</a>
+          <a href="Memory.dc.html" aria-current="page" style="min-height: 40px; padding: 0 14px; border-radius: 8px; display: inline-flex; align-items: center; font-weight: 600; font-size: 14px; text-decoration: none; background: var(--ink); color: var(--paper)">Sources, alerts and memory</a>
+          <a href="Settings.dc.html" style="min-height: 40px; padding: 0 14px; border-radius: 8px; display: inline-flex; align-items: center; font-weight: 600; font-size: 14px; text-decoration: none; color: var(--ink-2)">Privacy and MCP</a>
+        </nav>
+
+        <header style="display: flex; flex-direction: column; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 22px">
+          <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">SETTINGS · SOURCES, ALERTS AND MEMORY</span>
+          <h1 class="serif" style="margin: 0; font-size: 48px; line-height: 1.05; letter-spacing: -0.035em">What NxtRole watches, and the rules it follows.</h1>
+          <p style="margin: 0; font-size: 18px; color: var(--ink-2); max-width: 760px">Your rules filter jobs before any AI runs. Nothing is learned without your OK, and every rule can be edited or deleted.</p>
+        </header>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+          <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 34px">
+            <section aria-labelledby="rules-h" style="display: flex; flex-direction: column">
+              <h2 id="rules-h" class="serif" style="margin: 0 0 10px; font-size: 26px">Your rules</h2>
+              <sc-for list="{{rules}}" as="r" hint-placeholder-count="4">
+                <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--rule)">
+                  <span style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">{{r.text}}</span><span style="font-size: 13px; color: var(--ink-3)">{{r.effect}}</span></span>
+                  <span style="{{r.tagStyle}}">{{r.tag}}</span>
+                  <sc-if value="{{r.pending}}" hint-placeholder-val="{{ false }}">
+                    <button type="button" onClick="{{r.yes}}" style="min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 13px">Confirm</button>
+                    <button type="button" onClick="{{r.no}}" style="min-height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">Dismiss</button>
+                  </sc-if>
+                  <sc-if value="{{r.active}}" hint-placeholder-val="{{ true }}">
+                    <button type="button" style="min-height: 36px; padding: 0 8px; border: none; background: none; color: var(--ink-2); font-weight: 600; font-size: 13px">Edit</button>
+                    <button type="button" style="min-height: 36px; padding: 0 8px; border: none; background: none; color: var(--red-ink); font-weight: 600; font-size: 13px">Delete</button>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </section>
+
+            <section aria-labelledby="watch-h" style="display: flex; flex-direction: column; gap: 10px">
+              <h2 id="watch-h" class="serif" style="margin: 0; font-size: 26px">Watched companies</h2>
+              <div style="overflow-x: auto">
+                <div role="table" aria-label="Watched companies" style="min-width: 520px; display: flex; flex-direction: column; font-size: 14px">
+                  <div role="row" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 8px 0; font-size: 13px; font-weight: 600; color: var(--ink-3)"><span role="columnheader">Company</span><span role="columnheader">Job feed</span><span role="columnheader">Last check</span><span role="columnheader">New today</span></div>
+                  <sc-for list="{{watch}}" as="w" hint-placeholder-count="6">
+                    <div role="row" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 11px 0; border-top: 1px solid var(--rule)"><span role="cell" style="font-weight: 600">{{w.name}}</span><span role="cell">{{w.feed}}</span><span role="cell" style="color: var(--ink-2)">{{w.last}}</span><span role="cell" style="{{w.newStyle}}">{{w.fresh}}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+              <span style="font-size: 13px; color: var(--ink-3)">Checked every hour by a scheduled GitHub Action. Last run 9:00 AM IST · 1 min 12 s · 0 errors.</span>
+            </section>
+
+            <section aria-labelledby="add-h" style="display: flex; flex-direction: column; gap: 12px; padding: 20px 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule)">
+              <h2 id="add-h" class="serif" style="margin: 0; font-size: 22px">Add a company</h2>
+              <label for="co" style="font-size: 13px; font-weight: 600; color: var(--ink-2)">Company name or careers page</label>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                <input id="co" value="Lattice Robotics" style="flex: 1 1 260px; min-height: 44px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--rule-2); background: var(--paper); color: var(--ink); font: inherit">
+                <button type="button" onClick="{{find}}" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px">Find their job feed</button>
+              </div>
+              <sc-if value="{{found}}" hint-placeholder-val="{{ true }}">
+                <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px">
+                  <li><span style="color: var(--green); font-weight: 700">✓</span> Found the careers page: lattice-robotics.example/careers</li>
+                  <li><span style="color: var(--green); font-weight: 700">✓</span> It uses Lever, which has a public job feed</li>
+                  <li><span style="color: var(--green); font-weight: 700">✓</span> Tested the feed: 9 open jobs, 2 match your rules</li>
+                </ol>
+                <sc-if value="{{notAdded}}" hint-placeholder-val="{{ true }}">
+                  <span style="display: flex; gap: 10px; flex-wrap: wrap"><button type="button" onClick="{{add}}" style="min-height: 44px; padding: 0 18px; border-radius: 8px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 14px">Add to watched companies</button><button type="button" onClick="{{cancel}}" style="min-height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 14px">Cancel</button></span>
+                </sc-if>
+                <sc-if value="{{added}}" hint-placeholder-val="{{ false }}"><span style="font-weight: 600; color: var(--green)">✓ Added. First check at 10:00 AM.</span></sc-if>
+              </sc-if>
+              <span style="font-size: 13px; color: var(--ink-3)">The finder agent opens public https pages only, never logs in, and stops after 6 steps. It asks before adding anything.</span>
+            </section>
+          </div>
+
+          <aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+            <section style="display: flex; flex-direction: column; gap: 4px; padding: 20px 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule-2); box-shadow: var(--shadow)">
+              <h2 class="serif" style="margin: 0 0 6px; font-size: 22px">Alerts</h2>
+              <sc-for list="{{alerts}}" as="a" hint-placeholder-count="4">
+                <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--rule)">
+                  <span style="font-size: 14px">{{a.label}}</span>
+                  <button type="button" onClick="{{a.flip}}" aria-pressed="{{a.pressed}}" aria-label="{{a.label}}" style="{{a.track}}"><span style="{{a.knob}}"></span></button>
+                </div>
+              </sc-for>
+              <span style="font-size: 13px; color: var(--ink-3); padding-top: 6px">Alerts go to this app on your phone. Install NxtRole from the browser menu to get them.</span>
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 8px">
+              <h2 class="serif" style="margin: 0; font-size: 22px">Where jobs come from</h2>
+              <span style="font-size: 14px"><strong>Official APIs:</strong> Greenhouse, Lever, Ashby, Adzuna, Arbeitnow</span>
+              <span style="font-size: 14px"><strong>Alert emails you forward:</strong> Naukri, LinkedIn, Instahyre</span>
+              <span style="font-size: 14px; color: var(--ink-2)"><strong>Never:</strong> logging in to job sites or scraping pages behind a login.</span>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+var W = [['Marigold Fintech', 'Ashby', '9:00 AM', 1], ['Northwind Labs', 'Greenhouse', '9:00 AM', 0], ['Kestrel Pay', 'Lever', '9:00 AM', 0], ['Cobalt Commerce', 'Greenhouse', '9:00 AM', 1], ['Arcadia Maps', 'Greenhouse', '9:00 AM', 0], ['Banyan Health', 'No public feed', 'Alert emails only', -1]];
+var AL = [['n', 'Phone alert: new job, score 80+, High trust'], ['b', 'Morning brief at 7:00 AM IST'], ['q', 'Quiet hours, 11 PM to 7 AM'], ['m', 'At most 5 alerts a day']];
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { rule: 'ask', found: true, added: false, on: { n: true, b: true, q: true, m: true } }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var tag = function (k) { return 'flex: 0 0 auto; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; ' + ({ you: 'background: var(--paper-2); color: var(--ink-2)', learned: 'background: var(--blue-soft); color: var(--blue-ink)', ask: 'background: var(--amber-soft); color: var(--amber)', off: 'border: 1px solid var(--rule-2); color: var(--ink-3)' })[k]; };
+    var R = [
+      ['Mumbai, Pune or remote. Bengaluru only at ₹20 L or more.', 'Hid 41 jobs this month', 'you', 'You set'],
+      ['Fixed pay of at least ₹14 L', 'Hid 18 jobs this month', 'you', 'You set'],
+      ['Skip “immediate joiners only” roles. Your notice period is 30 days.', 'Hid 7 jobs this month', 'learned', 'Learned from 3 skips · OK’d 9 Oct'],
+      s.rule === 'yes' ? ['Hide IT services companies', 'Starts on the next run', 'learned', 'Learned from 4 skips · OK’d today'] : (s.rule === 'no' ? ['Hide IT services companies', 'Dismissed. Not suggested again for 30 days.', 'off', 'Dismissed'] : ['Hide IT services companies?', 'You skipped 4 jobs at IT services firms with the reason “Company type”.', 'ask', 'Suggested · needs your OK'])
+    ];
+    return {
+      theme: this._jpT,
+      rules: R.map(function (r, i) { var pend = i === 3 && s.rule === 'ask';
+        return { text: r[0], effect: r[1], tag: r[3], tagStyle: tag(r[2]), pending: pend, active: !pend && r[2] !== 'off',
+          yes: function () { self.setState({ rule: 'yes' }); }, no: function () { self.setState({ rule: 'no' }); } }; }),
+      watch: W.map(function (w) { return { name: w[0], feed: w[1], last: w[2], fresh: w[3] < 0 ? '—' : (w[3] ? w[3] + ' new' : 'None'),
+        newStyle: 'font-weight: 600; color: ' + (w[3] > 0 ? 'var(--blue)' : 'var(--ink-3)') }; }),
+      found: s.found, notAdded: !s.added, added: s.added,
+      find: function () { self.setState({ found: true }); }, add: function () { self.setState({ added: true }); }, cancel: function () { self.setState({ found: false, added: false }); },
+      alerts: AL.map(function (a) { var on = s.on[a[0]];
+        return { label: a[1], pressed: on ? 'true' : 'false',
+          flip: function () { var x = Object.assign({}, self.state.on); x[a[0]] = !on; self.setState({ on: x }); },
+          track: 'flex: 0 0 auto; position: relative; width: 46px; height: 28px; border-radius: 999px; border: none; padding: 0; background: ' + (on ? 'var(--blue)' : 'var(--rule-2)'),
+          knob: 'position: absolute; top: 3px; left: ' + (on ? '21px' : '3px') + '; width: 22px; height: 22px; border-radius: 50%; background: var(--paper)' }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

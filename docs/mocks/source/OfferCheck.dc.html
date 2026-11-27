@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Offer check</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.num{font-family:'Geist Mono',ui-monospace,monospace;text-align:right;white-space:nowrap}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="pipeline" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 64px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+        <a href="Pipeline.dc.html" style="align-self: flex-start; min-height: 32px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">‹ Pipeline · Offers</a>
+
+        <header style="display: flex; flex-direction: column; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 22px">
+          <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">OFFER CHECK · ORCHID PAY · FRONTEND ENGINEER · <span style="color: var(--red-ink)">REPLY BY TUE 27 OCT</span></span>
+          <h1 class="serif" style="margin: 0; font-size: 48px; line-height: 1.05; letter-spacing: -0.035em">About {{inHandShort}} a month in hand.</h1>
+          <p style="margin: 0; font-size: 18px; color: var(--ink-2); max-width: 760px">From a ₹22 L CTC, of which ₹20 L is certain in year one. Three clauses deserve a question before you sign.</p>
+        </header>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+          <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 30px">
+            <section aria-labelledby="ctc-h" style="display: flex; flex-direction: column; gap: 10px">
+              <h2 id="ctc-h" class="serif" style="margin: 0; font-size: 26px">What the ₹22 L is made of</h2>
+              <div style="overflow-x: auto">
+                <table style="width: 100%; border-collapse: collapse; font-size: 15px">
+                  <thead><tr style="text-align: left; color: var(--ink-3); font-size: 13px"><th scope="col" style="padding: 8px 0; font-weight: 600">Part</th><th scope="col" style="padding: 8px 0; font-weight: 600">When you get it</th><th scope="col" class="num" style="padding: 8px 0; font-weight: 600">Per year</th></tr></thead>
+                  <tbody>
+                    <tr style="border-top: 1px solid var(--rule)"><td style="padding: 12px 0; font-weight: 600">Fixed pay</td><td style="padding: 12px 12px 12px 0; color: var(--ink-2)">Every month</td><td class="num" style="padding: 12px 0">₹19,00,000</td></tr>
+                    <tr style="border-top: 1px solid var(--rule)"><td style="padding: 12px 0; font-weight: 600">Variable pay</td><td style="padding: 12px 12px 12px 0; color: var(--ink-2)">Once a year, depends on rating. Could be ₹0.</td><td class="num" style="padding: 12px 0">up to ₹2,00,000</td></tr>
+                    <tr style="border-top: 1px solid var(--rule)"><td style="padding: 12px 0; font-weight: 600">Joining bonus</td><td style="padding: 12px 12px 12px 0; color: var(--ink-2)">Once, with the first salary. Repaid if you leave within 12 months.</td><td class="num" style="padding: 12px 0">₹1,00,000</td></tr>
+                    <tr style="border-top: 2px solid var(--ink)"><td style="padding: 12px 0; font-weight: 700">CTC</td><td style="padding: 12px 0"></td><td class="num" style="padding: 12px 0; font-weight: 700">₹22,00,000</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section aria-labelledby="hand-h" style="display: flex; flex-direction: column; gap: 12px; padding: 20px 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule)">
+              <div style="display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap">
+                <h2 id="hand-h" class="serif" style="margin: 0; font-size: 22px">Monthly in hand, estimated</h2>
+                <span class="mono" style="font-size: 12px; color: var(--ink-3)">NEW TAX REGIME · FY 2026-27 TABLE</span>
+              </div>
+              <sc-for list="{{lines}}" as="l" hint-placeholder-count="5">
+                <div style="{{l.style}}"><span>{{l.k}}</span><span class="num">{{l.v}}</span></div>
+              </sc-for>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-top: 4px">
+                <span style="font-size: 13px; color: var(--ink-2)">PF is taken on</span>
+                <div role="group" aria-label="PF basis" style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 8px; border: 1px solid var(--rule-2)">
+                  <button type="button" onClick="{{pfFull}}" aria-pressed="{{fullPressed}}" style="{{fullStyle}}">full basic</button>
+                  <button type="button" onClick="{{pfCap}}" aria-pressed="{{capPressed}}" style="{{capStyle}}">₹15,000 cap</button>
+                </div>
+              </div>
+              <span style="font-size: 13px; color: var(--ink-3)">Assumes basic is 50% of fixed pay and Maharashtra professional tax. Tax slabs live in a table you can update each year. An estimate, not tax advice.</span>
+            </section>
+
+            <section aria-labelledby="cl-h" style="display: flex; flex-direction: column; gap: 12px">
+              <h2 id="cl-h" class="serif" style="margin: 0; font-size: 26px">Clauses in the offer letter</h2>
+              <sc-for list="{{clauses}}" as="c" hint-placeholder-count="4">
+                <article style="display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; border-radius: 10px; border: 1px solid var(--rule)">
+                  <span style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><span style="font-weight: 600; font-size: 16px">{{c.name}}</span><span style="{{c.tagStyle}}">{{c.tag}}</span></span>
+                  <blockquote style="margin: 0; padding: 6px 12px; border-radius: 6px; background: var(--paper-2); font-size: 14px">{{c.quote}}</blockquote>
+                  <span style="font-size: 14px; color: var(--ink-2)">{{c.plain}}</span>
+                </article>
+              </sc-for>
+            </section>
+          </div>
+
+          <aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section style="display: flex; flex-direction: column; gap: 12px; padding: 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule-2); box-shadow: var(--shadow)">
+              <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">QUESTIONS FOR HR · DRAFTED</span>
+              <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+                <li>Can the joining bonus repayment be pro-rated by months worked?</li>
+                <li>Is the 90-day notice period negotiable, or can buyout be agreed now in writing?</li>
+                <li>Can the 12-month non-compete clause be removed or limited to named competitors?</li>
+                <li>What share of variable pay was paid to engineers last year?</li>
+              </ol>
+              <button type="button" onClick="{{copy}}" style="min-height: 48px; border-radius: 8px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">{{copyLabel}}</button>
+              <span style="font-size: 13px; color: var(--ink-3)">You send it from your own email.</span>
+            </section>
+            <a href="Pipeline.dc.html" style="min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Compare with the Vellum Health offer →</a>
+            <section style="display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid var(--rule)">
+              <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">PRIVACY</span>
+              <span style="font-size: 13px; color: var(--ink-2)">Your name, address and PAN were removed from the offer letter before the AI read it. Pay maths runs in code, not in the AI.</span>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { cap: false, copied: false }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, cap = this.state.cap;
+    var row = 'display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-top: 1px solid var(--rule); font-size: 15px';
+    var L = [
+      ['Fixed pay ÷ 12', '₹1,58,333'],
+      ['Income tax and cess', '− ₹14,300'],
+      [cap ? 'Your PF (12% of ₹15,000)' : 'Your PF (12% of basic)', cap ? '− ₹1,800' : '− ₹9,500'],
+      ['Professional tax (average)', '− ₹208'],
+      ['In hand', cap ? '₹1,42,025' : '₹1,34,325']
+    ];
+    var seg = function (on) { return 'min-height: 32px; padding: 0 10px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)'); };
+    var tag = function (k) { return 'padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; ' + (k === 'Ask HR' ? 'background: var(--amber-soft); color: var(--amber)' : 'background: var(--paper-2); color: var(--ink-2)'); };
+    var C = [
+      ['Joining bonus repayment', 'Ask HR', '“The joining bonus is recoverable in full if you resign within 12 months of joining.”', 'Leave in month 11 and you repay all ₹1 L. Ask for a pro-rated repayment.'],
+      ['Notice period', 'Ask HR', '“Notice period: 90 days. Buyout is at the company’s discretion.”', 'Three times your current 30 days, and they may refuse a buyout. Many future employers ask for 60 days or less.'],
+      ['Non-compete', 'Ask HR', '“For 12 months after leaving, you will not join a competitor.”', 'Courts in India generally don’t enforce non-competes after you leave, but ask to remove or narrow it. Not legal advice.'],
+      ['Variable pay', 'Good to know', '“Variable pay is linked to company and individual performance.”', 'No formula is given. Plan your budget on fixed pay only.']
+    ];
+    return {
+      theme: this._jpT,
+      inHandShort: cap ? '₹1.42 L' : '₹1.34 L',
+      lines: L.map(function (l, i) { return { k: l[0], v: l[1], style: row + (i === 4 ? '; border-top: 2px solid var(--ink); font-weight: 700; font-size: 18px' : '') }; }),
+      fullPressed: cap ? 'false' : 'true', capPressed: cap ? 'true' : 'false', fullStyle: seg(!cap), capStyle: seg(cap),
+      pfFull: function () { self.setState({ cap: false }); }, pfCap: function () { self.setState({ cap: true }); },
+      clauses: C.map(function (c) { return { name: c[0], tag: c[1], tagStyle: tag(c[1]), quote: c[2], plain: c[3] }; }),
+      copyLabel: this.state.copied ? '✓ Copied' : 'Copy questions',
+      copy: function () { self.setState({ copied: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

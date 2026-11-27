@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pipeline (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--scrim:rgba(24,24,28,.28);--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--scrim:rgba(0,0,0,.55);--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button,select,input,textarea{font-family:inherit}
+button,select{cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes slide{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.slide{animation:slide .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet{animation:up .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.fade{animation:fadein .25s ease both}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+.cardb{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.cardb:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--rule-2) !important}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <header style="flex: 0 0 auto; padding: 14px 20px 0; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid var(--rule)">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+      <h1 class="serif" style="margin: 0; font-size: 38px; line-height: 1">Pipeline</h1>
+      <sc-if value="{{canCompareAll}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{openCompare}}" style="min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 13px">Compare offers ({{offerCount}})</button></sc-if>
+    </div>
+    <p style="margin: 0; font-size: 13px; color: var(--ink-2)">{{summary}}</p>
+    <div class="scroll" role="group" aria-label="Stages" style="display: flex; gap: 18px; overflow-x: auto; margin: 0 -20px; padding: 0 20px">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+        <button type="button" aria-pressed="{{t.selected}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}} <span class="mono" style="font-size: 12px; color: var(--ink-3)">{{t.count}}</span></button>
+      </sc-for>
+    </div>
+  </header>
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 16px 20px 28px; display: flex; flex-direction: column; gap: 12px">
+    <sc-if value="{{showAuto}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: var(--blue-soft)">
+        <span style="flex: 1 1 auto; font-size: 14px">Gmail moved Kestrel Pay to Interview and Harbor &amp; Co to Closed. Open a card to undo.</span>
+        <button type="button" onClick="{{dismissAuto}}" aria-label="Dismiss" style="flex: 0 0 auto; width: 36px; height: 36px; border-radius: 8px; border: none; background: transparent; color: var(--ink-2); font-size: 18px">×</button>
+      </div>
+    </sc-if>
+    <sc-for list="{{stageCards}}" as="k" hint-placeholder-count="3">
+      <button type="button" onClick="{{k.open}}" class="rise" style="{{k.style}}">
+        <span style="font-weight: 600; font-size: 16px">{{k.company}}</span>
+        <span style="font-size: 14px; color: var(--ink-2)">{{k.role}}</span>
+        <span style="{{k.nextStyle}}">{{k.next}}</span>
+        <sc-if value="{{k.auto}}" hint-placeholder-val="{{ false }}"><span class="mono" style="font-size: 10px; letter-spacing: .08em; color: var(--blue)">MOVED BY GMAIL · UNDO INSIDE</span></sc-if>
+        <sc-if value="{{k.reapply}}" hint-placeholder-val="{{ false }}"><span class="mono" style="font-size: 10px; letter-spacing: .08em; color: var(--blue)">REAPPLIED · LINKED</span></sc-if>
+      </button>
+    </sc-for>
+    <sc-if value="{{stageEmpty}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 28px 4px; color: var(--ink-3)">Nothing in this stage yet.</p></sc-if>
+  </main>
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="pipeline" hint-size="390px,84px"></dc-import></div>
+
+  <sc-if value="{{drawer}}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{close}}" aria-label="Close" class="fade" style="position: absolute; inset: 0; z-index: 40; border: none; padding: 0; background: var(--scrim); cursor: default"></button>
+    <section class="sheet scroll" role="dialog" aria-modal="true" aria-labelledby="pl-title" style="position: absolute; z-index: 41; left: 0; right: 0; bottom: 0; max-height: 92%; overflow-y: auto; box-sizing: border-box; padding: 10px 20px 28px; border-radius: 18px 18px 0 0; background: var(--paper); border-top: 1px solid var(--rule); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 18px; color: var(--ink)">
+      <span aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: var(--rule-2)"></span>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">{{d.stageUpper}}</span>
+          <h2 id="pl-title" class="serif" style="margin: 0; font-size: 34px; line-height: 1.05; font-weight: 400">{{d.company}}</h2>
+          <span style="color: var(--ink-2)">{{d.role}}</span>
+          <sc-if value="{{d.hasLinked}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: var(--blue)">{{d.linked}}</span></sc-if>
+        </div>
+        <button type="button" onClick="{{close}}" aria-label="Close" style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 20px; line-height: 1">×</button>
+      </div>
+
+      <sc-if value="{{noPanel}}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 18px">
+          <sc-if value="{{d.hasNext}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">MOVE FORWARD</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px">
+                <sc-for list="{{d.moves}}" as="m" hint-placeholder-count="1"><button type="button" onClick="{{m.go}}" style="{{m.style}}">{{m.label}}</button></sc-for>
+                <sc-if value="{{d.canReapply}}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{d.reapply}}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; font-weight: 600; font-size: 14px; border: 1px solid var(--blue); background: var(--blue); color: var(--on-blue)">Reapply (new linked application)</button></sc-if>
+              </div>
+              <sc-if value="{{d.hasCloses}}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; color: var(--ink-2)">
+                  <span>Or close as</span>
+                  <sc-for list="{{d.closes}}" as="x" hint-placeholder-count="3"><button type="button" onClick="{{x.go}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 13px; font-weight: 600">{{x.label}}</button></sc-for>
+                </div>
+              </sc-if>
+              <span style="font-size: 12px; color: var(--ink-3)">Stages only move in order. Interview needs a round; Offer needs the offer details. Every move can be undone.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{d.hasOffer}}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule); display: flex; flex-direction: column; gap: 8px">
+              <span style="display: flex; justify-content: space-between; align-items: baseline"><span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--green)">OFFER · YEAR ONE</span><span class="serif" style="font-size: 30px; line-height: 1">{{d.offer.total}}</span></span>
+              <sc-for list="{{d.offer.rows}}" as="r" hint-placeholder-count="5"><span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px; padding-top: 6px; border-top: 1px dotted var(--rule-2)"><span style="color: var(--ink-2)">{{r.k}}</span><span style="text-align: right">{{r.v}}</span></span></sc-for>
+              <sc-if value="{{d.canCompare}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{openCompare}}" style="align-self: flex-start; min-height: 40px; padding: 0; background: none; border: none; color: var(--blue); font-weight: 600; font-size: 14px">Compare offers →</button></sc-if>
+            </div>
+          </sc-if>
+
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 6px">
+              <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">INTERVIEW ROUNDS</span>
+              <sc-if value="{{d.canAddRound}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{d.addRound}}" style="min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 13px; font-weight: 600">+ Add round</button></sc-if>
+            </div>
+            <sc-for list="{{d.rounds}}" as="r" hint-placeholder-count="2">
+              <div style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-top: 1px solid var(--rule)">
+                <span style="display: flex; justify-content: space-between; gap: 10px; align-items: baseline"><span><span class="mono" style="font-size: 10px; letter-spacing: .06em; color: var(--ink-3)">{{r.n}} · </span><span style="{{r.textStyle}}">{{r.kind}}</span></span><span style="{{r.pillStyle}}">{{r.pill}}</span></span>
+                <span style="font-size: 14px">{{r.main}}</span>
+                <sc-if value="{{r.hasAlt}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: var(--ink-2)">{{r.alt}}</span></sc-if>
+                <sc-if value="{{r.hasWas}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: var(--ink-3); text-decoration: line-through">{{r.was}}</span></sc-if>
+                <sc-if value="{{r.hasOutcome}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: var(--ink-2)">{{r.outcome}}</span></sc-if>
+                <sc-if value="{{r.live}}" hint-placeholder-val="{{ false }}">
+                  <span style="display: flex; gap: 16px; font-size: 13px">
+                    <button type="button" onClick="{{r.resched}}" style="min-height: 32px; padding: 0; background: none; border: none; color: var(--blue); font-weight: 600">Reschedule</button>
+                    <button type="button" onClick="{{r.done}}" style="min-height: 32px; padding: 0; background: none; border: none; color: var(--ink); font-weight: 600">Mark done</button>
+                    <button type="button" onClick="{{r.cancel}}" style="min-height: 32px; padding: 0; background: none; border: none; color: var(--ink-2); font-weight: 600">Cancel round</button>
+                  </span>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{d.noRounds}}" hint-placeholder-val="{{ false }}"><span style="padding: 12px 0; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-3)">No rounds yet. Add one when an invite arrives; the Gmail script adds them for you too.</span></sc-if>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="pl-notes" class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">NOTES</label>
+            <textarea id="pl-notes" class="inp" rows="3" value="{{notesVal}}" onChange="{{onNotes}}" placeholder="People you met, what to ask next time, anything worth remembering" style="padding: 10px 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+            <span style="font-size: 12px; color: var(--ink-3)">Notes are searchable from the search bar.</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column">
+            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3); padding-bottom: 6px">HISTORY · NEWEST FIRST</span>
+            <sc-for list="{{d.events}}" as="e" hint-placeholder-count="4">
+              <div style="display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--rule); font-size: 14px">
+                <span class="mono" style="flex: 0 0 52px; font-size: 12px; color: var(--ink-3)">{{e.d}}</span>
+                <span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px">
+                  <span>{{e.t}}</span>
+                  <span style="display: flex; gap: 12px; align-items: center"><span class="mono" style="{{e.srcStyle}}">BY {{e.src}}</span><sc-if value="{{e.canUndo}}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{e.undo}}" style="padding: 0; min-height: 28px; background: none; border: none; color: var(--ink-2); font-size: 13px; text-decoration: underline">Undo this</button></sc-if></span>
+                </span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{pRound}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 12px">
+          <h3 class="serif" style="margin: 0; font-size: 26px; font-weight: 400">{{rfTitle}}</h3>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="rf-kind" style="font-size: 13px; font-weight: 600">Round type</label>
+            <select id="rf-kind" class="inp" value="{{rfKind}}" onChange="{{onKind}}" style="height: 46px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px"><sc-for list="{{rfKinds}}" as="o" hint-placeholder-count="6"><option value="{{o.v}}">{{o.label}}</option></sc-for></select>
+          </div>
+          <sc-for list="{{rfFields}}" as="f" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <label for="{{f.id}}" style="font-size: 13px; font-weight: 600">{{f.label}}</label>
+              <input id="{{f.id}}" class="inp" type="text" value="{{f.value}}" onChange="{{f.on}}" placeholder="{{f.ph}}" style="height: 46px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px">
+            </div>
+          </sc-for>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="rf-tz" style="font-size: 13px; font-weight: 600">Time zone in the invite</label>
+            <select id="rf-tz" class="inp" value="{{rfTz}}" onChange="{{onTz}}" style="height: 46px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px"><sc-for list="{{rfTzs}}" as="o" hint-placeholder-count="6"><option value="{{o.v}}">{{o.label}}</option></sc-for></select>
+          </div>
+          <span style="font-size: 13px; color: var(--ink-2); padding: 10px 12px; border-radius: 10px; background: var(--paper-2)">{{rfPreview}}</span>
+          <sc-if value="{{rfErr}}" hint-placeholder-val="{{ false }}"><span style="color: var(--red-ink); font-size: 13px">Add a date and a time like 3:00 PM.</span></sc-if>
+          <div style="display: flex; gap: 12px">
+            <button type="button" onClick="{{saveRound}}" style="min-height: 46px; padding: 0 18px; border-radius: 10px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">{{rfSave}}</button>
+            <button type="button" onClick="{{cancelPanel}}" style="min-height: 46px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 15px">Back</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{pOffer}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 12px">
+          <h3 class="serif" style="margin: 0; font-size: 26px; font-weight: 400">Record the offer</h3>
+          <sc-for list="{{ofFields}}" as="f" hint-placeholder-count="5">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <label for="{{f.id}}" style="font-size: 13px; font-weight: 600">{{f.label}}</label>
+              <input id="{{f.id}}" class="inp" type="text" value="{{f.value}}" onChange="{{f.on}}" placeholder="{{f.ph}}" style="height: 46px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px">
+            </div>
+          </sc-for>
+          <sc-if value="{{ofErr}}" hint-placeholder-val="{{ false }}"><span style="color: var(--red-ink); font-size: 13px">Add at least the fixed pay and the reply-by date.</span></sc-if>
+          <div style="display: flex; gap: 12px">
+            <button type="button" onClick="{{saveOffer}}" style="min-height: 46px; padding: 0 18px; border-radius: 10px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">Save offer</button>
+            <button type="button" onClick="{{cancelPanel}}" style="min-height: 46px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 15px">Back</button>
+          </div>
+        </div>
+      </sc-if>
+    </section>
+  </sc-if>
+  <sc-if value="{{compare}}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{closeCompare}}" aria-label="Close" class="fade" style="position: absolute; inset: 0; z-index: 50; border: none; padding: 0; background: var(--scrim); cursor: default"></button>
+    <section class="sheet scroll" role="dialog" aria-modal="true" aria-labelledby="cmp-title" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 92%; padding: 16px 20px 28px; border-radius: 18px 18px 0 0; z-index: 51; box-sizing: border-box; background: var(--paper); border: 1px solid var(--rule); box-shadow: var(--shadow); overflow-y: auto; display: flex; flex-direction: column; gap: 16px; color: var(--ink)">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{offerCount}} OFFERS</span><h2 id="cmp-title" class="serif" style="margin: 0; font-size: 32px; line-height: 1.05; font-weight: 400">Compare offers</h2></div>
+        <button type="button" onClick="{{closeCompare}}" aria-label="Close" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 20px; line-height: 1">×</button>
+      </div>
+      <div style="overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; min-width: 420px">
+          <thead><tr><th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; color: var(--ink-3); font-weight: 600"></th><sc-for list="{{cmpHead}}" as="h" hint-placeholder-count="2"><th scope="col" style="text-align: left; padding: 10px 12px; vertical-align: bottom"><span class="serif" style="font-size: 22px; font-weight: 400; display: block">{{h.name}}</span><span style="font-size: 12px; color: var(--ink-2); font-weight: 400">{{h.role}}</span></th></sc-for></tr></thead>
+          <tbody><sc-for list="{{cmpRows}}" as="r" hint-placeholder-count="8"><tr><th scope="row" style="text-align: left; padding: 10px 12px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--ink-2); font-weight: 500">{{r.k}}</th><sc-for list="{{r.cells}}" as="c" hint-placeholder-count="2"><td style="{{c.style}}">{{c.v}}</td></sc-for></tr></sc-for></tbody>
+        </table>
+      </div>
+      <p style="margin: 0; padding: 14px 16px; border-radius: 12px; background: var(--blue-soft); font-size: 14px">{{cmpNote}}</p>
+      <a href="MStudio.dc.html" style="align-self: flex-start; font-weight: 600; text-decoration: none; min-height: 40px; display: inline-flex; align-items: center">Draft a negotiation email in Studio →</a>
+    </section>
+  </sc-if>
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+    <div role="status" class="rise" style="position: absolute; z-index: 60; left: 16px; right: 16px; bottom: 100px; display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-radius: 12px; background: var(--ink); color: var(--paper); box-shadow: var(--shadow); font-size: 14px; justify-content: space-between">
+      <span>{{toastText}}</span>
+      <sc-if value="{{toastCanUndo}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{toastUndo}}" style="min-height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--paper); background: transparent; color: var(--paper); font-weight: 600">Undo</button></sc-if>
+      <button type="button" onClick="{{toastClose}}" aria-label="Dismiss" style="width: 32px; height: 32px; border: none; background: transparent; color: var(--paper); font-size: 18px">×</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) {
+    super(props);
+    this.state = { open: null, auto: true, panel: null, rf: { kind: 'Technical', date: '', time: '', tz: 'IST' }, rfErr: false, editRound: null, of: { fixed: '', variable: '', bonus: '', joining: '', deadline: '' }, ofErr: false, toast: null, compare: false, stage: 'interview', nextId: 20,
+      cards: [
+        { id: 1, company: 'Northwind Labs', role: 'Frontend Developer', stage: 'saved', next: 'Apply by Thu 22 Oct', due: true, rounds: [], notes: '', events: [['18 Oct', 'Saved from Naukri', 'You']] },
+        { id: 2, company: 'Marigold Fintech', role: 'Frontend Developer, React', stage: 'saved', next: 'In today’s brief', rounds: [], notes: '', events: [['20 Oct', 'Saved from LinkedIn', 'Agent']] },
+        { id: 3, company: 'Pinecrest Studio', role: 'Frontend Developer', stage: 'applied', next: 'Follow up today · 10 days quiet', due: true, rounds: [], notes: '', events: [['10 Oct', 'Applied with tailored resume v2', 'You'], ['10 Oct', 'Confirmation email received', 'Gmail'], ['20 Oct', 'Follow-up drafted', 'Agent']] },
+        { id: 4, company: 'Quill Cloud', role: 'Frontend Engineer', stage: 'applied', next: 'Follow-up in 2 days', rounds: [], notes: '', events: [['16 Oct', 'Applied', 'You']] },
+        { id: 5, company: 'Lumen Retail', role: 'Senior Frontend Engineer', stage: 'applied', next: '14 days quiet · usually replies in 5 · likely ghosted', rounds: [], notes: '', events: [['6 Oct', 'Applied', 'You']] },
+        { id: 6, company: 'Kestrel Pay', role: 'React Engineer', stage: 'interview', auto: true, rounds: [{ id: 'k1', kind: 'Online assessment', date: 'Wed 14 Oct', time: '10:00 AM', tz: 'IST', status: 'done', outcome: 'Cleared' }, { id: 'k2', kind: 'JS & React deep dive', date: 'Wed 21 Oct', time: '3:00 PM', tz: 'IST', status: 'scheduled' }], notes: 'Ask about on-call for checkout. Kabir Menon referred me.', events: [['8 Oct', 'Applied · referred by Kabir Menon', 'You'], ['14 Oct', 'Round 1 cleared', 'Gmail'], ['19 Oct', 'Round 2 invite found · moved to Interview', 'Gmail', 'undo']] },
+        { id: 7, company: 'Saffron Systems', role: 'React Developer', stage: 'interview', rounds: [{ id: 's1', kind: 'HR screen', date: 'Thu 22 Oct', time: '11:00 AM', tz: 'IST', status: 'rescheduled', was: 'Tue 20 Oct · 4:00 PM' }], notes: 'Recruiter moved it; same panel.', events: [['15 Oct', 'Applied', 'You'], ['17 Oct', 'HR screen booked', 'Gmail'], ['19 Oct', 'Rescheduled by recruiter to Thu 11:00 AM', 'Gmail']] },
+        { id: 8, company: 'Juniper Logistics', role: 'Frontend Engineer', stage: 'interview', rounds: [{ id: 'j1', kind: 'Technical round 1', date: 'Thu 22 Oct', time: '4:00 PM', tz: 'IST', status: 'scheduled' }], notes: '', events: [['12 Oct', 'Applied', 'You'], ['18 Oct', 'Round 1 booked', 'Gmail']] },
+        { id: 9, company: 'Tealbrook Analytics', role: 'React Developer', stage: 'interview', rounds: [{ id: 't1', kind: 'Technical', date: 'Tue 20 Oct', time: '10:00 AM', tz: 'IST', status: 'done', outcome: 'Cleared' }, { id: 't2', kind: 'Frontend system design', date: 'Wed 28 Oct', time: '12:00 PM', tz: 'EDT', status: 'scheduled' }], notes: 'Round 2 interviewer is in New York and wants depth on dashboard design.', events: [['13 Oct', 'Applied', 'You'], ['20 Oct', 'Round 1 cleared · round 2 booked', 'Gmail']] },
+        { id: 10, company: 'Vellum Health', role: 'Frontend Engineer', stage: 'offer', rounds: [{ id: 'v1', kind: 'Technical', date: 'Mon 5 Oct', time: '11:00 AM', tz: 'IST', status: 'done', outcome: 'Cleared' }, { id: 'v2', kind: 'Manager + HR', date: 'Fri 16 Oct', time: '5:00 PM', tz: 'IST', status: 'done', outcome: 'Cleared' }], offer: { fixed: 19, variable: 2, bonus: 1, joining: '1 Dec 2026', deadline: 'Fri 30 Oct', days: 10, mode: 'Hybrid, Pune', buyout: 'Yes, up to 30 days' }, notes: '', events: [['28 Sep', 'Applied', 'You'], ['19 Oct', 'Offer letter received', 'Gmail']] },
+        { id: 11, company: 'Orchid Pay', role: 'React Developer', stage: 'offer', rounds: [{ id: 'o1', kind: 'Technical', date: 'Thu 8 Oct', time: '2:00 PM', tz: 'IST', status: 'done', outcome: 'Cleared' }], offer: { fixed: 21, variable: 0, bonus: 0, joining: '15 Dec 2026', deadline: 'Tue 27 Oct', days: 7, mode: 'Remote', buyout: 'No' }, notes: 'Ask if they can match a joining bonus.', events: [['2 Oct', 'Applied', 'You'], ['17 Oct', 'Offer recorded', 'You']] },
+        { id: 12, company: 'Harbor & Co', role: 'Web Developer', stage: 'closed', reason: 'Rejected', next: 'Rejected after round 2 · questions saved in Progress', auto: true, rounds: [{ id: 'h1', kind: 'Online test', date: 'Fri 2 Oct', time: '10:00 AM', tz: 'IST', status: 'done', outcome: 'Cleared' }, { id: 'h2', kind: 'Technical', date: 'Fri 9 Oct', time: '3:00 PM', tz: 'IST', status: 'done', outcome: 'Rejected' }], notes: '', events: [['25 Sep', 'Applied', 'You'], ['12 Oct', 'Rejection email · moved to Closed', 'Gmail']] },
+        { id: 13, company: 'Monsoon Labs', role: 'Frontend Developer', stage: 'closed', reason: 'Rejected', next: 'Rejected after machine coding', rounds: [], notes: '', events: [['1 Oct', 'Applied', 'You'], ['17 Oct', 'Rejected after machine coding', 'Gmail']] }
+      ] };
+  }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var ST = [['saved', 'Saved'], ['applied', 'Applied'], ['interview', 'Interview'], ['offer', 'Offer'], ['closed', 'Closed']];
+    var LBL = {}; ST.forEach(function (x) { LBL[x[0]] = x[1]; });
+    var OFF = { IST: 5.5, EDT: -4, PDT: -7, BST: 1, CET: 2, SGT: 8 };
+    var TZN = [['IST', 'India (IST)'], ['EDT', 'New York (EDT)'], ['PDT', 'San Francisco (PDT)'], ['BST', 'London (BST)'], ['CET', 'Berlin (CEST)'], ['SGT', 'Singapore (SGT)']];
+    var fmt = function (m) { m = ((m % 1440) + 1440) % 1440; var h = Math.floor(m / 60), mm = m % 60, ap = h >= 12 ? 'PM' : 'AM', hh = h % 12 || 12; return hh + ':' + (mm < 10 ? '0' : '') + mm + ' ' + ap; };
+    var parseT = function (t) { var x = /(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i.exec(t || ''); if (!x) return null; var h = parseInt(x[1], 10) % 24, mm = parseInt(x[2] || '0', 10), ap = (x[3] || '').toLowerCase(); if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; return h * 60 + mm; };
+    var roundTime = function (r) {
+      if (r.tz === 'IST') return { main: r.date + ' · ' + r.time + ' IST', alt: '' };
+      var m = parseT(r.time); if (m === null) return { main: r.date + ' · ' + r.time + ' ' + r.tz, alt: '' };
+      var ist = m + Math.round((5.5 - OFF[r.tz]) * 60); var shift = ist >= 1440 ? ' (next day)' : (ist < 0 ? ' (day before)' : '');
+      return { main: r.date + ' · ' + fmt(ist) + ' IST' + shift, alt: r.time + ' ' + r.tz + ' for the interviewer' };
+    };
+    var upcoming = function (c) { return c.rounds.filter(function (r) { return r.status === 'scheduled' || r.status === 'rescheduled'; }); };
+    var total = function (o) { return o.fixed + o.variable + o.bonus; };
+    var nextLine = function (c) {
+      if (c.stage === 'interview') { var u = upcoming(c)[0]; if (!u) return 'No round booked · add one'; var idx = c.rounds.indexOf(u) + 1; return 'Round ' + idx + ' · ' + roundTime(u).main + (u.status === 'rescheduled' ? ' · moved' : ''); }
+      if (c.stage === 'offer' && c.offer) return '₹' + total(c.offer) + ' L year one · reply by ' + c.offer.deadline + ' (' + c.offer.days + ' days)';
+      if (c.stage === 'closed') return c.next || c.reason || 'Closed';
+      return c.next || '';
+    };
+    var isDue = function (c) { if (c.stage === 'interview') { var u = upcoming(c)[0]; return !!u && /Wed 21 Oct/.test(u.date); } if (c.stage === 'offer' && c.offer) return c.offer.days <= 2; return !!c.due; };
+    var upd = function (id, fn) { return self.state.cards.map(function (c) { return c.id === id ? fn(Object.assign({}, c, { rounds: c.rounds.slice(), events: c.events.slice() })) : c; }); };
+    var cur = s.cards.filter(function (c) { return c.id === s.open; })[0];
+    var move = function (c, to, reason, text, extra) {
+      var prev = { stage: c.stage, reason: c.reason };
+      var cards = upd(c.id, function (x) { x.stage = to; x.reason = reason || ''; x.auto = false; x.next = to === 'closed' ? (reason + ' · 20 Oct') : (to === 'applied' ? 'Applied 20 Oct · follow up in 7 days' : x.next); if (extra) extra(x); x.events.push(['20 Oct', text, 'You']); return x; });
+      self.setState({ cards: cards, panel: null, toast: { id: c.id, text: c.company + ' moved to ' + (to === 'closed' ? (reason || 'Closed') : LBL[to]), prev: prev, label: text } });
+    };
+    var undoTo = function (id, prev, label, rid) { self.setState({ cards: upd(id, function (x) { x.stage = prev.stage; x.reason = prev.reason || ''; if (rid) x.rounds = x.rounds.filter(function (y) { return y.id !== rid; }); x.events.push(['20 Oct', 'Undone: ' + label, 'You']); return x; }), toast: null }); };
+    var counts = {}; s.cards.forEach(function (c) { counts[c.stage] = (counts[c.stage] || 0) + 1; });
+    var dueN = s.cards.filter(isDue).length;
+    var offers = s.cards.filter(function (c) { return c.stage === 'offer' && c.offer; });
+    var cardVals = function (c, i) { var d = isDue(c);
+      return { company: c.company, role: c.role, next: nextLine(c), auto: !!c.auto, reapply: !!c.reapplyOf,
+        nextStyle: 'font-size: 13px; font-weight: ' + (d ? '600' : '400') + '; color: ' + (d ? 'var(--red)' : 'var(--ink-2)') + '; padding-top: 6px; border-top: 1px dotted var(--rule-2)',
+        style: 'display: flex; flex-direction: column; gap: 4px; align-items: stretch; text-align: left; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); width: 100%; animation-delay: ' + (i * 0.04).toFixed(2) + 's' + (d ? '; box-shadow: inset 3px 0 0 var(--red)' : ''),
+        open: function () { self.setState({ open: c.id, panel: null, toast: null }); } }; };
+    var NEXT = { saved: [['applied', 'Mark as applied']], applied: [['round', 'Add first round']], interview: [['offer', 'Record an offer']], offer: [['accept', 'Accept offer'], ['decline', 'Decline']], closed: [] };
+    var CLOSE = { saved: ['Withdrawn'], applied: ['Rejected', 'Ghosted', 'Withdrawn'], interview: ['Rejected', 'Withdrawn'], offer: [], closed: [] };
+    var btn = function (primary) { return 'min-height: 40px; padding: 0 14px; border-radius: 8px; font-weight: 600; font-size: 14px; border: 1px solid ' + (primary ? 'var(--blue)' : 'var(--rule-2)') + '; background: ' + (primary ? 'var(--blue)' : 'transparent') + '; color: ' + (primary ? 'var(--on-blue)' : 'var(--ink)'); };
+    var PILL = { scheduled: ['Scheduled', 'var(--blue)'], rescheduled: ['Rescheduled', 'var(--amber)'], cancelled: ['Cancelled', 'var(--ink-3)'], done: ['Done', 'var(--green)'] };
+    var d = cur ? {
+      company: cur.company, role: cur.role, stageUpper: (cur.stage === 'closed' ? (cur.reason || 'Closed') : LBL[cur.stage]).toUpperCase(), notes: cur.notes || '',
+      hasNext: NEXT[cur.stage].length > 0 || cur.stage === 'closed',
+      moves: NEXT[cur.stage].map(function (m, k) { return { label: m[1] + (m[0] === 'decline' ? '' : ' →'), style: btn(k === 0 && m[0] !== 'decline'),
+        go: function () {
+          if (m[0] === 'applied') move(cur, 'applied', '', 'Marked as applied');
+          else if (m[0] === 'round') self.setState({ panel: 'round', editRound: null, rf: { kind: 'Technical', date: '', time: '', tz: 'IST' }, rfErr: false });
+          else if (m[0] === 'offer') self.setState({ panel: 'offer', of: { fixed: '', variable: '', bonus: '', joining: '', deadline: '' }, ofErr: false });
+          else if (m[0] === 'accept') move(cur, 'closed', 'Accepted', 'Offer accepted');
+          else if (m[0] === 'decline') move(cur, 'closed', 'Declined', 'Offer declined');
+        } }; }),
+      closes: CLOSE[cur.stage].map(function (r) { return { label: r, go: function () { move(cur, 'closed', r, 'Closed · ' + r); } }; }),
+      hasCloses: CLOSE[cur.stage].length > 0,
+      canReapply: cur.stage === 'closed' && cur.reason === 'Rejected',
+      reapply: function () { var nid = self.state.nextId; var nc = { id: nid, company: cur.company, role: cur.role, stage: 'applied', next: 'Reapplied · previous attempt rejected', reapplyOf: cur.id, rounds: [], notes: '', events: [['20 Oct', 'Reapplied · linked to the attempt rejected earlier', 'You']] };
+        self.setState({ cards: self.state.cards.concat([nc]), nextId: nid + 1, open: nid, panel: null, toast: { id: nid, text: 'New application for ' + cur.company + ' created and linked', prev: null } }); },
+      linked: cur.reapplyOf ? 'Linked to your earlier rejected application' : '',
+      hasLinked: !!cur.reapplyOf, noRounds: cur.rounds.length === 0,
+      hasRounds: cur.rounds.length > 0,
+      rounds: cur.rounds.map(function (r, i) { var t = roundTime(r); var p = PILL[r.status]; var live = r.status === 'scheduled' || r.status === 'rescheduled';
+        return { n: 'ROUND ' + (i + 1), kind: r.kind, main: t.main, alt: t.alt, hasAlt: !!t.alt, was: r.was ? 'Was ' + r.was : '', hasWas: !!r.was, outcome: r.outcome ? 'Outcome: ' + r.outcome : '', hasOutcome: !!r.outcome,
+          pill: p[0], pillStyle: 'flex: 0 0 auto; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid ' + p[1] + '; color: ' + p[1],
+          textStyle: 'font-weight: 600; ' + (r.status === 'cancelled' ? 'text-decoration: line-through; color: var(--ink-3)' : ''),
+          live: live,
+          resched: function () { self.setState({ panel: 'round', editRound: r.id, rf: { kind: r.kind, date: '', time: '', tz: r.tz }, rfErr: false }); },
+          cancel: function () { self.setState({ cards: upd(cur.id, function (x) { x.rounds = x.rounds.map(function (y) { return y.id === r.id ? Object.assign({}, y, { status: 'cancelled' }) : y; }); x.events.push(['20 Oct', 'Cancelled ' + r.kind, 'You']); return x; }), toast: { id: cur.id, text: r.kind + ' cancelled', prev: null } }); },
+          done: function () { self.setState({ cards: upd(cur.id, function (x) { x.rounds = x.rounds.map(function (y) { return y.id === r.id ? Object.assign({}, y, { status: 'done', outcome: 'Waiting to hear' }) : y; }); x.events.push(['20 Oct', r.kind + ' done', 'You']); return x; }), toast: { id: cur.id, text: r.kind + ' marked done. Log the questions in Progress while they’re fresh.', prev: null } }); } }; }),
+      canAddRound: cur.stage === 'interview' || cur.stage === 'applied',
+      addRound: function () { self.setState({ panel: 'round', editRound: null, rf: { kind: 'Technical', date: '', time: '', tz: 'IST' }, rfErr: false }); },
+      hasOffer: !!cur.offer,
+      offer: cur.offer ? { total: '₹' + total(cur.offer) + ' L', rows: [['Fixed', '₹' + cur.offer.fixed + ' L'], ['Variable', '₹' + cur.offer.variable + ' L'], ['Joining bonus', '₹' + cur.offer.bonus + ' L'], ['Joining date', cur.offer.joining], ['Reply by', cur.offer.deadline + ' · ' + cur.offer.days + ' days left'], ['Work mode', cur.offer.mode], ['Notice buyout', cur.offer.buyout]].map(function (r) { return { k: r[0], v: r[1] }; }) } : { total: '', rows: [] },
+      canCompare: offers.length > 1,
+      events: cur.events.slice().reverse().map(function (e, k) { var src = e[2];
+        return { d: e[0], t: e[1], src: src.toUpperCase(), srcStyle: 'font-size: 10px; letter-spacing: .06em; color: ' + (src === 'You' ? 'var(--ink-3)' : 'var(--blue)'),
+          canUndo: e[3] === 'undo' && cur.stage === 'interview',
+          undo: function () { self.setState({ cards: upd(cur.id, function (x) { x.stage = 'applied'; x.auto = false; x.events = x.events.map(function (y) { return y === e ? [y[0], y[1], y[2]] : y; }); x.events.push(['20 Oct', 'Undone: Gmail move to Interview', 'You']); return x; }), toast: { id: cur.id, text: 'Moved back to Applied', prev: null } }); } }; })
+    } : { company: '', role: '', stageUpper: '', notes: '', hasNext: false, moves: [], closes: [], hasCloses: false, canReapply: false, reapply: function () {}, linked: '', hasLinked: false, noRounds: false, hasRounds: false, rounds: [], canAddRound: false, addRound: function () {}, hasOffer: false, offer: { total: '', rows: [] }, canCompare: false, events: [] };
+    var rfFields = [['date', 'Date', 'e.g. Mon 26 Oct'], ['time', 'Time (as in the invite)', 'e.g. 3:00 PM']].map(function (f) { return { id: 'rf-' + f[0], label: f[1], ph: f[2], value: s.rf[f[0]], on: function (e) { var x = Object.assign({}, self.state.rf); x[f[0]] = e.target.value; self.setState({ rf: x, rfErr: false }); } }; });
+    var ofFields = [['fixed', 'Fixed (₹ LPA)', 'e.g. 20'], ['variable', 'Variable (₹ LPA)', 'e.g. 2'], ['bonus', 'Joining bonus (₹ L)', 'e.g. 1'], ['joining', 'Joining date', 'e.g. 4 Jan 2027'], ['deadline', 'Reply by', 'e.g. Fri 6 Nov']].map(function (f) { return { id: 'of-' + f[0], label: f[1], ph: f[2], value: s.of[f[0]], on: function (e) { var x = Object.assign({}, self.state.of); x[f[0]] = e.target.value; self.setState({ of: x, ofErr: false }); } }; });
+    var saveRound = function () {
+      var st = self.state, f = st.rf; if (!f.date.trim() || parseT(f.time) === null) { self.setState({ rfErr: true }); return; }
+      var c = cur; var editing = st.editRound; var newId = 'n' + st.nextId;
+      var cards = upd(c.id, function (x) {
+        if (editing) { x.rounds = x.rounds.map(function (y) { return y.id === editing ? Object.assign({}, y, { status: 'rescheduled', was: y.date + ' · ' + y.time + (y.tz === 'IST' ? '' : ' ' + y.tz), date: f.date.trim(), time: f.time.trim(), tz: f.tz }) : y; }); x.events.push(['20 Oct', 'Rescheduled ' + f.kind + ' to ' + f.date.trim(), 'You']); }
+        else { x.rounds.push({ id: newId, kind: f.kind, date: f.date.trim(), time: f.time.trim(), tz: f.tz, status: 'scheduled' }); x.events.push(['20 Oct', 'Added ' + f.kind + ' on ' + f.date.trim(), 'You']); if (x.stage === 'applied') { x.stage = 'interview'; x.events.push(['20 Oct', 'First round added · moved to Interview', 'You']); } }
+        return x; });
+      self.setState({ cards: cards, nextId: st.nextId + 1, panel: null, toast: { id: c.id, rid: editing ? null : newId, text: editing ? 'Round rescheduled; the old time stays in history' : (c.stage === 'applied' ? c.company + ' moved to Interview' : 'Round added'), prev: !editing && c.stage === 'applied' ? { stage: 'applied', reason: '' } : null, label: 'First round added' } });
+    };
+    var saveOffer = function () {
+      var f = self.state.of, n = function (v) { var x = parseFloat(v); return isNaN(x) ? 0 : x; };
+      if (!(n(f.fixed) > 0) || !f.deadline.trim()) { self.setState({ ofErr: true }); return; }
+      move(cur, 'offer', '', 'Offer recorded', function (x) { x.offer = { fixed: n(f.fixed), variable: n(f.variable), bonus: n(f.bonus), joining: f.joining.trim() || 'Not set', deadline: f.deadline.trim(), days: 14, mode: 'Not set', buyout: 'Not set' }; });
+    };
+    var best = offers.slice().sort(function (a, b) { return total(b.offer) - total(a.offer); })[0];
+    var PLR = {
+      theme: this._jpT,
+      summary: (counts.applied || 0) + ' waiting to hear back · ' + (counts.interview || 0) + ' interviewing · ' + (counts.offer || 0) + ' offers · ' + dueN + ' need you this week',
+      showAuto: s.auto, dismissAuto: function () { self.setState({ auto: false }); },
+      cols: ST.map(function (st) { var cs = s.cards.filter(function (c) { return c.stage === st[0]; }); return { label: st[1], count: String(cs.length), cards: cs.map(cardVals) }; }),
+      tabs: ST.map(function (x) { var on = s.stage === x[0]; return { label: x[1], count: String(counts[x[0]] || 0), selected: on ? 'true' : 'false', pick: function () { self.setState({ stage: x[0] }); },
+        style: 'flex: 0 0 auto; min-height: 44px; background: none; border: none; padding: 0; font-size: 15px; font-weight: 600; color: ' + (on ? 'var(--ink)' : 'var(--ink-3)') + '; border-bottom: 2px solid ' + (on ? 'var(--blue)' : 'transparent') }; }),
+      stageCards: s.cards.filter(function (c) { return c.stage === s.stage; }).map(cardVals),
+      stageEmpty: !s.cards.some(function (c) { return c.stage === s.stage; }),
+      drawer: !!cur, d: d,
+      close: function () { self.setState({ open: null, panel: null }); },
+      notesVal: cur ? (cur.notes || '') : '', onNotes: function (e) { var v = e.target.value; self.setState({ cards: upd(self.state.open, function (x) { x.notes = v; return x; }) }); },
+      pRound: s.panel === 'round', pOffer: s.panel === 'offer', noPanel: !s.panel,
+      rfTitle: s.editRound ? 'Reschedule round' : 'Add a round', rfSave: s.editRound ? 'Save new time' : 'Add round',
+      rfFields: rfFields, rfErr: s.rfErr,
+      rfKinds: ['Recruiter screen', 'HR screen', 'Online assessment', 'Technical', 'Machine coding', 'Frontend system design', 'Manager', 'Manager + HR'].map(function (k) { return { v: k, label: k }; }), rfKind: s.rf.kind,
+      onKind: function (e) { var x = Object.assign({}, self.state.rf); x.kind = e.target.value; self.setState({ rf: x }); },
+      rfTzs: TZN.map(function (t) { return { v: t[0], label: t[1] }; }), rfTz: s.rf.tz,
+      onTz: function (e) { var x = Object.assign({}, self.state.rf); x.tz = e.target.value; self.setState({ rf: x }); },
+      rfPreview: (function () { var m = parseT(s.rf.time); if (!s.rf.date || m === null) return 'Shown in your time (IST). If the invite uses another zone, pick it and NxtRole converts.'; var t = roundTime({ date: s.rf.date, time: s.rf.time, tz: s.rf.tz }); return 'You’ll see: ' + t.main + (t.alt ? ' · ' + t.alt : ''); })(),
+      saveRound: saveRound, cancelPanel: function () { self.setState({ panel: null }); },
+      ofFields: ofFields, ofErr: s.ofErr, saveOffer: saveOffer,
+      hasToast: !!s.toast, toastText: s.toast ? s.toast.text : '', toastCanUndo: !!(s.toast && s.toast.prev),
+      toastUndo: function () { var t = self.state.toast; if (t && t.prev) undoTo(t.id, t.prev, t.label || 'move', t.rid); },
+      toastClose: function () { self.setState({ toast: null }); },
+      offerCount: String(offers.length), canCompareAll: offers.length > 1,
+      openCompare: function () { self.setState({ compare: true }); }, closeCompare: function () { self.setState({ compare: false }); },
+      compare: s.compare,
+      cmpHead: offers.map(function (c) { return { name: c.company, role: c.role, best: c === best }; }),
+      cmpRows: [['Fixed', function (o) { return '₹' + o.fixed + ' L'; }], ['Variable', function (o) { return '₹' + o.variable + ' L'; }], ['Joining bonus', function (o) { return '₹' + o.bonus + ' L'; }], ['Year one total', function (o) { return '₹' + total(o) + ' L'; }], ['Joining date', function (o) { return o.joining; }], ['Work mode', function (o) { return o.mode; }], ['Notice buyout', function (o) { return o.buyout; }], ['Reply by', function (o) { return o.deadline + ' · ' + o.days + ' days'; }]].map(function (r) {
+        return { k: r[0], cells: offers.map(function (c) { return { v: r[1](c.offer), style: 'padding: 10px 12px; border-top: 1px solid var(--rule); font-size: 14px; ' + (r[0] === 'Year one total' ? 'font-weight: 700; ' + (c === best ? 'color: var(--green)' : '') : '') }; }) }; }),
+      cmpNote: (offers.length === 2 && offers.every(function (c) { return c.id === 10 || c.id === 11; })) ? 'Vellum Health pays ₹1 L more in year one and buys out your notice period. Orchid Pay has the higher fixed salary (₹21 L vs ₹19 L) and is fully remote. Orchid’s deadline comes first (Tue 27 Oct): ask them to match a ₹1 L joining bonus before then.' : (best ? best.company + ' pays the most in year one.' : '')
+    };
+    return PLR;
+  }
+}
+</script>
+</body>
+</html>

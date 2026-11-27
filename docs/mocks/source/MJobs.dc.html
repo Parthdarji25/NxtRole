@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jobs (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--scrim:rgba(24,24,28,.28);--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--scrim:rgba(0,0,0,.55);--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes push{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.push{animation:push .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet{animation:up .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.fade{animation:fadein .25s ease both}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+
+  <!-- LIST VIEW -->
+  <sc-if value="{{isList}}" hint-placeholder-val="{{ true }}">
+    <header style="flex: 0 0 auto; padding: 14px 20px 0; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid var(--rule)">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <h1 class="serif" style="margin: 0; font-size: 38px; line-height: 1">Jobs</h1>
+        <button type="button" onClick="{{openAdd}}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px">+ Add a job</button>
+      </div>
+      <div style="position: relative; margin-right: -20px">
+      <div class="scroll" style="display: flex; gap: 8px; overflow-x: auto; padding-right: 36px">
+        <label for="mdays" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Posted within</label>
+        <span style="position: relative; flex: 0 0 auto; display: inline-flex"><select id="mdays" value="{{daysVal}}" onChange="{{onDays}}" style="{{daysStyle}}"><option value="30">Posted · 30 days</option><option value="7">Posted · 7 days</option><option value="3">Posted · 3 days</option><option value="1">Posted · 24 hours</option></select><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; top: 50%; margin-top: -6px; pointer-events: none; color: {{daysChevron}}"><path d="M6 9l6 6l6-6"></path></svg></span>
+        <button type="button" aria-haspopup="dialog" onClick="{{openC}}" style="{{cChip}}">{{cChipLabel}} <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align: -1px"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="4">
+          <button type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="{{c.style}}">{{c.label}}</button>
+        </sc-for>
+      </div>
+      <span aria-hidden="true" style="position: absolute; top: 0; right: 0; bottom: 0; width: 40px; pointer-events: none; background: linear-gradient(to right, transparent, var(--paper))"></span>
+      </div>
+      <div role="group" aria-label="Jobs view" style="display: flex; gap: 22px">
+        <sc-for list="{{segs}}" as="g" hint-placeholder-count="2">
+          <button type="button" aria-pressed="{{g.selected}}" onClick="{{g.pick}}" style="{{g.style}}">{{g.label}} <span class="mono" style="font-size: 12px; color: var(--ink-3)">{{g.count}}</span></button>
+        </sc-for>
+      </div>
+    </header>
+    <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; display: flex; flex-direction: column">
+      <sc-if value="{{blocked}}" hint-placeholder-val="{{ true }}">
+        <div role="status" style="display: flex; flex-direction: column; gap: 8px; margin: 14px 20px 4px; padding: 12px 14px; border-radius: 12px; background: var(--amber-soft); font-size: 14px">
+          <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--amber)">SOURCE PAUSED</span>
+          <span>LinkedIn blocked this morning’s search. Naukri, Indeed and 41 careers pages are still working.</span>
+          <button type="button" onClick="{{retry}}" style="align-self: flex-start; min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">Retry now</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{retried}}" hint-placeholder-val="{{ false }}"><div role="status" style="margin: 14px 20px 4px; padding: 12px 14px; border-radius: 12px; background: var(--green-soft); color: var(--green); font-size: 14px; font-weight: 600">LinkedIn is back: 1 good match added.</div></sc-if>
+      <sc-if value="{{showAbroadNote}}" hint-placeholder-val="{{ false }}">
+        <p style="margin: 14px 20px 2px; padding: 10px 12px; border-radius: 10px; border: 1px dashed var(--rule-2); font-size: 13px; color: var(--ink-2)"><span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--blue)">ABROAD · </span>{{abroadNote}}</p>
+      </sc-if>
+      <sc-for list="{{list}}" as="r" hint-placeholder-count="6">
+        <button type="button" onClick="{{r.open}}" class="rise" style="{{r.style}}">
+          <span style="display: flex; justify-content: space-between; gap: 10px; align-items: baseline">
+            <span class="serif" style="font-size: 22px; line-height: 1.12; text-align: left">{{r.title}}</span>
+            <span class="mono" style="font-size: 13px; color: var(--ink-2)">{{r.score}}%</span>
+          </span>
+          <span style="font-size: 13px; color: var(--ink-2); text-align: left">{{r.sub}}</span>
+          <span style="display: flex; justify-content: space-between; gap: 10px; align-items: baseline">
+            <span style="{{r.noteStyle}}">{{r.note}}</span>
+            <span style="font-size: 12px; color: var(--ink-3); white-space: nowrap">{{r.src}}</span>
+          </span>
+        </button>
+      </sc-for>
+      <sc-if value="{{empty}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 32px 20px; color: var(--ink-3)">Nothing matches these filters.</p></sc-if>
+      <p style="margin: 0; padding: 18px 20px 24px; font-size: 13px; color: var(--ink-3)">{{hiddenText}}. <a href="MSettings.dc.html" style="text-decoration: none">Review</a></p>
+    </main>
+  </sc-if>
+
+  <!-- DETAIL VIEW -->
+  <sc-if value="{{isDetail}}" hint-placeholder-val="{{ false }}">
+    <header style="flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--rule)">
+      <button type="button" onClick="{{back}}" style="min-height: 44px; padding: 0 8px; background: none; border: none; color: var(--blue); font-size: 15px; font-weight: 600">← Jobs</button>
+      <button type="button" onClick="{{save}}" aria-pressed="{{savedPressed}}" style="min-height: 44px; padding: 0 12px; background: none; border: none; color: var(--ink-2); font-size: 15px; font-weight: 600">{{saveLabel}}</button>
+    </header>
+    <main class="scroll push" style="flex: 1 1 auto; overflow-y: auto; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{job.companyUpper}} · {{job.found}}</span>
+        <h2 class="serif" style="margin: 0; font-size: 34px; line-height: 1.04">{{job.title}}</h2>
+        <span style="color: var(--ink-2); font-size: 14px">{{job.loc}} · {{job.pay}} · {{job.exp}}</span>
+        <span style="font-size: 13px; color: var(--ink-3)">Posted {{job.posted}}</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <sc-if value="{{job.hasUrl}}" hint-placeholder-val="{{ true }}">
+          <a href="{{job.href}}" target="_blank" rel="noopener noreferrer" style="min-height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 16px; text-decoration: none; background: var(--blue); color: var(--on-blue)">{{job.applyLabel}} <span aria-hidden="true">↗</span></a>
+        </sc-if>
+        <div style="display: flex; gap: 10px">
+          <button type="button" onClick="{{queue}}" style="{{queueStyle}}">{{queueLabel}}</button>
+          <a href="MStudio.dc.html" style="flex: 1 1 0; min-height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--rule-2); text-decoration: none; color: var(--ink); font-weight: 600; font-size: 14px">Tailor resume</a>
+        </div>
+        <span style="font-size: 12px; color: var(--ink-3)">Source <span class="mono" style="color: var(--ink-2); word-break: break-all">{{job.urlText}}</span><br>{{job.alsoText}}</span>
+      </div>
+      <sc-if value="{{job.abroad}}" hint-placeholder-val="{{ false }}">
+                <div style="{{job.visaBox}}">
+                  <span class="mono" style="{{job.visaTagStyle}}">VISA · {{job.visaTag}}</span>
+                  <span style="font-size: 14px; color: var(--ink-2)">{{job.visaWhy}}</span>
+                </div>
+              </sc-if>
+      <div class="scroll" role="group" aria-label="Job details" style="display: flex; gap: 20px; overflow-x: auto; border-bottom: 1px solid var(--rule)">
+        <sc-for list="{{dtabs}}" as="t" hint-placeholder-count="4">
+          <button type="button" aria-pressed="{{t.selected}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+        </sc-for>
+      </div>
+      <sc-if value="{{tFit}}" hint-placeholder-val="{{ true }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 6px">
+          <span style="display: flex; align-items: baseline; gap: 8px"><span class="serif" style="font-size: 64px; line-height: .9; color: var(--blue)">{{job.score}}</span><span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">% MATCH</span></span>
+          <sc-for list="{{job.fit}}" as="f" hint-placeholder-count="4">
+            <div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 15px"><span style="{{f.markStyle}}">{{f.mark}}</span><span style="color: var(--ink-2)">{{f.text}}</span></div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{tPeople}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column">
+          <sc-for list="{{job.people}}" as="p" hint-placeholder-count="2">
+            <div style="display: flex; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--rule)">
+              <span style="flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--paper-2); font-weight: 600; font-size: 13px">{{p.initials}}</span>
+              <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column"><span style="font-weight: 600">{{p.name}}</span><span style="font-size: 13px; color: var(--ink-2)">{{p.role}}</span><span style="font-size: 13px; color: var(--green)">{{p.link}}</span></span>
+              <button type="button" onClick="{{p.ask}}" style="{{p.askStyle}}">{{p.askLabel}}</button>
+            </div>
+          </sc-for>
+          <sc-if value="{{job.noPeople}}" hint-placeholder-val="{{ false }}"><span style="padding: 14px 0; color: var(--ink-3); font-size: 14px">No one you know here yet. Studio can still draft a note to the hiring manager.</span></sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{tCompany}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 14px">
+          <p class="serif" style="margin: 0; font-size: 22px; line-height: 1.25">{{job.about}}</p>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; font-size: 14px; color: var(--ink-2)">
+            <sc-for list="{{job.facts}}" as="f" hint-placeholder-count="3"><span><span class="mono" style="font-size: 11px; color: var(--ink-3)">{{f.k}}</span><br>{{f.v}}</span></sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{tDesc}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 10px; color: var(--ink-2)">
+          <p style="{{descStyle}}">{{job.desc}}</p>
+                  <button type="button" onClick="{{toggleDesc}}" style="align-self: flex-start; min-height: 36px; padding: 0; background: none; border: none; color: var(--blue); font-weight: 600; font-size: 14px">{{descLabel}}</button>
+          <p style="margin: 0; font-size: 13px; color: var(--ink-3)">A copy is saved in case the posting is taken down.</p>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="jobs" hint-size="390px,84px"></dc-import></div>
+
+  <!-- COUNTRY SHEET -->
+  <sc-if value="{{cOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{closeC}}" aria-label="Close" class="fade" style="position: absolute; inset: 0; z-index: 40; border: none; padding: 0; background: var(--scrim); cursor: default"></button>
+    <section class="sheet scroll" role="dialog" aria-modal="true" aria-label="Choose a country" style="position: absolute; z-index: 41; left: 0; right: 0; bottom: 0; max-height: 82%; overflow-y: auto; box-sizing: border-box; padding: 10px 16px 24px; border-radius: 18px 18px 0 0; background: var(--paper); border-top: 1px solid var(--rule); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 6px">
+      <span aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: var(--rule-2)"></span>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 4px 0">
+        <h2 class="serif" style="margin: 0; font-size: 28px; line-height: 1.05">Country</h2>
+        <button type="button" onClick="{{closeC}}" style="min-height: 44px; padding: 0 8px; background: none; border: none; color: var(--blue); font-weight: 600; font-size: 15px">Done</button>
+      </div>
+      <div role="listbox" aria-label="Country" style="display: flex; flex-direction: column; gap: 2px">
+        <sc-for list="{{cOpts}}" as="o" hint-placeholder-count="11">
+          <sc-if value="{{o.isHead}}" hint-placeholder-val="{{ false }}"><span class="mono" style="padding: 12px 10px 4px; font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">{{o.label}}</span></sc-if>
+          <sc-if value="{{o.isOpt}}" hint-placeholder-val="{{ true }}"><button type="button" role="option" aria-selected="{{o.sel}}" onClick="{{o.pick}}" style="{{o.style}}"><span class="mono" style="{{o.codeStyle}}">{{o.code}}</span><span style="flex: 1 1 auto">{{o.label}}</span><span class="mono" style="font-size: 12px; color: var(--ink-3)">{{o.count}}</span><span aria-hidden="true" style="width: 16px; color: var(--blue); font-weight: 700">{{o.check}}</span></button></sc-if>
+        </sc-for>
+      </div>
+      <p style="margin: 6px 4px 0; font-size: 13px; color: var(--ink-3)">Abroad jobs are searched every 2 hours, day and night.</p>
+    </section>
+  </sc-if>
+
+  <!-- ADD A JOB SHEET -->
+  <sc-if value="{{addOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{closeAdd}}" aria-label="Close" class="fade" style="position: absolute; inset: 0; z-index: 40; border: none; padding: 0; background: var(--scrim); cursor: default"></button>
+    <section class="sheet scroll" role="dialog" aria-modal="true" aria-label="Add a job" style="position: absolute; z-index: 41; left: 0; right: 0; bottom: 0; max-height: 90%; overflow-y: auto; box-sizing: border-box; padding: 10px 20px 28px; border-radius: 18px 18px 0 0; background: var(--paper); border-top: 1px solid var(--rule); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px">
+      <span aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: var(--rule-2)"></span>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{addKicker}}</span>
+          <h2 class="serif" style="margin: 0; font-size: 30px; line-height: 1.05">Add a job</h2>
+        </div>
+        <button type="button" onClick="{{closeAdd}}" aria-label="Close" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 20px; line-height: 1">×</button>
+      </div>
+      <sc-if value="{{stepLink}}" hint-placeholder-val="{{ true }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 10px">
+          <label for="mjl" style="font-weight: 600">Paste the job link</label>
+          <input id="mjl" class="inp" type="url" value="{{addUrl}}" onChange="{{onUrl}}" placeholder="https://www.naukri.com/job-listings/…" style="height: 50px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px">
+          <sc-if value="{{fetchErr}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 10px; background: var(--red-soft); color: var(--red-ink); font-size: 14px"><span>Couldn’t read that page. It may need a login or block automated reading. Your link is kept.</span><button type="button" onClick="{{byHandKeep}}" style="align-self: flex-start; min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--red-ink); background: transparent; color: var(--red-ink); font-weight: 600">Fill in the details by hand</button></div></sc-if>
+          <sc-if value="{{hasUrlErr}}" hint-placeholder-val="{{ false }}"><span style="color: var(--red); font-size: 13px">That doesn’t look like a link. It should start with https://</span></sc-if>
+          <span style="font-size: 13px; color: var(--ink-3)">Any site works. NxtRole reads the page and fills in the details for you to check.</span>
+          <button type="button" onClick="{{fetchJob}}" style="{{fetchStyle}}">{{fetchLabel}}</button>
+          <button type="button" onClick="{{byHand}}" style="align-self: flex-start; min-height: 44px; background: none; border: none; padding: 0; color: var(--blue); font-weight: 600; font-size: 15px">No link? Fill it in by hand</button>
+          <div style="border-top: 1px solid var(--rule); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--ink-2)">
+            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">OTHER WAYS TO ADD</span>
+            <span><span style="font-weight: 600; color: var(--ink)">Share sheet.</span> In the Naukri or LinkedIn app, tap Share, then NxtRole.</span>
+            <span><span style="font-weight: 600; color: var(--ink)">From your Gmail.</span> Job alert emails are picked up by the Gmail script on their own.</span>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{stepForm}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 12px">
+          <sc-if value="{{fromLink}}" hint-placeholder-val="{{ true }}">
+            <div style="padding: 12px 14px; border-radius: 10px; background: var(--green-soft); color: var(--green); font-size: 14px">Filled in from {{addDomain}}. Check it and fix anything that’s off.</div>
+          </sc-if>
+          <sc-for list="{{fields}}" as="f" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <label for="{{f.id}}" style="font-size: 13px; font-weight: 600">{{f.label}}</label>
+              <input id="{{f.id}}" class="inp" type="text" value="{{f.value}}" onChange="{{f.on}}" placeholder="{{f.ph}}" style="height: 48px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px">
+            </div>
+          </sc-for>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="mjst" style="font-size: 13px; font-weight: 600">Where are you with it?</label>
+            <select id="mjst" class="inp" onChange="{{onStatus}}" style="height: 48px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px"><option value="new">Not applied yet</option><option value="applied">Already applied</option><option value="interview">Interviewing</option></select>
+          </div>
+          <sc-if value="{{hasFormErr}}" hint-placeholder-val="{{ false }}"><span style="color: var(--red); font-size: 13px">Add at least a job title and a company.</span></sc-if>
+          <button type="button" onClick="{{saveAdd}}" style="min-height: 50px; border-radius: 12px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 16px">Save job</button>
+          <button type="button" onClick="{{backAdd}}" style="min-height: 44px; background: none; border: none; color: var(--ink-2); font-weight: 600; font-size: 15px">← Back</button>
+        </div>
+      </sc-if>
+    </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var ABX = {
+  CN: { IN: 'India', DE: 'Germany', NL: 'Netherlands', GB: 'United Kingdom', IE: 'Ireland', SG: 'Singapore', US: 'United States' },
+  VISA: { yes: ['Sponsors visa', 'green', 'SPONSORS VISA'], list: ['Likely sponsor', 'blue', 'LIKELY SPONSOR'], no: ['No visa sponsorship', 'red', 'NO SPONSORSHIP'], unknown: ['Visa not mentioned', 'ink', 'NOT MENTIONED'] },
+  JOBS: [
+    { title: 'Frontend Engineer', company: 'Lumio Health', loc: 'Berlin, Germany', country: 'DE', pay: '€62–72k a year', exp: '3–5 yrs', score: 86, found: 'FOUND 5 H AGO', fresh: true, remote: false, visa: 'yes',
+      visaWhy: 'The posting says: “We sponsor the EU Blue Card and pay for relocation.”', src: 'LinkedIn', href: 'https://www.linkedin.com/jobs', urlText: 'linkedin.com/jobs/view/4038812207', also: [], age: 5,
+      fit: [['✓', 'React, TypeScript and accessibility are the core of the role'], ['✓', 'Visa sponsorship is offered (EU Blue Card)'], ['✕', 'German is listed as nice to have; you haven’t mentioned it']],
+      people: [], about: 'Patient-booking apps for clinics across Germany; the team works in English.', facts: [['TEAM', '~180 people'], ['STAGE', 'Series B'], ['FRONTEND', 'React · TypeScript']],
+      desc: 'Build the booking app used by 3,000 clinics. English-speaking team in Berlin. Must have: 3–5 years with React and TypeScript, accessibility experience. Nice to have: German. We sponsor the EU Blue Card and pay for relocation.' },
+    { title: 'React Developer', company: 'Merlion Pay', loc: 'Singapore', country: 'SG', pay: 'S$78–96k a year', exp: '3+ yrs', score: 85, found: 'FOUND 9 H AGO', fresh: true, remote: false, visa: 'yes',
+      visaWhy: 'The posting says: “Employment Pass support for the right candidate.”', src: 'careers page', href: 'https://www.lever.co', urlText: 'jobs.lever.co/merlionpay/a91c2e7d', also: ['LinkedIn'], age: 9,
+      fit: [['✓', 'Payments UI experience fits their checkout team'], ['✓', 'Employment Pass support is mentioned'], ['✕', 'They want a year of mobile web performance work']],
+      people: [['Ananya Rao', 'Frontend Engineer', 'Alumna, same college']], about: 'Cross-border payments for small online sellers in Southeast Asia.', facts: [['TEAM', '~260 people'], ['STAGE', 'Series C'], ['FRONTEND', 'React · Next.js']],
+      desc: 'Join the checkout team. 3+ years with React, strong CSS and testing. Employment Pass support for the right candidate.' },
+    { title: 'Frontend Developer', company: 'Tulip Mobility', loc: 'Amsterdam, Netherlands', country: 'NL', pay: '€55–65k a year', exp: '2–5 yrs', score: 83, found: 'FOUND 20 H AGO', fresh: false, remote: false, visa: 'yes',
+      visaWhy: 'The posting says “visa support available”, and the company is a recognised sponsor on the Dutch IND public register.', src: 'careers page', href: 'https://www.greenhouse.com', urlText: 'boards.greenhouse.io/tulipmobility/jobs/6620194', also: [], age: 20,
+      fit: [['✓', 'React and map-heavy dashboards match your projects'], ['✓', 'Visa support and a recognised-sponsor listing'], ['✕', 'They use Vue for one older app']],
+      people: [], about: 'Bike and scooter sharing in 40 European cities.', facts: [['TEAM', '~300 people'], ['STAGE', 'Series C'], ['FRONTEND', 'React · Mapbox']],
+      desc: 'Build the rider and operator dashboards. React, TypeScript, maps. Visa support available.' },
+    { title: 'Frontend Developer', company: 'Harbourline Insurance', loc: 'London, United Kingdom', country: 'GB', pay: '£48–58k a year', exp: '3+ yrs', score: 81, found: 'FOUND 2 DAYS AGO', fresh: false, remote: false, visa: 'list',
+      visaWhy: 'The posting doesn’t mention visas, but the company is on the UK register of licensed sponsors. Ask the recruiter before you apply.', src: 'Indeed', href: 'https://uk.indeed.com', urlText: 'uk.indeed.com/viewjob?jk=3b77e0d1', also: [], age: 50,
+      fit: [['✓', 'Form-heavy React work matches your claims dashboards'], ['✓', 'The company holds a UK sponsor licence'], ['✕', 'The posting doesn’t confirm sponsorship for this role']],
+      people: [], about: 'Home and travel insurance sold online across the UK.', facts: [['TEAM', '~900 people'], ['STAGE', 'Public'], ['FRONTEND', 'React']],
+      desc: 'Build quote and claims journeys in React. 3+ years experience, strong accessibility.' },
+    { title: 'Next.js Developer', company: 'Fjordly', loc: 'Dublin, Ireland', country: 'IE', pay: '€58–68k a year', exp: '2–4 yrs', score: 78, found: 'FOUND 3 DAYS AGO', fresh: false, remote: false, visa: 'unknown',
+      visaWhy: 'The posting doesn’t mention visas and NxtRole found no public sponsor record for this company. Treat it as unlikely until the recruiter confirms.', src: 'Wellfound', href: 'https://wellfound.com/jobs', urlText: 'wellfound.com/jobs/3102874', also: [], age: 74,
+      fit: [['✓', 'Next.js App Router experience matches'], ['✕', 'Visa sponsorship is not mentioned']],
+      people: [], about: 'Travel booking for small tour operators.', facts: [['TEAM', '~70 people'], ['STAGE', 'Series A'], ['FRONTEND', 'Next.js']],
+      desc: 'Build fast booking pages in Next.js. 2–4 years experience.' },
+    { title: 'Senior Frontend Engineer', company: 'Cedar Robotics', loc: 'Austin, United States', country: 'US', pay: '$125–145k a year', exp: '5+ yrs', score: 72, found: 'FOUND YESTERDAY', fresh: false, remote: false, visa: 'no',
+      visaWhy: 'The posting says: “Candidates must be authorised to work in the US; we can’t sponsor visas.”', src: 'LinkedIn', href: 'https://www.linkedin.com/jobs', urlText: 'linkedin.com/jobs/view/4040019284', also: [], age: 28,
+      fit: [['✓', 'Real-time dashboards match your work'], ['✕', 'No visa sponsorship'], ['✕', 'They ask for 5+ years; you have 3']],
+      people: [], about: 'Warehouse robots and the software that runs them.', facts: [['TEAM', '~500 people'], ['STAGE', 'Series D'], ['FRONTEND', 'React · WebGL']],
+      desc: 'Lead the fleet dashboard. 5+ years React. Candidates must be authorised to work in the US; we can’t sponsor visas.' }
+  ],
+  prep: function (base) {
+    var VI = ABX.VISA;
+    return base.map(function (j) { return Object.assign({ country: 'IN' }, j); }).concat(ABX.JOBS.map(function (j) { var v = VI[j.visa]; return Object.assign({}, j, { note: v[0], tone: v[1] }); }));
+  },
+  inC: function (j, c) { var k = j.country || 'IN'; if (c === 'all') return true; if (c === 'abroad') return k !== 'IN'; return k === c; },
+  inV: function (j, v) { if (!j.country || j.country === 'IN' || v === 'any') return true; if (v === 'yes') return j.visa === 'yes' || j.visa === 'list'; return j.visa !== 'no'; },
+  label: function (c) { return c === 'all' ? 'All' : (c === 'abroad' ? 'Abroad' : (c === 'IN' ? 'India' : ABX.CN[c])); },
+  opts: function (jobs, cur, pick, mob) {
+    var n = function (c) { return String(jobs.filter(function (j) { return ABX.inC(j, c); }).length); };
+    var rows = [['h', 'SHOW'], ['all', 'All countries', 'ALL'], ['IN', 'India only', 'IN'], ['abroad', 'All abroad', 'ABR'], ['h', 'ABROAD · SEARCHED EVERY 2 HOURS'], ['DE'], ['NL'], ['GB'], ['IE'], ['SG'], ['US']];
+    return rows.map(function (r) {
+      if (r[0] === 'h') return { isHead: true, isOpt: false, label: r[1], code: '', count: '', check: '', sel: 'false', style: '', codeStyle: '', pick: function () {} };
+      var on = cur === r[0];
+      return { isHead: false, isOpt: true, label: r[1] || ABX.CN[r[0]], code: r[2] || r[0], count: n(r[0]), check: on ? '✓' : '', sel: on ? 'true' : 'false',
+        pick: function () { pick(r[0]); },
+        style: 'display: flex; align-items: center; gap: 10px; width: 100%; min-height: ' + (mob ? 48 : 38) + 'px; padding: 0 10px; border: none; border-radius: 8px; text-align: left; font-size: ' + (mob ? 16 : 14) + 'px; color: var(--ink); background: ' + (on ? 'var(--blue-soft)' : 'transparent') + '; font-weight: ' + (on ? 600 : 400),
+        codeStyle: 'flex: 0 0 auto; min-width: 30px; box-sizing: border-box; padding: 2px 4px; border-radius: 4px; border: 1px solid var(--rule-2); font-size: 10.5px; text-align: center; color: var(--ink-2)' };
+    });
+  },
+  box: function (j) {
+    var v = ABX.VISA[j.visa || 'unknown'], c = { green: 'var(--green)', blue: 'var(--blue)', red: 'var(--red)', ink: 'var(--ink-3)' }[v[1]];
+    return { abroad: !!j.country && j.country !== 'IN', visaTag: v[2], visaTitle: v[0], visaWhy: j.visaWhy || '',
+      visaBox: 'display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 10px; background: var(--paper); border: 1px solid var(--rule); box-shadow: inset 3px 0 0 ' + c,
+      visaTagStyle: 'font-size: 11px; letter-spacing: .08em; color: ' + c };
+  }
+};
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) { super(props); this.state = { view: 'list', seg: 'matches', sel: 0, tab: 'fit', filt: { remote: false, top: false }, days: 30, queued: {}, saved: { 2: true }, asked: {}, add: null, addUrl: '', fetching: false, urlErr: false, formErr: false, fromLink: false, domain: '', status: 'new', form: { title: '', company: '', loc: '', pay: '' }, added: [] }; }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var BASE = [
+      { title: 'Frontend Developer', company: 'Northwind Labs', loc: 'Mumbai, hybrid', pay: '₹14–18 L', exp: '2–4 yrs', score: 92, found: '12 MIN AGO', fresh: true, remote: false, note: 'Closes in 2 days', tone: 'red', src: 'Naukri', href: 'https://www.naukri.com', urlText: 'naukri.com/job-listings/frontend-developer-northwind-labs-mumbai', also: ['LinkedIn', 'their careers page'],
+        fit: [['✓', 'React, TypeScript and Next.js: all three are core'], ['✓', 'Your 3 years sit in their 2–4 range'], ['✓', 'Salary matches what you asked for'], ['✕', 'GraphQL is a plus; you haven’t shown it yet']],
+        people: [['Riya Kulkarni', 'Senior Frontend Engineer', 'Alumna, same college'], ['Dev Shah', 'Engineering Manager', 'Ex-colleague at Acme']],
+        about: 'Money-management tools for small businesses across India.', facts: [['TEAM', '~220'], ['STAGE', 'Series B'], ['STACK', 'Next.js']],
+        desc: 'About the team: the web team of 9 owns the main dashboard used by 40,000 small businesses every day. What you’ll do: build new dashboard features in React and Next.js; improve page speed and accessibility; review pull requests; work closely with design and product on weekly releases. Must have: 2–4 years with React and TypeScript, strong CSS, experience shipping to production. Nice to have: GraphQL, testing with Jest or Playwright, a design-system background. Hiring process: online test, technical round, manager round. CTC ₹14–18 LPA plus ESOPs. Hybrid, 3 days a week in the Lower Parel office. Apply by 22 Oct 2026.' },
+      { title: 'Frontend Developer, React', company: 'Marigold Fintech', loc: 'Mumbai, hybrid', pay: '₹16–20 L', exp: '3–5 yrs', score: 90, found: '3 H AGO', fresh: true, remote: false, note: 'Posted 3 hours ago', tone: 'blue', src: 'LinkedIn', href: 'https://www.linkedin.com/jobs', urlText: 'linkedin.com/jobs/view/4021183390', also: ['Indeed'],
+        fit: [['✓', 'React and Tailwind match exactly'], ['✓', 'Fintech dashboards are a plus here'], ['✕', 'They test with Jest; your resume doesn’t mention tests']],
+        people: [['Neel Joshi', 'Software Engineer II', 'Alumnus, same batch']], about: 'Lending and payments app for salaried professionals.', facts: [['TEAM', '~400'], ['STAGE', 'Series C'], ['STACK', 'React']],
+        desc: 'Own the loan application flow end to end. 3–5 years React, strong CSS, testing with Jest.' },
+      { title: 'React Engineer', company: 'Kestrel Pay', loc: 'Remote', pay: '₹18–24 L', exp: '3+ yrs', score: 87, found: 'SAVED', fresh: false, remote: true, note: 'Interview booked', tone: 'green', src: 'careers page', href: 'https://www.greenhouse.com', urlText: 'boards.greenhouse.io/kestrelpay/jobs/7183402', also: [],
+        fit: [['✓', 'Payments UI and performance are your strengths'], ['✓', 'Remote suits your preference'], ['✕', 'They like Storybook; you haven’t used it publicly']],
+        people: [['Kabir Menon', 'Frontend Lead', 'In your Google contacts']], about: 'Online payments for small businesses: checkout, links and a dashboard.', facts: [['TEAM', '~350'], ['STAGE', 'Series B'], ['STACK', 'React']],
+        desc: 'Work on checkout and the merchant dashboard. Reliability and accessibility matter a lot.' },
+      { title: 'Next.js Developer', company: 'Cobalt Commerce', loc: 'Remote', pay: '₹15–19 L', exp: '2–4 yrs', score: 84, found: '6 MIN AGO', fresh: true, remote: true, note: 'Caught 6 min after posting', tone: 'blue', src: 'careers page', href: 'https://www.lever.co', urlText: 'jobs.lever.co/cobaltcommerce/5c1f82e0', also: ['Wellfound'],
+        fit: [['✓', 'Next.js App Router experience matches'], ['✕', 'Prisma on the backend is new to you']], people: [], about: 'Storefront builder for Indian D2C brands.', facts: [['TEAM', '~150'], ['STAGE', 'Series A'], ['STACK', 'Next.js']],
+        desc: 'Build fast storefront templates in Next.js. Bonus: Prisma, Postgres.' },
+      { title: 'Frontend Engineer II', company: 'Fernway Travel', loc: 'Navi Mumbai', pay: '₹13–16 L', exp: '2–5 yrs', score: 77, found: 'YESTERDAY', fresh: false, remote: false, note: 'Good salary fit', tone: 'ink', src: 'Indeed', href: 'https://in.indeed.com', urlText: 'in.indeed.com/viewjob?jk=8f2a91c0', also: ['Naukri'],
+        fit: [['✓', 'React and accessibility work matches'], ['✕', 'Redux Toolkit is required']], people: [], about: 'Online bus and train booking.', facts: [['TEAM', '~600'], ['STAGE', 'Profitable'], ['STACK', 'Redux']],
+        desc: 'Booking flows used by millions. React, Redux Toolkit, accessibility.' }
+    ];
+    var AGE = [72, 3, 432, 0.1, 216];
+    var ageLabel = function (h) { if (h < 1) return 'just now'; if (h < 24) return Math.round(h) + ' h ago'; var d = Math.round(h / 24); return d === 1 ? 'yesterday' : d + ' days ago'; };
+    BASE = BASE.map(function (j, i) { return Object.assign({}, j, { age: AGE[i] }); });
+    var JOBS = ABX.prep(BASE).concat(s.added);
+    var TONE = { red: 'var(--red)', blue: 'var(--blue)', green: 'var(--green)', ink: 'var(--ink-3)' };
+    var pool = JOBS.map(function (j, i) { return Object.assign({ i: i }, j); });
+    if (s.seg === 'saved') pool = pool.filter(function (j) { return s.saved[j.i]; });
+    var tooOld = pool.filter(function (j) { return j.age > s.days * 24; }).length;
+    var cSel = s.country || 'all';
+    pool = pool.filter(function (j) { return (!s.filt.remote || j.remote) && (!s.filt.top || j.score >= 85) && j.age <= s.days * 24 && ABX.inC(j, cSel) && ABX.inV(j, s.filt.visa ? 'yes' : 'any'); });
+    pool.sort(function (a, b) { var d = (b.mine ? 1 : 0) - (a.mine ? 1 : 0); return d || (a.mine && b.mine ? b.i - a.i : 0); });
+    var job = JOBS[s.sel] || JOBS[0];
+    var abroadOn = cSel !== 'IN';
+    var chip = function (on) { return 'flex: 0 0 auto; min-height: 36px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)'); };
+    var under = function (on, big) { return 'flex: 0 0 auto; min-height: 44px; background: none; border: none; padding: 0; font-size: ' + (big ? '16px' : '14px') + '; font-weight: 600; color: ' + (on ? 'var(--ink)' : 'var(--ink-3)') + '; border-bottom: 2px solid ' + (on ? 'var(--blue)' : 'transparent'); };
+    var q = !!s.queued[s.sel];
+    var savedCount = Object.keys(s.saved).filter(function (k) { return s.saved[k]; }).length;
+    return {
+      theme: this._jpT,
+      daysVal: String(s.days), onDays: function (e) { self.setState({ days: parseInt(e.target.value, 10) || 30 }); },
+      daysStyle: chip(s.days !== 30) + '; appearance: none; -webkit-appearance: none; padding-right: 32px', daysChevron: s.days !== 30 ? 'var(--paper)' : 'var(--ink-2)',
+      hiddenText: (tooOld ? tooOld + ' older than ' + (s.days === 1 ? '24 hours' : s.days + ' days') + ' · ' : '') + '4 past 30 days archived · 2 suspicious hidden',
+      isList: s.view === 'list', isDetail: s.view === 'detail',
+      cOpen: !!s.cOpen, openC: function () { self.setState({ cOpen: true }); }, closeC: function () { self.setState({ cOpen: false }); },
+      cChip: chip(cSel !== 'all') + '; display: inline-flex; align-items: center; gap: 6px', cChipLabel: cSel === 'all' ? 'Country · All' : ABX.label(cSel),
+      cOpts: ABX.opts(JOBS, cSel, function (c) { self.setState({ country: c, cOpen: false }); }, true),
+      showAbroadNote: abroadOn && (cSel !== 'all' || !!s.filt.visa),
+      abroadNote: 'Searched every 2 hours, day and night. Sponsorship comes from the posting and public sponsor lists (UK, Netherlands, US).',
+      chips: [['remote', 'Remote'], ['visa', 'Sponsors visa'], ['top', '85% +']].map(function (c) { var on = !!s.filt[c[0]];
+        return { label: c[1], pressed: on ? 'true' : 'false', style: chip(on), pick: function () { var x = Object.assign({}, self.state.filt); x[c[0]] = !x[c[0]]; self.setState({ filt: x }); } }; }),
+      segs: [['matches', 'Matches', JOBS.length], ['saved', 'Saved', savedCount]].map(function (g) { var on = s.seg === g[0];
+        return { label: g[1], count: String(g[2]), selected: on ? 'true' : 'false', style: under(on, true), pick: function () { self.setState({ seg: g[0] }); } }; }),
+      list: pool.map(function (j, k) {
+        return { title: j.title, score: j.score, sub: j.company + ' · ' + j.loc + ' · ' + j.pay, note: j.note, src: (j.mine ? 'Added by you' : j.src.charAt(0).toUpperCase() + j.src.slice(1)) + (j.country && j.country !== 'IN' ? ' · ' + j.country : '') + ' · ' + ageLabel(j.age),
+          noteStyle: 'font-size: 12px; font-weight: 600; color: ' + TONE[j.tone],
+          style: 'display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 16px 20px; border: none; border-bottom: 1px solid var(--rule); background: transparent; color: var(--ink); text-align: left; animation-delay: ' + (k * 0.04).toFixed(2) + 's',
+          open: function () { self.setState({ view: 'detail', sel: j.i, tab: 'fit' }); } }; }),
+      empty: pool.length === 0,
+      back: function () { self.setState({ view: 'list' }); },
+      job: Object.assign(ABX.box(job), { title: job.title, companyUpper: job.company.toUpperCase(), found: job.found, loc: job.loc, pay: job.pay, exp: job.exp, score: job.score, about: job.about, desc: job.desc, posted: ageLabel(job.age || 0),
+        hasUrl: !!job.href, href: job.href || '#',
+        applyLabel: job.mine ? 'Open the posting' : (job.src === 'careers page' ? 'Apply on their careers page' : 'Apply on ' + job.src),
+        urlText: job.urlText || 'No link, added by hand',
+        alsoText: job.also && job.also.length ? 'Also on ' + job.also.join(' and ') + ', merged into one' : '',
+        facts: job.facts.map(function (f) { return { k: f[0], v: f[1] }; }),
+        fit: job.fit.map(function (f) { var ok = f[0] === '✓'; return { mark: f[0], text: f[1], markStyle: 'font-weight: 700; color: ' + (ok ? 'var(--green)' : 'var(--red)') }; }),
+        noPeople: job.people.length === 0,
+        people: job.people.map(function (p) { var key = s.sel + p[0]; var a = !!s.asked[key];
+          return { name: p[0], role: p[1], link: p[2], initials: p[0].split(' ').map(function (w) { return w.charAt(0); }).join(''),
+            askLabel: a ? 'Drafted' : 'Ask',
+            askStyle: 'flex: 0 0 auto; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 14px; font-weight: 600; border: 1px solid ' + (a ? 'var(--green)' : 'var(--rule-2)') + '; background: transparent; color: ' + (a ? 'var(--green)' : 'var(--ink)'),
+            ask: function () { var x = Object.assign({}, self.state.asked); x[key] = true; self.setState({ asked: x }); } }; }) }),
+      dtabs: [['fit', 'Why it fits'], ['people', 'People · ' + job.people.length], ['company', 'Company'], ['desc', 'Description']].map(function (t) { var on = s.tab === t[0];
+        return { label: t[1], selected: on ? 'true' : 'false', style: under(on, false), pick: function () { self.setState({ tab: t[0] }); } }; }),
+      tFit: s.tab === 'fit', tPeople: s.tab === 'people', tCompany: s.tab === 'company', tDesc: s.tab === 'desc',
+      queueLabel: q ? '✓ In queue' : 'Add to queue',
+      queueStyle: 'flex: 1 1 0; min-height: 46px; border-radius: 10px; font-weight: 600; font-size: 14px; background: transparent; border: 1px solid ' + (q ? 'var(--green)' : 'var(--blue)') + '; color: ' + (q ? 'var(--green)' : 'var(--blue)'),
+      queue: function () { var x = Object.assign({}, self.state.queued); x[self.state.sel] = !x[self.state.sel]; self.setState({ queued: x }); },
+      saveLabel: s.saved[s.sel] ? 'Saved' : 'Save', savedPressed: s.saved[s.sel] ? 'true' : 'false',
+      save: function () { var x = Object.assign({}, self.state.saved); x[self.state.sel] = !x[self.state.sel]; self.setState({ saved: x }); },
+      addOpen: !!s.add, stepLink: s.add === 'link', stepForm: s.add === 'form',
+      addKicker: s.add === 'form' ? 'STEP 2 OF 2 · CHECK THE DETAILS' : 'STEP 1 OF 2 · WHERE IS IT POSTED?',
+      openAdd: function () { self.setState({ add: 'link', addUrl: '', urlErr: false, formErr: false, fetching: false, fromLink: false, status: 'new', form: { title: '', company: '', loc: '', pay: '' } }); },
+      closeAdd: function () { self.setState({ add: null }); },
+      backAdd: function () { self.setState({ add: 'link', formErr: false }); },
+      addUrl: s.addUrl, hasUrlErr: s.urlErr, fetchErr: !!s.fetchErr,
+      byHandKeep: function () { self.setState({ add: 'form', fromLink: false, domain: '', fetchErr: false }); },
+      blocked: !s.retried, retried: !!s.retried, retry: function () { self.setState({ retried: true }); },
+      descStyle: 'margin: 0; ' + (s.descOpen ? '' : 'display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden'), descLabel: s.descOpen ? 'Show less' : 'Show full description', toggleDesc: function () { self.setState({ descOpen: !self.state.descOpen }); },
+      onUrl: function (e) { self.setState({ addUrl: e.target.value, urlErr: false, fetchErr: false }); },
+      fetchLabel: s.fetching ? 'Reading the page…' : 'Get details',
+      fetchStyle: 'min-height: 50px; border-radius: 12px; font-weight: 600; font-size: 16px; border: 1px solid var(--blue); background: ' + (s.fetching ? 'var(--blue-soft)' : 'var(--blue)') + '; color: ' + (s.fetching ? 'var(--blue)' : 'var(--on-blue)'),
+      fetchJob: function () {
+        var u = (self.state.addUrl || '').trim();
+        if (self.state.fetching) return;
+        if (!/^https?:\/\/[^\s.]+\.[^\s]+/i.test(u)) { self.setState({ urlErr: true }); return; }
+        var host = u.replace(/^https?:\/\//i, '').split('/')[0].replace(/^www\./i, '');
+        if (!/naukri|linkedin|indeed|greenhouse|lever|ashby|wellfound|instahyre|cutshort|foundit|hirist|careers|jobs/i.test(u)) { self.setState({ fetchErr: true }); return; }
+        self.setState({ fetching: true, fetchErr: false });
+        window.setTimeout(function () { self.setState({ fetching: false, add: 'form', fromLink: true, domain: host, form: { title: 'Frontend Engineer', company: 'Saffron Health', loc: 'Pune, hybrid', pay: '₹15–20 L' } }); }, 1100);
+      },
+      byHand: function () { self.setState({ add: 'form', fromLink: false, domain: '' }); },
+      fromLink: s.fromLink, addDomain: s.domain,
+      fields: [['title', 'Job title', 'e.g. Frontend Developer'], ['company', 'Company', 'e.g. Northwind Labs'], ['loc', 'Location', 'e.g. Pune, hybrid or Remote'], ['pay', 'Salary (optional)', 'e.g. ₹15–20 L']].map(function (f) {
+        return { id: 'mjf-' + f[0], label: f[1], ph: f[2], value: s.form[f[0]],
+          on: function (e) { var x = Object.assign({}, self.state.form); x[f[0]] = e.target.value; self.setState({ form: x, formErr: false }); } }; }),
+      onStatus: function (e) { self.setState({ status: e.target.value }); },
+      hasFormErr: s.formErr,
+      saveAdd: function () {
+        var st = self.state, f = st.form;
+        if (!f.title.trim() || !f.company.trim()) { self.setState({ formErr: true }); return; }
+        var inPipe = st.status !== 'new';
+        var url = st.fromLink ? st.addUrl.trim() : '';
+        var nj = { mine: true, title: f.title.trim(), company: f.company.trim(), loc: f.loc.trim() || 'Location not given', pay: f.pay.trim() || 'Salary not listed', exp: 'Experience not listed',
+          score: 83, age: 0, found: inPipe ? 'ADDED BY YOU · IN PIPELINE' : 'ADDED BY YOU', fresh: true, remote: /remote/i.test(f.loc), note: inPipe ? (st.status === 'interview' ? 'Interviewing · on your Pipeline' : 'Applied · on your Pipeline') : 'Added by you', tone: inPipe ? 'green' : 'blue',
+          fit: [['✓', 'Title matches the roles you’re targeting'], ['✓', 'React and TypeScript appear in the posting'], ['✕', st.fromLink ? 'Wants a year more experience than you have; still worth it' : 'No description yet. Paste one in for a sharper score']],
+          people: [], about: 'NxtRole is researching this company now.', facts: [['SOURCE', st.fromLink ? st.domain : 'By hand'], ['STATUS', inPipe ? 'Applied' : 'New'], ['ADDED', 'Today']],
+          desc: st.fromLink ? 'Description read from ' + st.domain + ' and saved here.' : 'No description yet. Paste the job description and NxtRole will re-score it.',
+          src: st.fromLink ? st.domain : 'by hand', href: url, urlText: url ? url.replace(/^https?:\/\//i, '') : '', also: [] };
+        var added = st.added.concat([nj]);
+        var idx = BASE.length + added.length - 1;
+        var sv = Object.assign({}, st.saved); sv[idx] = true;
+        self.setState({ added: added, sel: idx, view: 'detail', tab: 'fit', saved: sv, add: null });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

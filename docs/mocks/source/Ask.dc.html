@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ask NxtRole</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--scrim:rgba(24,24,28,.28);--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--scrim:rgba(0,0,0,.55);--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button,textarea,input{font-family:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default}
+textarea:disabled{opacity:.6}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.rise{animation:rise .35s cubic-bezier(.2,.7,.2,1) both}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.caret{display:inline-block;width:7px;height:1em;margin-left:3px;vertical-align:-2px;background:var(--ink);animation:blink 1s steps(1) infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+.pulse{animation:pulse 1s ease-in-out infinite}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet{animation:up .3s cubic-bezier(.2,.7,.2,1) both}
+.th:hover{background:var(--card) !important}
+.chip:hover{border-color:var(--ink) !important;color:var(--ink) !important}
+.tl:hover{background:var(--paper-2)}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.6; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="ask" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 40px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+        <aside aria-label="Chats" style="flex: 1 1 170px; max-width: 200px; display: flex; flex-direction: column; gap: 14px">
+          <button type="button" onClick="{{newChat}}" style="min-height: 42px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px">+ New chat</button>
+          <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">CHATS</span>
+          <div style="display: flex; flex-direction: column; gap: 2px; margin-top: -8px">
+            <sc-for list="{{threads}}" as="t" hint-placeholder-count="3">
+              <button type="button" onClick="{{t.pick}}" aria-current="{{t.current}}" class="th" style="{{t.style}}"><span style="font-size: 14px; font-weight: 600; line-height: 1.35">{{t.title}}</span><span style="font-size: 12px; color: var(--ink-3)">{{t.when}}</span></button>
+            </sc-for>
+          </div>
+          <span style="font-size: 12px; color: var(--ink-3); line-height: 1.5">Chats are kept for 30 days, then deleted.</span>
+        </aside>
+        <section aria-label="Conversation" style="flex: 999 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+          <header style="display: flex; flex-direction: column; gap: 6px; border-bottom: 2px solid var(--ink); padding-bottom: 16px">
+            <h1 class="serif" style="margin: 0; font-size: 52px; line-height: 1">Ask NxtRole</h1>
+            <span style="color: var(--ink-2)">Answers come from your own jobs, pipeline, notes and interview log, with sources. Any change waits for your approval.</span>
+          </header>
+          <div role="log" aria-live="polite" aria-label="Messages" style="display: flex; flex-direction: column; gap: 22px">
+              <sc-if value="{{isEmpty}}" hint-placeholder-val="{{ false }}">
+                <div class="rise" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 0">
+                  <span class="serif" style="font-size: 40px; line-height: 1.1">What do you want to know?</span>
+                  <span style="color: var(--ink-2); font-size: 15px">Ask about your jobs, pipeline, offers, notes or interviews. NxtRole looks things up with its tools and shows its sources.</span>
+                </div>
+              </sc-if>
+              <sc-for list="{{msgs}}" as="m" hint-placeholder-count="4">
+                <sc-if value="{{m.isUser}}" hint-placeholder-val="{{ true }}"><div class="rise" style="align-self: flex-end; max-width: 78%; padding: 10px 14px; border-radius: 14px 14px 4px 14px; background: var(--ink); color: var(--paper); font-size: 15px; line-height: 1.5">{{m.text}}</div></sc-if>
+                <sc-if value="{{m.isAi}}" hint-placeholder-val="{{ true }}">
+                  <div style="display: flex; gap: 14px; align-items: flex-start">
+                    <span aria-hidden="true" class="serif" style="flex: 0 0 32px; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--blue-soft); color: var(--blue); font-size: 20px; font-style: italic; line-height: 1">M</span>
+                    <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+                    <sc-for list="{{m.parts}}" as="p" hint-placeholder-count="3">
+                      <sc-if value="{{p.isTool}}" hint-placeholder-val="{{ false }}">
+                        <div style="border: 1px solid var(--rule); border-radius: 10px; background: var(--card); overflow: hidden">
+                          <button type="button" class="tl" onClick="{{p.toggle}}" aria-expanded="{{p.expanded}}" style="display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 8px 12px; border: none; background: transparent; color: var(--ink); text-align: left; font-size: 13px; line-height: 1.35">
+                            <sc-if value="{{p.running}}" hint-placeholder-val="{{ false }}"><span class="pulse" aria-hidden="true" style="flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; background: var(--blue)"></span></sc-if>
+                            <sc-if value="{{p.done}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex: 0 0 auto; color: var(--green); font-weight: 700">✓</span></sc-if>
+                            <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline"><span style="font-weight: 600">{{p.label}}</span><span class="mono" style="font-size: 11px; color: var(--ink-3)">{{p.name}}</span><span style="font-size: 12px; color: var(--ink-3)">{{p.meta}}</span></span>
+                            <span aria-hidden="true" style="flex: 0 0 auto; color: var(--ink-3); font-size: 16px">{{p.chev}}</span>
+                          </button>
+                          <sc-if value="{{p.open}}" hint-placeholder-val="{{ false }}">
+                            <div class="rise" style="padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--rule)">
+                              <sc-if value="{{p.hasSql}}" hint-placeholder-val="{{ false }}">
+                                <pre class="mono" style="margin: 10px 0 0; padding: 10px 12px; border-radius: 8px; background: var(--paper-2); color: var(--ink); font-size: 12px; line-height: 1.5; white-space: pre-wrap">{{p.sql}}</pre>
+                                <span style="font-size: 12px; color: var(--green)">✓ {{p.check}}</span>
+                              </sc-if>
+                              <sc-if value="{{p.hasQuote}}" hint-placeholder-val="{{ false }}"><span style="padding-top: 8px; font-size: 13px; color: var(--ink-2)">“{{p.quote}}”</span></sc-if>
+                              <sc-if value="{{p.hasRows}}" hint-placeholder-val="{{ false }}">
+                                <div style="display: flex; flex-direction: column">
+                                  <sc-for list="{{p.rows}}" as="r" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px solid var(--rule); font-size: 13px"><span>{{r.a}}</span><span class="mono" style="font-size: 12px; color: var(--ink-3); text-align: right">{{r.b}}</span></div></sc-for>
+                                </div>
+                              </sc-if>
+                            </div>
+                          </sc-if>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{p.isText}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; font-size: 16px; line-height: 1.65; max-width: 700px">{{p.text}}<sc-if value="{{p.streaming}}" hint-placeholder-val="{{ false }}"><span class="caret" aria-hidden="true"></span></sc-if></p></sc-if>
+                      <sc-if value="{{p.isNote}}" hint-placeholder-val="{{ false }}"><span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{p.text}}</span></sc-if>
+                      <sc-if value="{{p.isCite}}" hint-placeholder-val="{{ false }}">
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+                          <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3); margin-right: 2px">SOURCES</span>
+                          <sc-for list="{{p.items}}" as="c" hint-placeholder-count="2"><a href="{{c.href}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--rule-2); font-size: 12px; text-decoration: none; color: var(--ink-2)"><span class="mono" style="font-size: 11px; color: var(--blue)">{{c.n}}</span>{{c.label}}</a></sc-for>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{p.isProp}}" hint-placeholder-val="{{ false }}">
+                        <div role="group" aria-label="{{p.title}}" class="rise" style="{{p.box}}">
+                          <span class="mono" style="{{p.tagStyle}}">{{p.tag}}</span>
+                          <span style="font-weight: 600; font-size: 17px; line-height: 1.3">{{p.title}}</span>
+                          <sc-for list="{{p.rows}}" as="r" hint-placeholder-count="1">
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 14px"><span style="flex: 0 0 48px; color: var(--ink-3)">{{r.k}}</span><span style="flex: 1 1 200px"><span style="text-decoration: line-through; color: var(--ink-3)">{{r.from}}</span> → <strong>{{r.to}}</strong></span></div>
+                          </sc-for>
+                          <div style="padding: 10px 12px; border-left: 3px solid var(--rule-2); background: var(--paper); font-size: 13px; color: var(--ink-2); display: flex; flex-direction: column; gap: 4px"><span>“{{p.quote}}”</span><span style="font-size: 12px; color: var(--ink-3)">{{p.source}}</span></div>
+                          <sc-if value="{{p.editing}}" hint-placeholder-val="{{ false }}">
+                            <div style="display: flex; flex-direction: column; gap: 6px">
+                              <label for="{{p.editId}}" style="font-size: 13px; font-weight: 600">New time</label>
+                              <input id="{{p.editId}}" class="inp" type="text" value="{{p.editVal}}" onChange="{{p.onEdit}}" style="height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: var(--paper); color: var(--ink); font-size: 14px">
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{p.isWaiting}}" hint-placeholder-val="{{ true }}">
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                              <button type="button" onClick="{{p.approve}}" style="{{p.approveStyle}}">{{p.approveLabel}}</button>
+                              <sc-if value="{{p.notEditing}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{p.edit}}" style="{{p.plainStyle}}">Edit</button></sc-if>
+                              <button type="button" onClick="{{p.reject}}" style="{{p.plainStyle}}">Reject</button>
+                            </div>
+                            <span style="font-size: 12px; color: var(--ink-3)">The agent is paused until you decide. Approving saves the change with a history row, and you can undo it.</span>
+                          </sc-if>
+                          <sc-if value="{{p.isDone}}" hint-placeholder-val="{{ false }}"><span style="{{p.doneStyle}}">{{p.doneText}}</span></sc-if>
+                        </div>
+                      </sc-if>
+                    </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+              </sc-for>
+          </div>
+          <div style="position: sticky; bottom: 0; padding: 14px 0 6px; background: var(--paper); display: flex; flex-direction: column; gap: 10px">
+            <sc-if value="{{showSugg}}" hint-placeholder-val="{{ true }}">
+              <div role="group" aria-label="Suggestions" style="display: flex; flex-wrap: wrap; gap: 8px">
+                <sc-for list="{{sugg}}" as="g" hint-placeholder-count="3"><button type="button" class="chip" onClick="{{g.pick}}" style="flex: 0 0 auto; min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink-2); font-size: 13px; white-space: nowrap">{{g.label}}</button></sc-for>
+              </div>
+            </sc-if>
+            <div style="display: flex; gap: 8px; align-items: flex-end; padding: 8px; border-radius: 14px; border: 1px solid var(--rule-2); background: var(--card)">
+              <button type="button" onClick="{{mic}}" aria-label="{{micLabel}}" title="Dictate with Whisper" style="{{micStyle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5a3 3 0 0 1 6 0v6a3 3 0 0 1-6 0zM5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></button>
+              <label for="askq-d" class="sr">Message</label>
+              <textarea id="askq-d" class="inp" rows="2" value="{{input}}" onChange="{{onInput}}" onKeyDown="{{onKey}}" disabled="{{inputOff}}" placeholder="{{ph}}" style="flex: 1 1 auto; min-width: 0; box-sizing: border-box; min-height: 40px; padding: 9px 8px; border: none; border-radius: 8px; background: transparent; color: var(--ink); font-size: 15px; line-height: 1.4; resize: none"></textarea>
+              <sc-if value="{{busy}}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{stop}}" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px">Stop</button></sc-if>
+              <sc-if value="{{notBusy}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{send}}" disabled="{{cantSend}}" style="{{sendStyle}}">Send</button></sc-if>
+            </div>
+            <span role="status" style="font-size: 12px; color: var(--ink-3)">{{statusLine}}</span>
+          </div>
+        </section>
+        <aside aria-label="What Ask NxtRole can do" style="flex: 1 1 230px; max-width: 280px; display: flex; flex-direction: column; gap: 22px">
+          <div style="display: flex; flex-direction: column">
+            <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3); padding-bottom: 8px">TOOLS IT CAN USE</span>
+            <sc-for list="{{tools}}" as="t" hint-placeholder-count="6">
+              <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-top: 1px solid var(--rule)">
+                <span style="display: flex; justify-content: space-between; gap: 8px; align-items: center"><span class="mono" style="font-size: 12px">{{t.name}}</span><span class="mono" style="{{t.chip}}">{{t.access}}</span></span>
+                <span style="font-size: 13px; color: var(--ink-2); line-height: 1.4">{{t.what}}</span>
+              </div>
+            </sc-for>
+            <span style="font-size: 12px; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 8px">Never: send messages, delete anything or change settings.</span>
+          </div>
+          <details style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule)">
+            <summary style="font-weight: 600; cursor: pointer; min-height: 28px; display: list-item">How it works</summary>
+            <span style="font-size: 13px; color: var(--ink-2); line-height: 1.5">A LangGraph agent picks the tools, streams its answer as it writes, and pauses at every change until you approve it. Each chat is saved, so a paused chat picks up where it stopped.</span>
+            <span class="mono" style="font-size: 10px; letter-spacing: .06em; color: var(--ink-3)">GPT-OSS 120B ON GROQ · SAME FALLBACK AS THE REST OF NXTROLE</span>
+          </details>
+          <span style="font-size: 12px; color: var(--ink-3); line-height: 1.5">Your name, email and phone are removed before any AI call. Read-only SQL runs only on your own rows.</span>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+var ASK_MOB = false;
+var ASKD = (function () {
+  var SQL = {
+    month: "select company, role, applied_on, days_quiet\nfrom ask.my_applications\nwhere applied_on >= date_trunc('month', now())\norder by days_quiet desc\nlimit 50;",
+    offers: "select company, base_lpa, work_mode, reply_by\nfrom ask.my_offers\nwhere status = 'open'\norder by reply_by;",
+    skills: "select skill, count(*) as jobs\nfrom ask.missing_must_haves\nwhere scored_on >= date_trunc('month', now())\n  and score < 70\ngroup by skill\norder by jobs desc\nlimit 5;"
+  };
+  var CHECK = 'Checked before it ran: one SELECT, allowed views only, runs as you under row-level security, read-only, 3-second limit.';
+  var T = {
+    month: { q: 'How many applications did I send this month, and which have gone quiet?', steps: [
+      { k: 'tool', name: 'query_my_data', label: 'Read your data', meta: 'read-only SQL · 14 rows', sql: SQL.month, rows: [['Quill Analytics', '12 days quiet'], ['Cobalt Commerce', '9 days quiet'], ['Pinecrest Studio', '8 days quiet'], ['Lumen Retail', '7 days quiet']] },
+      { k: 'text', t: 'You sent 14 applications this month. Four have had no reply for a week or more: Quill Analytics (12 days), Cobalt Commerce (9), Pinecrest Studio (8) and Lumen Retail (7). Pinecrest already has a follow-up draft in Studio. Want short nudges for the other three? They would wait in Studio until you send them yourself.' },
+      { k: 'cite', items: [['Pipeline · Quill Analytics', 'Pipeline'], ['Pipeline · Cobalt Commerce', 'Pipeline'], ['Studio · Pinecrest follow-up', 'Studio']] }
+    ] },
+    saffron: { q: 'Saffron Systems moved my HR screen. Can you update it?', steps: [
+      { k: 'tool', name: 'search_notes', label: 'Searched your job emails', meta: '1 match · Mon 19 Oct', quote: 'Could we move your HR screen to Friday, 23 October at 11:00 AM IST? The panel stays the same.' },
+      { k: 'tool', name: 'get_pipeline', label: 'Checked your pipeline', meta: 'Saffron Systems · HR screen' },
+      { k: 'text', t: 'The recruiter asked to move it to Friday. Here is the change. Nothing is saved until you approve it.' },
+      { k: 'tool', name: 'propose_change', label: 'Prepared a change', meta: 'waiting for you' },
+      { k: 'prop', title: 'Reschedule the Saffron Systems HR screen', rows: [['When', 'Thu 22 Oct, 11:00 AM IST', 'Fri 23 Oct, 11:00 AM IST']], quote: 'Could we move your HR screen to Friday, 23 October at 11:00 AM IST? The panel stays the same.', source: 'Email from Saffron Systems recruiting · Mon 19 Oct', to: 'Fri 23 Oct, 11:00 AM IST' }
+    ] },
+    offers: { q: 'Compare my two offers', steps: [
+      { k: 'tool', name: 'query_my_data', label: 'Read your data', meta: 'read-only SQL · 2 rows', sql: SQL.offers, rows: [['Vellum Health', '₹22 L · hybrid, Pune · by Fri 30 Oct'], ['Orchid Pay', '₹21 L · remote · by Tue 27 Oct']] },
+      { k: 'tool', name: 'search_notes', label: 'Searched your notes', meta: '2 notes about offers' },
+      { k: 'text', t: 'Vellum Health pays ₹22 L in year one, hybrid in Pune, and wants a reply by Fri 30 Oct. Orchid Pay pays ₹21 L, fully remote, and wants a reply by Tue 27 Oct, so it needs an answer first. With your saved priorities (remote first, then pay), Orchid Pay comes out slightly ahead, and Vellum pays ₹1 L more. Neither offer letter mentions a bonus or stock, so ask both before you decide.' },
+      { k: 'cite', items: [['Pipeline · Vellum Health offer', 'Pipeline'], ['Pipeline · Orchid Pay offer', 'Pipeline'], ['Note · what matters to me', 'Progress']] }
+    ] },
+    today: { q: 'What should I do today?', steps: [
+      { k: 'tool', name: 'get_brief', label: 'Read today’s brief', meta: '9 strong matches · 2 drafts waiting' },
+      { k: 'tool', name: 'get_pipeline', label: 'Checked your pipeline', meta: '2 interviews this week' },
+      { k: 'text', t: 'Three things, in this order. First, approve or edit the 2 drafts in Studio; it takes about five minutes. Second, apply to Northwind Labs before it closes on Thursday: it is your best match today at 92. Third, do a 20-minute event-loop drill for Kestrel Pay, because it is their most-asked question and round 2 is tomorrow at 3:00 PM IST.' },
+      { k: 'cite', items: [['Today · morning brief', 'Brief'], ['Jobs · Northwind Labs', 'Jobs'], ['Prepare · Kestrel Pay', 'Prepare']] }
+    ] },
+    tealbrook: { q: 'Prep me for Tealbrook round 2', steps: [
+      { k: 'tool', name: 'get_prep_brief', label: 'Opened the prep brief', meta: 'Tealbrook Analytics · round 2' },
+      { k: 'tool', name: 'search_notes', label: 'Searched your notes', meta: '1 note · dashboard design depth' },
+      { k: 'text', t: 'Round 2 at Tealbrook is frontend system design on Wed 28 Oct at 9:30 PM IST. Your note says the interviewer wants depth on dashboards, so practise designing a live analytics dashboard: how data is fetched and cached, keeping charts fast with thousands of points, and how you would test it. Shall I start a 45-minute mock interview in Prepare?' },
+      { k: 'cite', items: [['Prepare · Tealbrook brief', 'Prepare'], ['Note · Tealbrook round 2', 'Pipeline']] }
+    ] },
+    skills: { q: 'Which skills keep showing up in jobs I don’t match?', steps: [
+      { k: 'tool', name: 'query_my_data', label: 'Read your data', meta: 'read-only SQL · 3 rows', sql: SQL.skills, rows: [['GraphQL', '21 jobs'], ['Playwright or Cypress', '17 jobs'], ['AWS basics', '12 jobs']] },
+      { k: 'text', t: 'Across the 63 jobs that scored under 70 this month, the must-haves you are missing most are GraphQL (21 jobs), Playwright or Cypress testing (17) and AWS basics (12). GraphQL is the quickest win, because it is also a nice-to-have in 9 of your strong matches. I have not added anything to your resume; skills only go there when you say you have them.' },
+      { k: 'cite', items: [['Progress · skills to learn', 'Progress']] }
+    ] },
+    other: { q: '', steps: [
+      { k: 'tool', name: 'search_jobs', label: 'Searched your jobs, pipeline and notes', meta: '6 matches' },
+      { k: 'text', t: 'This is a preview, so answers here are scripted. Pick one of the suggestions to see tools, sources and an approval in action.' }
+    ] }
+  };
+  var after = function (approved, when) {
+    if (approved) return [
+      { k: 'note', t: 'RESUMED AFTER YOUR APPROVAL · SAVED WITH A HISTORY ROW' },
+      { k: 'text', t: 'Done. The HR screen is now ' + when + '. The old time is in the history if you need it, and your prep brief moved with it. Want me to draft a short reply confirming the new time? It would wait in Studio until you send it.' },
+      { k: 'cite', items: [['Pipeline · Saffron Systems', 'Pipeline'], ['Prepare · Saffron Systems', 'Prepare']] }
+    ];
+    return [
+      { k: 'note', t: 'RESUMED · YOU REJECTED THE CHANGE · NOTHING WAS SAVED' },
+      { k: 'text', t: 'Okay, nothing changed. If the email meant a different day, tell me and I will propose that instead.' }
+    ];
+  };
+  var TOOLS = [
+    ['search_jobs', 'read', 'Jobs by title, country, visa or score'],
+    ['get_brief', 'read', 'Today’s brief and what needs you'],
+    ['get_pipeline', 'read', 'Your cards, rounds and offers'],
+    ['query_my_data', 'read', 'Questions about your data, as read-only SQL'],
+    ['search_notes', 'read', 'Notes, job emails and your interview log'],
+    ['get_prep_brief', 'read', 'The brief for an interview'],
+    ['propose_change', 'ask', 'Moves a card or a round, after you approve'],
+    ['save_draft', 'ask', 'Saves a note to Studio; never sends']
+  ];
+  var SUGG = [['offers', 'Compare my two offers'], ['today', 'What should I do today?'], ['tealbrook', 'Prep me for Tealbrook round 2'], ['skills', 'Which skills do I keep missing?']];
+  var pick = function (q) {
+    var x = (q || '').toLowerCase();
+    if (/offer/.test(x)) return 'offers';
+    if (/today|do now|first/.test(x)) return 'today';
+    if (/tealbrook|system design/.test(x)) return 'tealbrook';
+    if (/skill|missing|learn/.test(x)) return 'skills';
+    if (/saffron|reschedul|moved my/.test(x)) return 'saffron';
+    if (/quiet|applications|applied/.test(x)) return 'month';
+    return 'other';
+  };
+  return { T: T, after: after, TOOLS: TOOLS, SUGG: SUGG, pick: pick, CHECK: CHECK };
+})();
+
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) {
+    super(props);
+    this._n = 0;
+    var t1 = this.full('month').concat(this.full('saffron'));
+    this.store = { t1: t1, t2: this.full('skills'), t3: this.full('tealbrook') };
+    this.meta = [['t1', 'Applications and a reschedule', 'Today'], ['t2', 'Skills I keep missing', 'Tue'], ['t3', 'Tealbrook round 2', 'Mon']];
+    this.state = { thread: 't1', msgs: t1, input: '', busy: false, listening: false, chats: false, stamp: 0 };
+    this._stick = true;
+  }
+  uid() { this._n += 1; return 'x' + this._n; }
+  mkPart(st, finished) {
+    var p = { id: this.uid(), k: st.k };
+    if (st.k === 'tool') { p.name = st.name; p.label = st.label; p.meta = st.meta; p.sql = st.sql || ''; p.rows = st.rows || []; p.quote = st.quote || ''; p.done = !!finished; p.open = false; }
+    if (st.k === 'text') { p.full = st.t; p.text = finished ? st.t : ''; p.streaming = !finished; }
+    if (st.k === 'note') { p.text = st.t; }
+    if (st.k === 'cite') { p.items = st.items; }
+    if (st.k === 'prop') { p.title = st.title; p.rows = st.rows; p.quote = st.quote; p.source = st.source; p.to = st.to; p.status = 'waiting'; p.editing = false; p.editVal = st.to; }
+    return p;
+  }
+  full(key) {
+    var sc = ASKD.T[key], self = this;
+    return [{ id: this.uid(), role: 'user', text: sc.q }, { id: this.uid(), role: 'ai', parts: sc.steps.map(function (st) { return self.mkPart(st, true); }) }];
+  }
+  componentDidMount() { this.stick(); }
+  componentDidUpdate() { this.stick(); }
+  componentWillUnmount() { if (this._iv) clearInterval(this._iv); if (this._lt) clearTimeout(this._lt); }
+  stick() {
+    if (!ASK_MOB || !this._stick) return;
+    try { var el = document.getElementById('mask-log'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {}
+  }
+  run(steps, userText, base) {
+    var msgs = (base || this.state.msgs).slice();
+    if (userText) msgs.push({ id: this.uid(), role: 'user', text: userText });
+    var ai = { id: this.uid(), role: 'ai', parts: [] };
+    msgs.push(ai);
+    this.aiId = ai.id; this.queue = steps.slice(); this.cur = null; this._stick = true;
+    this.setState({ msgs: msgs, busy: true, input: '' });
+    if (this._iv) clearInterval(this._iv);
+    var self = this;
+    this._iv = setInterval(function () { self.tick(); }, 35);
+  }
+  editAi(fn) {
+    var id = this.aiId;
+    var msgs = this.state.msgs.map(function (m) { if (m.id !== id) return m; var c = { id: m.id, role: m.role, parts: m.parts.slice() }; fn(c.parts); return c; });
+    return msgs;
+  }
+  tick() {
+    var self = this;
+    if (!this.cur) {
+      if (!this.queue || !this.queue.length) { clearInterval(this._iv); this._iv = null; this.setState({ busy: false }); return; }
+      this.cur = { st: this.queue.shift(), n: 0, pid: null };
+    }
+    var c = this.cur, st = c.st;
+    if (st.k === 'tool') {
+      if (c.n === 0) { var p = this.mkPart(st, false); c.pid = p.id; this.setState({ msgs: this.editAi(function (ps) { ps.push(p); }) }); }
+      c.n += 1;
+      if (c.n > 22) { var pid = c.pid; this.cur = null; this.setState({ msgs: this.editAi(function (ps) { for (var i = 0; i < ps.length; i++) if (ps[i].id === pid) ps[i] = Object.assign({}, ps[i], { done: true }); }) }); }
+      return;
+    }
+    if (st.k === 'text') {
+      if (c.n === 0) { var tp = this.mkPart(st, false); c.pid = tp.id; c.words = st.t.split(' '); this.setState({ msgs: this.editAi(function (ps) { ps.push(tp); }) }); }
+      c.n += 1;
+      var upto = Math.min(c.words.length, c.n * 2), txt = c.words.slice(0, upto).join(' '), end = upto >= c.words.length, tid = c.pid;
+      if (end) this.cur = null;
+      this.setState({ msgs: this.editAi(function (ps) { for (var i = 0; i < ps.length; i++) if (ps[i].id === tid) ps[i] = Object.assign({}, ps[i], { text: txt, streaming: !end }); }) });
+      return;
+    }
+    var np = this.mkPart(st, true);
+    this.cur = null;
+    if (st.k === 'prop') { this.queue = []; }
+    this.setState({ msgs: this.editAi(function (ps) { ps.push(np); }) });
+  }
+  stop() {
+    if (this._iv) clearInterval(this._iv);
+    this._iv = null; this.queue = []; this.cur = null;
+    this.setState({ busy: false, msgs: this.editAi(function (ps) { for (var i = 0; i < ps.length; i++) if (ps[i].k === 'text' && ps[i].streaming) ps[i] = Object.assign({}, ps[i], { text: ps[i].text + ' …', streaming: false }); if (ps.length && ps[ps.length - 1].k === 'tool') ps[ps.length - 1] = Object.assign({}, ps[ps.length - 1], { done: true, meta: 'stopped' }); ps.push({ id: 'stop' + Date.now(), k: 'note', text: 'STOPPED BY YOU' }); }) });
+  }
+  setPart(pid, patch) {
+    var msgs = this.state.msgs.map(function (m) { if (m.role !== 'ai') return m; var hit = false; var ps = m.parts.map(function (p) { if (p.id === pid) { hit = true; return Object.assign({}, p, patch); } return p; }); return hit ? { id: m.id, role: m.role, parts: ps } : m; });
+    this.setState({ msgs: msgs });
+    return msgs;
+  }
+  decide(p, ok) {
+    var when = (p.editVal || p.to).trim() || p.to;
+    var msgs = this.state.msgs.map(function (m) { if (m.role !== 'ai') return m; return { id: m.id, role: m.role, parts: m.parts.map(function (x) { return x.id === p.id ? Object.assign({}, x, { status: ok ? 'approved' : 'rejected', editing: false, to: ok ? when : x.to, rows: ok ? x.rows.map(function (r) { return [r[0], r[1], when]; }) : x.rows }) : x; }) }; });
+    this.run(ASKD.after(ok, when), null, msgs);
+  }
+  waitingProp() { var w = null; this.state.msgs.forEach(function (m) { if (m.role === 'ai') m.parts.forEach(function (p) { if (p.k === 'prop' && p.status === 'waiting') w = p; }); }); return w; }
+  ask(text, key) {
+    if (this.state.busy || this.waitingProp()) return;
+    var q = (text || '').trim(); if (!q) return;
+    var k = key || ASKD.pick(q);
+    if (this.state.thread.charAt(0) === 'n') { var th = this.state.thread, self = this; this.meta = this.meta.map(function (m) { return m[0] === th ? [m[0], q.length > 34 ? q.slice(0, 33) + '…' : q, 'Now'] : m; }); }
+    this.run(ASKD.T[k].steps, q);
+  }
+  switchTo(id) {
+    if (this.state.busy) this.stop();
+    this.store[this.state.thread] = this.state.msgs;
+    this.setState({ thread: id, msgs: this.store[id] || [], chats: false, input: '' });
+  }
+  newChat() {
+    if (this.state.busy) this.stop();
+    this.store[this.state.thread] = this.state.msgs;
+    var id = 'n' + this.uid();
+    this.meta = [[id, 'New chat', 'Now']].concat(this.meta);
+    this.store[id] = [];
+    this.setState({ thread: id, msgs: [], chats: false, input: '' });
+  }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state, MOB = ASK_MOB;
+    var route = function (r) { if (!MOB) return r + '.dc.html'; return ({ Brief: 'MToday', Jobs: 'MJobs', Pipeline: 'MPipeline', Prepare: 'MPrepare', Studio: 'MStudio', Progress: 'MProgress' })[r] + '.dc.html'; };
+    var waiting = this.waitingProp();
+    var running = null; if (s.busy) s.msgs.forEach(function (m) { if (m.role === 'ai') m.parts.forEach(function (p) { if (p.k === 'tool' && !p.done) running = p; }); });
+    var btn = function (kind) {
+      var base = 'min-height: ' + (MOB ? '46px' : '40px') + '; padding: 0 16px; border-radius: 10px; font-size: 14px; font-weight: 600; ';
+      if (kind === 'primary') return base + 'border: 1px solid var(--blue); background: var(--blue); color: var(--on-blue)';
+      return base + 'border: 1px solid var(--rule-2); background: transparent; color: var(--ink)';
+    };
+    var msgs = s.msgs.map(function (m) {
+      if (m.role === 'user') return { isUser: true, isAi: false, text: m.text, parts: [] };
+      return { isUser: false, isAi: true, text: '', parts: m.parts.map(function (p, j) {
+        var o = { isTool: false, isText: false, isNote: false, isCite: false, isProp: false };
+        if (p.k === 'tool') return Object.assign(o, { isTool: true, name: p.name, label: p.label, meta: p.done ? p.meta : 'running…', running: !p.done, done: p.done,
+          open: p.open && p.done, expanded: p.open ? 'true' : 'false', chev: p.open ? '−' : '+', hasSql: !!p.sql, sql: p.sql, check: ASKD.CHECK, hasQuote: !!p.quote, quote: p.quote,
+          hasRows: !!(p.rows && p.rows.length), rows: (p.rows || []).map(function (r) { return { a: r[0], b: r[1] }; }),
+          toggle: function () { if (p.done) self.setPart(p.id, { open: !p.open }); } });
+        if (p.k === 'text') return Object.assign(o, { isText: true, text: p.text, streaming: !!p.streaming });
+        if (p.k === 'note') return Object.assign(o, { isNote: true, text: p.text });
+        if (p.k === 'cite') return Object.assign(o, { isCite: true, items: p.items.map(function (c, i) { return { n: String(i + 1), label: c[0], href: route(c[1]) }; }) });
+        if (p.k === 'prop') {
+          var wt = p.status === 'waiting', ok = p.status === 'approved';
+          var tone = wt ? 'var(--amber)' : (ok ? 'var(--green)' : 'var(--ink-3)');
+          return Object.assign(o, { isProp: true, title: p.title, quote: p.quote, source: p.source,
+            rows: p.rows.map(function (r) { return { k: r[0], from: r[1], to: r[2] }; }),
+            tag: wt ? 'CHANGE · WAITING FOR YOU' : (ok ? 'CHANGE · APPROVED' : 'CHANGE · REJECTED'),
+            tagStyle: 'font-size: 11px; letter-spacing: .1em; color: ' + tone,
+            box: 'display: flex; flex-direction: column; gap: 10px; padding: ' + (MOB ? '14px' : '16px 18px') + '; border-radius: 12px; border: ' + (wt ? '2px solid var(--amber)' : '1px solid var(--rule-2)') + '; background: var(--card)',
+            isWaiting: wt, isDone: !wt, editing: !!p.editing, notEditing: !p.editing, editVal: p.editVal, editId: 'ed-' + p.id,
+            onEdit: function (e) { self.setPart(p.id, { editVal: e.target.value }); },
+            edit: function () { self.setPart(p.id, { editing: true }); },
+            approve: function () { self.decide(p, true); }, reject: function () { self.decide(p, false); },
+            approveLabel: p.editing ? 'Approve with this time' : 'Approve',
+            approveStyle: btn('primary'), plainStyle: btn('plain'),
+            doneText: ok ? 'Approved · saved with a history row, so you can undo it' : 'Rejected · nothing was saved',
+            doneStyle: 'font-size: 13px; font-weight: 600; color: ' + (ok ? 'var(--green)' : 'var(--ink-3)') });
+        }
+        return o;
+      }) };
+    });
+    var threads = this.meta.map(function (t) { var on = t[0] === s.thread;
+      return { title: t[1], when: t[2], current: on ? 'page' : 'false', pick: function () { if (!on) self.switchTo(t[0]); },
+        style: 'display: flex; flex-direction: column; align-items: flex-start; gap: 0; width: 100%; padding: 10px 12px; border: none; border-radius: 8px; text-align: left; color: var(--ink); background: ' + (on ? 'var(--card)' : 'transparent') + '; box-shadow: ' + (on ? 'inset 2px 0 0 var(--blue)' : 'none') + (MOB ? '; min-height: 56px' : '') };
+    });
+    var canSend = !s.busy && !waiting && (s.input || '').trim().length > 1;
+    var statusLine = s.busy ? (running ? 'Calling ' + running.name + '…' : 'Writing… you can stop it at any time.') : (waiting ? 'Paused: approve or reject the change above, then the chat continues.' : (s.listening ? 'Listening… your words go to Whisper, then the audio is deleted.' : 'Answers use your NxtRole data only. Changes always wait for your approval.'));
+    return {
+      theme: this._jpT,
+      msgs: msgs, isEmpty: msgs.length === 0,
+      threads: threads, newChat: function () { self.newChat(); },
+      chatsOpen: !!s.chats, chatsExpanded: s.chats ? 'true' : 'false', toggleChats: function () { self.setState({ chats: !self.state.chats }); },
+      sugg: ASKD.SUGG.map(function (g) { return { label: g[1], pick: function () { self.ask(g[1], g[0]); } }; }),
+      showSugg: !s.busy && !waiting,
+      input: s.input, onInput: function (e) { self.setState({ input: e.target.value }); },
+      onKey: function (e) { if (e && e.key === 'Enter' && !e.shiftKey) { if (e.preventDefault) e.preventDefault(); self.ask(self.state.input); } },
+      inputOff: !!waiting || s.busy,
+      ph: waiting ? (MOB ? 'Decide on the change first' : 'Approve or reject the change first') : (MOB ? 'Ask about your job search' : 'Ask about your jobs, pipeline, notes or interviews'),
+      send: function () { self.ask(self.state.input); }, cantSend: !canSend,
+      sendStyle: 'flex: 0 0 auto; min-height: ' + (MOB ? '44px' : '40px') + '; padding: 0 16px; border-radius: 10px; border: none; font-weight: 600; font-size: 14px; background: ' + (canSend ? 'var(--blue)' : 'var(--rule)') + '; color: ' + (canSend ? 'var(--on-blue)' : 'var(--ink-3)'),
+      busy: !!s.busy, notBusy: !s.busy, stop: function () { self.stop(); },
+      mic: function () { if (self.state.busy || waiting || self.state.listening) return; self.setState({ listening: true }); self._lt = setTimeout(function () { self.setState({ listening: false, input: 'What should I do today?' }); }, 1400); },
+      micLabel: s.listening ? 'Listening' : 'Dictate a question',
+      micStyle: 'flex: 0 0 auto; width: ' + (MOB ? '44px' : '40px') + '; height: ' + (MOB ? '44px' : '40px') + '; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 1px solid ' + (s.listening ? 'var(--red)' : 'var(--rule-2)') + '; background: ' + (s.listening ? 'var(--red-soft)' : 'transparent') + '; color: ' + (s.listening ? 'var(--red)' : 'var(--ink-2)'),
+      statusLine: statusLine,
+      tools: ASKD.TOOLS.map(function (t) { var rd = t[1] === 'read'; return { name: t[0], what: t[2], access: rd ? 'READ' : 'ASKS YOU', chip: 'flex: 0 0 auto; font-size: 10px; letter-spacing: .06em; padding: 1px 7px; border-radius: 999px; border: 1px solid ' + (rd ? 'var(--green)' : 'var(--amber)') + '; color: ' + (rd ? 'var(--green)' : 'var(--amber)') }; })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

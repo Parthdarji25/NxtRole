@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Follow-ups</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.pick:hover{background:var(--card) !important}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="followups" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 64px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+        <header style="display: flex; flex-direction: column; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 22px">
+          <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">FOLLOW-UPS AGENT · CHECKED 7:00 AM</span>
+          <h1 class="serif" style="margin: 0; font-size: 48px; line-height: 1.05; letter-spacing: -0.035em">2 nudges are due today.</h1>
+          <p style="margin: 0; font-size: 18px; color: var(--ink-2); max-width: 760px">Drafts are ready to copy. One company has gone quiet for 21 days, so NxtRole stops reminding you about it.</p>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule)"><span class="serif" style="font-size: 30px; line-height: 1.1">6</span><span style="font-size: 13px; color: var(--ink-2)">waiting for a reply</span></div>
+          <div style="display: flex; flex-direction: column; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--red)"><span class="serif" style="font-size: 30px; line-height: 1.1; color: var(--red-ink)">{{dueCount}}</span><span style="font-size: 13px; color: var(--ink-2)">nudges due today</span></div>
+          <div style="display: flex; flex-direction: column; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule)"><span class="serif" style="font-size: 30px; line-height: 1.1">1</span><span style="font-size: 13px; color: var(--ink-2)">likely ghosted</span></div>
+          <div style="display: flex; flex-direction: column; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule)"><span class="serif" style="font-size: 30px; line-height: 1.1">2</span><span style="font-size: 13px; color: var(--ink-2)">replies this week</span></div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+          <section aria-label="Waiting applications" style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding-bottom: 10px; font-size: 13px; color: var(--ink-3)">
+              <span>Day 7: first nudge · Day 14: second nudge · Day 21: likely ghosted</span>
+              <span>Reply times come from your own history</span>
+            </div>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+              <button type="button" class="pick" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="{{r.style}}">
+                <span style="display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap">
+                  <span style="display: flex; flex-direction: column; text-align: left"><span style="font-weight: 600; font-size: 17px">{{r.company}}</span><span style="font-size: 14px; color: var(--ink-2)">{{r.role}} · applied {{r.applied}}</span></span>
+                  <span style="{{r.tagStyle}}">{{r.tag}}</span>
+                </span>
+                <span style="position: relative; display: block; height: 6px; border-radius: 3px; background: var(--rule); margin: 4px 0 2px">
+                  <span style="{{r.bar}}"></span>
+                  <span style="position: absolute; left: 33.3%; top: -3px; width: 2px; height: 12px; background: var(--rule-2)"></span>
+                  <span style="position: absolute; left: 66.6%; top: -3px; width: 2px; height: 12px; background: var(--rule-2)"></span>
+                </span>
+                <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-3); text-align: left"><span>Day {{r.day}}</span><span>{{r.usual}}</span></span>
+              </button>
+            </sc-for>
+          </section>
+
+          <aside aria-label="Draft" style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 14px; padding: 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule-2); box-shadow: var(--shadow)">
+            <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">{{sel.kicker}}</span>
+            <span class="serif" style="font-size: 26px; line-height: 1.15">{{sel.company}}</span>
+            <sc-if value="{{sel.hasDraft}}" hint-placeholder-val="{{ true }}">
+              <span style="font-size: 13px; color: var(--ink-2)">To: {{sel.to}}</span>
+              <p style="margin: 0; padding: 14px 16px; border-radius: 10px; background: var(--paper); border: 1px solid var(--rule); white-space: pre-line">{{sel.draft}}</p>
+              <sc-if value="{{sel.notSent}}" hint-placeholder-val="{{ true }}">
+                <button type="button" onClick="{{sel.markSent}}" style="min-height: 48px; border-radius: 8px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">Copy and mark sent</button>
+              </sc-if>
+              <sc-if value="{{sel.isSent}}" hint-placeholder-val="{{ false }}">
+                <span style="font-weight: 600; color: var(--green)">✓ Copied. Paste it into your email. Next check in 7 days.</span>
+              </sc-if>
+            </sc-if>
+            <sc-if value="{{sel.noDraft}}" hint-placeholder-val="{{ false }}">
+              <p style="margin: 0; font-size: 15px; color: var(--ink-2)">{{sel.note}}</p>
+            </sc-if>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+              <button type="button" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">They replied</button>
+              <button type="button" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">Snooze 3 days</button>
+              <button type="button" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">Mark closed</button>
+            </div>
+            <span style="font-size: 13px; color: var(--ink-3)">NxtRole never sends email. Drafts use only what is in your pipeline and profile.</span>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1250}}'>
+var R = [
+  ['pine', 'Pinecrest Studio', 'Frontend Developer', '11 Oct', 9, 'due1', 'Usually replies in 6 days (2 past applications)', 'Meera, recruiter', 'Hi Meera,\n\nI applied for the Frontend Developer role on 11 October and wanted to check if there is any update. I am still keen, especially on the design-system work in the post. Happy to share more about my Next.js dashboard work.\n\nThanks,\n[Your name]'],
+  ['copper', 'Copperleaf Insurance', 'Frontend Engineer', '6 Oct', 14, 'due2', 'No history with this company yet', 'careers inbox from the job post', 'Hi,\n\nFollowing up once more on my application for Frontend Engineer (sent 6 October). If the role is filled, a short note would help me plan.\n\nThank you,\n[Your name]'],
+  ['fern', 'Fernway Travel', 'Frontend Engineer II', '29 Sep', 21, 'ghost', 'No history with this company yet', '', ''],
+  ['banyan', 'Banyan Health', 'UI Engineer', '14 Oct', 6, 'wait', 'Usually replies in 5 days (1 past application)', '', ''],
+  ['quill', 'Quill Learning', 'React Developer', '16 Oct', 4, 'wait', 'No history with this company yet', '', ''],
+  ['cobalt', 'Cobalt Commerce', 'Next.js Developer', '18 Oct', 2, 'wait', 'No history with this company yet', '', '']
+];
+var TAG = { due1: ['Nudge 1 due', 'var(--red-soft)', 'var(--red-ink)'], due2: ['Nudge 2 due', 'var(--red-soft)', 'var(--red-ink)'], ghost: ['Likely ghosted', 'var(--paper-2)', 'var(--ink-2)'], wait: ['Waiting', 'transparent', 'var(--ink-3)'], sent: ['Nudge sent', 'var(--green-soft)', 'var(--green)'] };
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: 'pine', sent: {} }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var cur = R.filter(function (r) { return r[0] === s.sel; })[0];
+    var due = R.filter(function (r) { return (r[5] === 'due1' || r[5] === 'due2') && !s.sent[r[0]]; }).length;
+    var isDue = cur[5] === 'due1' || cur[5] === 'due2';
+    var NOTE = { ghost: '21 days and 2 nudges with no reply. NxtRole has stopped reminding you. Keep it open if you like, or mark it closed so your weekly coach counts it.', wait: 'Nothing to do yet. The first nudge is drafted on day 7.' };
+    return {
+      theme: this._jpT,
+      dueCount: String(due),
+      rows: R.map(function (r) {
+        var on = r[0] === s.sel, k = s.sent[r[0]] ? 'sent' : r[5], t = TAG[k];
+        return { company: r[1], role: r[2], applied: r[3], day: String(r[4]), usual: r[6], tag: t[0], pressed: on ? 'true' : 'false',
+          pick: function () { self.setState({ sel: r[0] }); },
+          tagStyle: 'flex: 0 0 auto; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: ' + t[1] + '; color: ' + t[2] + (k === 'wait' ? '; border: 1px solid var(--rule-2)' : ''),
+          bar: 'position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; width: ' + Math.min(100, Math.round(r[4] / 21 * 100)) + '%; background: ' + (k === 'ghost' ? 'var(--ink-3)' : (k === 'due1' || k === 'due2' ? 'var(--red)' : 'var(--ink)')),
+          style: 'display: flex; flex-direction: column; gap: 6px; width: 100%; padding: 14px 14px; margin: 0; border: none; border-top: 1px solid var(--rule); border-radius: 8px; color: var(--ink); font-size: 15px; background: ' + (on ? 'var(--card)' : 'transparent') + (on ? '; box-shadow: inset 3px 0 0 var(--blue)' : '') };
+      }),
+      sel: { company: cur[1] + ' · ' + cur[2], to: cur[7], draft: cur[8], hasDraft: isDue, noDraft: !isDue, note: NOTE[cur[5]] || '',
+        kicker: isDue ? (cur[5] === 'due1' ? 'FIRST NUDGE · DAY ' + cur[4] : 'SECOND NUDGE · DAY ' + cur[4]) : (cur[5] === 'ghost' ? 'LIKELY GHOSTED · DAY 21' : 'WAITING · DAY ' + cur[4]),
+        notSent: !s.sent[cur[0]], isSent: !!s.sent[cur[0]],
+        markSent: function () { var x = Object.assign({}, self.state.sent); x[cur[0]] = true; self.setState({ sent: x }); } }
+    };
+  }
+}
+</script>
+</body>
+</html>

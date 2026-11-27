@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Today (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--scrim:rgba(24,24,28,.28);--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--scrim:rgba(0,0,0,.55);--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet{animation:up .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.fade{animation:fadein .25s ease both}
+.bar{transition:width .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes breathe{0%,100%{opacity:.35}50%{opacity:1}}
+.breathe{animation:breathe 2.4s ease-in-out infinite}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+.hit:hover{background:var(--card)}
+input{font-family:inherit}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <header style="flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--rule)">
+    <a href="MLanding.dc.html" style="display: flex; align-items: center; gap: 7px; text-decoration: none; color: var(--ink)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" style="color: var(--blue)"><path d="M5 7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM9 12h6M12.5 9l3 3-3 3"></path></svg>
+      <span class="serif" style="font-size: 23px; font-weight: 700; letter-spacing: -0.03em; line-height: 1">Nxt<span style="color: var(--blue)">Role</span></span>
+    </a>
+    <div style="display: flex; gap: 8px; align-items: center">
+    <button type="button" onClick="{{openSearch}}" aria-label="Search" aria-haspopup="dialog" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 11a6 6 0 1 0 12 0a6 6 0 1 0-12 0M20 20l-4.3-4.3"></path></svg></button>
+    <button type="button" onClick="{{openLog}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink-2); font-size: 13px; font-weight: 600">
+      <span class="breathe" style="width: 7px; height: 7px; border-radius: 50%; background: var(--green)"></span>Agents · idle
+    </button>
+    </div>
+  </header>
+
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 22px 20px 32px; display: flex; flex-direction: column; gap: 28px">
+    <section class="rise" style="display: flex; flex-direction: column; gap: 8px">
+      <span class="mono" style="font-size: 11px; letter-spacing: .12em; color: var(--ink-3)">TUESDAY, 20 OCTOBER · YOUR BRIEF</span>
+      <h1 class="serif" style="margin: 0; font-size: 40px; line-height: 1.02; letter-spacing: -0.01em">Good morning, Aarav.</h1>
+      <p style="margin: 0; font-size: 16px; color: var(--ink-2)">{{lead}}</p>
+    </section>
+
+    <a href="MPrepare.dc.html" class="rise" style="display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule); box-shadow: var(--shadow); text-decoration: none; color: var(--ink); animation-delay: .06s">
+      <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--red)">TOMORROW · 3:00 PM IST</span>
+      <span class="serif" style="font-size: 26px; line-height: 1.1">Kestrel Pay <em style="color: var(--ink-2)">· round 2</em></span>
+      <span style="display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2)"><span>Prep done</span><span class="mono">2 of 5</span></span>
+      <span style="height: 3px; background: var(--rule); border-radius: 2px; display: block"><span style="display: block; height: 100%; width: 40%; background: var(--ink); border-radius: 2px"></span></span>
+      <span style="font-weight: 600; color: var(--blue); font-size: 14px">Open the brief →</span>
+    </a>
+
+
+    <section aria-label="This week" style="display: flex; flex-direction: column; gap: 10px">
+      <h2 class="serif" style="margin: 0; font-size: 28px">This week</h2>
+      <div class="scroll" role="group" aria-label="Days" style="display: flex; gap: 6px; overflow-x: auto; margin: 0 -20px; padding: 0 20px">
+        <sc-for list="{{week}}" as="w" hint-placeholder-count="7">
+          <button type="button" onClick="{{w.pick}}" aria-pressed="{{w.selected}}" style="{{w.chipStyle}}"><span style="font-size: 11px; font-weight: 600">{{w.day}}</span><span class="serif" style="font-size: 22px; line-height: 1">{{w.date}}</span><span class="mono" style="font-size: 10px; min-height: 12px">{{w.count}}</span></button>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{wDay}}</span>
+        <sc-for list="{{wItems}}" as="it" hint-placeholder-count="2">
+          <a href="{{it.href}}" style="display: flex; gap: 10px; align-items: flex-start; min-height: 44px; padding: 8px 0; border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--ink)"><span style="{{it.dot}}"></span><span style="display: flex; flex-direction: column"><span class="mono" style="{{it.kindStyle}}">{{it.kind}}</span><span style="font-size: 15px">{{it.text}}</span></span></a>
+        </sc-for>
+        <sc-if value="{{wEmpty}}" hint-placeholder-val="{{ false }}"><span style="padding: 10px 0; font-size: 14px; color: var(--ink-3)">Nothing booked. A good day to apply.</span></sc-if>
+        <span style="font-size: 13px; color: var(--ink-2); padding-top: 8px">{{wNext}}</span>
+      </div>
+    </section>
+    <sc-if value="{{aiShow}}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="{{aiStyle}}">
+            <span class="mono" style="{{aiTagStyle}}">{{aiTag}}</span>
+            <span style="font-weight: 600; font-size: 16px; line-height: 1.35">{{aiTitle}}</span>
+            <span style="font-size: 14px; color: var(--ink-2)">{{aiBody}}</span>
+            <sc-if value="{{aiOut}}" hint-placeholder-val="{{ false }}">
+              <span style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding-top: 4px">
+                <button type="button" onClick="{{aiRetry}}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 14px; font-weight: 600">{{aiRetryLabel}}</button>
+                <a href="MSettings.dc.html" style="min-height: 40px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">See AI models →</a>
+              </span>
+              <span style="font-size: 12px; color: var(--ink-3)">{{aiNote}}</span>
+            </sc-if>
+          </div>
+        </sc-if>
+    <section style="display: flex; flex-direction: column">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px">
+        <h2 class="serif" style="margin: 0; font-size: 28px">Strong matches today</h2>
+        <span class="mono" style="font-size: 12px; color: var(--ink-3)">{{doneLabel}}</span>
+      </div>
+      <div style="height: 3px; background: var(--rule); border-radius: 2px; overflow: hidden"><div class="bar" style="height: 100%; background: var(--blue); width: {{donePct}}"></div></div>
+      <sc-for list="{{jobs}}" as="j" hint-placeholder-count="9">
+        <article class="rise" style="{{j.rowStyle}}">
+          <div style="display: flex; gap: 12px; align-items: flex-start">
+            <span class="serif" style="{{j.numStyle}}">{{j.num}}</span>
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+              <a href="MJobs.dc.html" class="serif" style="{{j.titleStyle}}">{{j.title}}</a>
+              <span style="font-size: 13px; color: var(--ink-2)">{{j.company}} · {{j.loc}}</span>
+              <span style="font-size: 13px"><span style="{{j.whyStyle}}">{{j.why}}</span></span>
+              <sc-if value="{{j.pend}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: var(--red-ink)">Drafts pending · resume and note</span></sc-if>
+            </div>
+            <span class="mono" style="font-size: 13px; color: var(--ink-2)">{{j.score}}%</span>
+          </div>
+          <sc-if value="{{j.isOpen}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; gap: 10px; padding-left: 38px">
+              <button type="button" onClick="{{j.apply}}" style="flex: 1 1 auto; min-height: 44px; border-radius: 10px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">Apply →</button>
+              <button type="button" onClick="{{j.skip}}" style="flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink-2); font-size: 14px; font-weight: 600">Not today</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{j.isClosed}}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; gap: 14px; align-items: center; padding-left: 38px">
+              <span style="{{j.stateStyle}}">{{j.stateLabel}}</span>
+              <button type="button" onClick="{{j.undo}}" style="min-height: 44px; background: none; border: none; padding: 0; color: var(--ink-3); font-size: 13px; text-decoration: underline">Undo</button>
+            </div>
+          </sc-if>
+        </article>
+      </sc-for>
+    </section>
+
+    <section style="display: flex; flex-direction: column">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 8px; border-bottom: 1px solid var(--rule)">
+        <h2 class="serif" style="margin: 0; font-size: 28px">Needs you</h2>
+        <span class="mono" style="font-size: 12px; color: var(--ink-3)">{{needCount}}</span>
+      </div>
+      <sc-for list="{{needs}}" as="n" hint-placeholder-count="3">
+        <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--rule)">
+          <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{n.kind}}</span>
+          <span style="font-size: 15px">{{n.text}}</span>
+          <sc-if value="{{n.pending}}" hint-placeholder-val="{{ true }}">
+            <span style="display: flex; gap: 16px; align-items: center">
+              <button type="button" onClick="{{n.approve}}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 14px; font-weight: 600">{{n.action}}</button>
+              <a href="MStudio.dc.html" style="font-size: 14px; text-decoration: none; color: var(--ink-2); padding: 12px 0">Edit first</a>
+            </span>
+          </sc-if>
+          <sc-if value="{{n.done}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: var(--green); font-weight: 600">{{n.doneLabel}}</span></sc-if>
+        </div>
+      </sc-for>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 class="serif" style="margin: 0; font-size: 28px">Overnight</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden">
+        <sc-for list="{{overnight}}" as="o" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column; gap: 2px; padding: 14px; background: var(--paper)"><span class="serif" style="font-size: 32px; line-height: 1">{{o.v}}</span><span style="font-size: 13px; color: var(--ink-2)">{{o.k}}</span></div>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="today" hint-size="390px,84px"></dc-import></div>
+
+  <sc-if value="{{logOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{closeLog}}" aria-label="Close agent log" class="fade" style="position: absolute; inset: 0; z-index: 40; border: none; padding: 0; background: var(--scrim); cursor: default"></button>
+    <section class="sheet" role="dialog" aria-modal="true" aria-label="Agent log" style="position: absolute; z-index: 41; left: 0; right: 0; bottom: 0; max-height: 78%; overflow-y: auto; box-sizing: border-box; padding: 10px 20px 28px; border-radius: 18px 18px 0 0; background: var(--paper); border-top: 1px solid var(--rule); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px">
+      <span aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: var(--rule-2)"></span>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <h2 class="serif" style="margin: 0; font-size: 28px">Agent log</h2>
+        <button type="button" onClick="{{closeLog}}" aria-label="Close" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 20px; line-height: 1">×</button>
+      </div>
+      <span style="font-size: 14px; color: var(--ink-2)">Next run at 2:30 PM. Everything below happened on its own.</span>
+      <sc-for list="{{log}}" as="l" hint-placeholder-count="5">
+        <div style="display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--rule)">
+          <span class="mono" style="flex: 0 0 64px; font-size: 12px; color: var(--ink-3)">{{l.t}}</span>
+          <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">{{l.who}}</span><span style="font-size: 14px; color: var(--ink-2)">{{l.what}}</span></span>
+        </div>
+      </sc-for>
+    </section>
+  </sc-if>
+  <sc-if value="{{searchOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{closeSearch}}" aria-label="Close search" class="fade" style="position: absolute; inset: 0; z-index: 50; border: none; padding: 0; background: var(--scrim); cursor: default"></button>
+    <div class="fade" role="dialog" aria-modal="true" aria-label="Search" style="position: absolute; z-index: 51; inset: 0; border-radius: 0; box-sizing: border-box; background: var(--paper); box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; color: var(--ink); font-family: 'Geist', system-ui, sans-serif">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--rule)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" style="color: var(--ink-3); flex: 0 0 auto"><path d="M5 11a6 6 0 1 0 12 0a6 6 0 1 0-12 0M20 20l-4.3-4.3"></path></svg>
+        <label for="morrow-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search</label>
+        <input id="morrow-q" class="inp" type="search" value="{{q}}" onChange="{{onQ}}" placeholder="Search jobs, companies, notes, questions" style="flex: 1 1 auto; min-width: 0; height: 44px; padding: 0 8px; border: none; border-radius: 8px; background: transparent; color: var(--ink); font-size: 17px">
+        <button type="button" onClick="{{closeSearch}}" style="flex: 0 0 auto; min-height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 600">Close</button>
+      </div>
+      <div style="flex: 1 1 auto; overflow-y: auto; padding: 8px 8px 14px; display: flex; flex-direction: column">
+        <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3); padding: 8px 10px">{{sLabel}}</span>
+        <sc-for list="{{sHits}}" as="h" hint-placeholder-count="4">
+          <a href="{{h.href}}" class="hit" style="display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding: 10px; border-radius: 10px; text-decoration: none; color: var(--ink)">
+            <span class="mono" style="flex: 0 0 70px; font-size: 10px; letter-spacing: .06em; color: var(--ink-3); padding-top: 4px">{{h.type}}</span>
+            <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column"><span style="font-weight: 600">{{h.title}}</span><span style="font-size: 13px; color: var(--ink-2)">{{h.sub}}</span></span>
+            <span style="flex: 0 0 auto; font-size: 12px; color: var(--ink-3); padding-top: 3px">{{h.where}}</span>
+          </a>
+        </sc-for>
+        <sc-if value="{{sNone}}" hint-placeholder-val="{{ false }}"><span style="padding: 12px 10px; color: var(--ink-3); font-size: 14px">Nothing found. Try a company, a skill or a word from a note.</span></sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var AIX = {
+  read: function () { try { var v = window.localStorage.getItem('nxtrole-ai'); if (v === 'backup' || v === 'out') return v; } catch (e) {} return 'normal'; },
+  set: function (v) { try { window.localStorage.setItem('nxtrole-ai', v); } catch (e) {} try { window.dispatchEvent(new Event('jp2-ai')); } catch (e) {} },
+  listen: function (self) {
+    if (self._aiOn) return;
+    self._ai = AIX.read();
+    self._aiOn = function () { var v = AIX.read(); if (v !== self._ai) { self._ai = v; self.forceUpdate(); } };
+    try { window.addEventListener('storage', self._aiOn); window.addEventListener('jp2-ai', self._aiOn); } catch (e) {}
+  },
+  // order = most free allowance first; reset times in the mock are examples (the real app reads them from each provider's rate-limit headers)
+  P: [
+    ['Groq', 'GPT-OSS 120B (main) · GPT-OSS 20B · Llama 3.1 8B', 'About 14,400 requests a day on the small model, 1,000 on the large ones', '9:15 AM'],
+    ['Cerebras', 'GPT-OSS 120B', 'About 30,000 tokens a minute', '11:00 AM'],
+    ['Mistral', 'Mistral Small · Mistral Large', 'About 50,000 tokens a minute', '7:40 AM'],
+    ['Google Gemini', 'Gemini Flash', 'Free daily quota on Flash', '12:30 PM'],
+    ['OpenRouter', 'GPT-OSS 120B · GPT-OSS 20B (free)', '50 requests a day, or 1,000 after a one-time $10 credit', '5:30 AM tomorrow']
+  ],
+  USE: { normal: [41, 0, 0, 0, 0], backup: [100, 38, 0, 0, 0], out: [100, 100, 100, 100, 100] },
+  rows: function (st) {
+    var use = AIX.USE[st];
+    return AIX.P.map(function (p, i) {
+      var u = use[i], full = u >= 100, active = !full && (i === 0 || use[i - 1] >= 100);
+      var status = full ? 'Limit reached · resets ' + p[3] : (active ? 'In use' : 'Standby');
+      var tone = full ? 'var(--red)' : (active ? 'var(--green)' : 'var(--ink-3)');
+      return { n: String(i + 1), name: p[0], models: p[1], allowance: p[2], status: status,
+        usedText: full ? 'Used up' : (u ? u + '% used today' : 'Not used today'),
+        bar: 'display: block; height: 100%; border-radius: 2px; width: ' + Math.max(2, u) + '%; background: ' + (full ? 'var(--red)' : 'var(--ink)'),
+        pill: 'flex: 0 0 auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; border: 1px solid ' + tone + '; color: ' + tone,
+        dot: 'width: 6px; height: 6px; border-radius: 50%; background: ' + tone };
+    });
+  },
+  banner: function (st, retried) {
+    if (st === 'backup') return { show: true, out: false, title: 'Groq used its free limit, so Cerebras took over.', body: 'Nothing to do. Drafts are being written as normal. Groq resets at 9:15 AM IST.', style: 'display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--rule-2); background: var(--card)', tag: 'USING BACKUP · 2 OF 5', tagStyle: 'font-size: 11px; letter-spacing: .1em; color: var(--amber)' };
+    if (st === 'out') return { show: true, out: true, title: 'All 5 free AI limits are used up for now.', body: 'Your jobs, match scores and this brief are all here. 6 drafts (tailored resumes and notes) are waiting and will finish on their own. First reset: Mistral at 7:40 AM IST, in 35 minutes. Four of the five are back by 12:30 PM.', note: retried ? 'Tried again just now. Still busy. Next automatic try at 7:20 AM.' : 'You got one Telegram message about this. No more until it’s sorted.', retryLabel: retried ? 'Tried · still busy' : 'Try again now', style: 'display: flex; flex-direction: column; gap: 8px; padding: 16px 18px; border-radius: 12px; border: 1px solid var(--red); background: var(--red-soft)', tag: 'DRAFTS PENDING · 6', tagStyle: 'font-size: 11px; letter-spacing: .1em; color: var(--red-ink)' };
+    return { show: false, out: false, title: '', body: '', note: '', retryLabel: '', style: '', tag: '', tagStyle: '' };
+  },
+  preview: function (self, st) {
+    return [['normal', 'Normal'], ['backup', 'Using backup'], ['out', 'All limits used']].map(function (o) {
+      var on = o[0] === st;
+      return { label: o[1], pressed: on ? 'true' : 'false', pick: function () { AIX.set(o[0]); self._ai = o[0]; self.forceUpdate(); },
+        style: 'min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)') + '; font-size: 13px; font-weight: 600' };
+    });
+  }
+};
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) { super(props); this.state = { st: {}, need: {}, log: false, wSel: 0, sOpen: false, q: '' }; }
+  renderVals() {
+    this.jpInit(); AIX.listen(this);
+    var self = this, s = this.state, aiB = AIX.banner(this._ai, s.aiRetried);
+    var J = [
+      [1, 'Frontend Developer', 'Northwind Labs', 'Mumbai, hybrid', 92, 'Closes in 2 days', 'red'],
+      [2, 'Frontend Developer, React', 'Marigold Fintech', 'Mumbai, hybrid', 90, 'Posted 3 hours ago', 'blue'],
+      [3, 'React Engineer', 'Kestrel Pay', 'Remote', 87, 'Riya can refer you', 'green'],
+      [4, 'Next.js Developer', 'Cobalt Commerce', 'Remote', 84, 'Caught 6 min after posting', 'blue'],
+      [5, 'UI Engineer', 'Banyan Health', 'Pune, hybrid', 83, 'Posted today', 'blue'],
+      [6, 'React Developer', 'Quill Learning', 'Remote', 82, 'All 3 key skills match', 'ink'],
+      [7, 'Frontend Engineer II', 'Fernway Travel', 'Navi Mumbai', 81, 'Good salary fit', 'ink'],
+      [8, 'UI Engineer', 'Arcadia Maps', 'Bengaluru, hybrid', 81, 'Closes Friday', 'red'],
+      [9, 'Frontend Engineer', 'Copperleaf Insurance', 'Mumbai', 80, 'Uses your exact stack', 'ink']
+    ];
+    var COL = { red: 'var(--red)', blue: 'var(--blue)', green: 'var(--green)', ink: 'var(--ink-2)' };
+    var set = function (id, v) { var x = Object.assign({}, self.state.st); if (v) x[id] = v; else delete x[id]; self.setState({ st: x }); };
+    var applied = J.filter(function (j) { return s.st[j[0]] === 'applied'; }).length;
+    var left = J.length - Object.keys(s.st).length;
+    var N = [
+      ['n1', 'FOLLOW-UP · PINECREST STUDIO', 'Nine days without a reply. A short follow-up is drafted.', 'Send follow-up', 'Sent. Next check in 5 days.'],
+      ['n2', 'REFERRAL · NORTHWIND LABS', 'Ask Riya Kulkarni (alumna, Sr. Frontend) for a referral.', 'Send message', 'Sent to Riya.'],
+      ['n3', 'RECRUITER · KESTREL PAY', 'Ananya asked for your expected CTC and notice period.', 'Send reply', 'Reply sent.']
+    ];
+    var pendingN = N.filter(function (n) { return !s.need[n[0]]; }).length;
+    var MOBW = true, MOB = true;
+    var WK = [
+      ['Tue', '20', true, [['Follow up with Pinecrest Studio', 'task', 'Pipeline'], ['Tealbrook round 1 · done, cleared', 'done', 'Progress']]],
+      ['Wed', '21', false, [['Kestrel Pay · round 2 · 3:00 PM IST', 'round', 'Prepare']]],
+      ['Thu', '22', false, [['Saffron · HR screen · 11:00 AM IST · moved', 'round', 'Pipeline'], ['Juniper · round 1 · 4:00 PM IST', 'round', 'Pipeline'], ['Northwind application closes', 'deadline', 'Jobs']]],
+      ['Fri', '23', false, []],
+      ['Sat', '24', false, []],
+      ['Sun', '25', false, []],
+      ['Mon', '26', false, [['Decide on Orchid Pay offer (reply by Tue 27)', 'deadline', 'Pipeline']]]
+    ];
+    var KC = { round: 'var(--blue)', deadline: 'var(--red)', task: 'var(--ink-2)', done: 'var(--green)' };
+    var KL = { round: 'Interview', deadline: 'Deadline', task: 'To do', done: 'Done' };
+    var wSel = s.wSel === undefined ? 0 : s.wSel;
+    var WKR = {
+      week: WK.map(function (w, i) { var on = i === wSel; var n = w[3].length;
+        return { day: w[0], date: w[1], today: w[2], count: n ? String(n) : '', has: n > 0, selected: on ? 'true' : 'false',
+          pick: function () { self.setState({ wSel: i }); },
+          chipStyle: 'flex: 0 0 auto; width: 46px; min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule)') + '; background: ' + (on ? 'var(--ink)' : (w[2] ? 'var(--card)' : 'transparent')) + '; color: ' + (on ? 'var(--paper)' : 'var(--ink)'),
+          colStyle: 'display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 12px 10px; border-radius: 10px; min-height: 120px; background: ' + (w[2] ? 'var(--card)' : 'transparent') + '; border: 1px solid ' + (w[2] ? 'var(--rule-2)' : 'var(--rule)'),
+          headStyle: 'display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; font-weight: 600; color: ' + (w[2] ? 'var(--ink)' : 'var(--ink-2)'),
+          items: w[3].map(function (it) { return { text: it[0], kind: KL[it[1]], href: (MOBW ? 'M' : '') + it[2] + '.dc.html', dot: 'flex: 0 0 auto; width: 8px; height: 8px; margin-top: 6px; border-radius: 2px; background: ' + KC[it[1]], kindStyle: 'font-size: 10px; letter-spacing: .06em; color: ' + KC[it[1]] }; }) }; }),
+      wDay: (function () { var w = WK[wSel]; return (w[2] ? 'Today · ' : '') + w[0] + ' ' + w[1] + ' Oct'; })(),
+      wItems: WK[wSel][3].map(function (it) { return { text: it[0], kind: KL[it[1]].toUpperCase(), href: (MOBW ? 'M' : '') + it[2] + '.dc.html', dot: 'flex: 0 0 auto; width: 8px; height: 8px; margin-top: 7px; border-radius: 2px; background: ' + KC[it[1]], kindStyle: 'font-size: 10px; letter-spacing: .06em; color: ' + KC[it[1]] }; }),
+      wEmpty: WK[wSel][3].length === 0,
+      wNext: 'Next week: Tealbrook round 2 Wed 28 Oct, 9:30 PM IST · Vellum Health offer reply by Fri 30 Oct'
+    };
+    var SX = [
+      ['Job', 'Frontend Developer · Northwind Labs', 'Mumbai, hybrid · 92% match · closes Thu 22 Oct', 'Jobs', 'react next.js typescript dashboard'],
+      ['Job', 'React Engineer · Kestrel Pay', 'Remote · interview round 2 Wed 21 Oct', 'Jobs', 'payments checkout'],
+      ['Job', 'Next.js Developer · Cobalt Commerce', 'Remote · 84% match', 'Jobs', 'storefront prisma'],
+      ['Company', 'Tealbrook Analytics', 'Round 2 Wed 28 Oct, 9:30 PM IST · frontend system design', 'Pipeline', 'dashboard new york'],
+      ['Company', 'Vellum Health', 'Offer ₹22 L year one · reply by Fri 30 Oct', 'Pipeline', 'offer hybrid pune'],
+      ['Company', 'Orchid Pay', 'Offer ₹21 L · reply by Tue 27 Oct', 'Pipeline', 'offer remote'],
+      ['Note', 'Kestrel Pay: ask about on-call for checkout', 'Pipeline note · Kabir Menon referred me', 'Pipeline', 'kestrel referral'],
+      ['Note', 'Tealbrook: round 2 interviewer wants dashboard design depth', 'Pipeline note', 'Pipeline', 'system design'],
+      ['Note', 'Saffron Systems: recruiter moved the HR screen, same panel', 'Pipeline note', 'Pipeline', 'reschedule'],
+      ['Question', 'What does this print? setTimeout vs Promise', 'Harbor & Co · round 2 · weak · event loop', 'Progress', 'event loop microtask javascript'],
+      ['Question', 'Build an autocomplete that calls an API as you type', 'Monsoon Labs · machine coding · weak', 'Progress', 'debounce abortcontroller combobox'],
+      ['Question', 'Tell me about a time you disagreed with a designer', 'Tealbrook · behavioural · weak · STAR', 'Progress', 'star story conflict'],
+      ['Question', 'Explain the event loop (likely at Kestrel Pay)', 'Prepare · asked 7 times', 'Prepare', 'event loop javascript'],
+      ['Draft', 'Referral ask to Riya Kulkarni', 'Studio · Northwind Labs', 'Studio', 'referral alumni'],
+      ['Draft', 'Follow-up to Pinecrest Studio', 'Studio · scheduled for 10:00 AM', 'Studio', 'follow up'],
+      ['Story', 'Dashboard rebuild: LCP 4.1 s to 2.3 s', 'Story bank · ownership, performance', 'Progress', 'performance lighthouse star']
+    ];
+    var sq = (s.q || '').trim().toLowerCase();
+    var hits = sq ? SX.filter(function (r) { return (r[1] + ' ' + r[2] + ' ' + r[4] + ' ' + r[0]).toLowerCase().indexOf(sq) >= 0; }) : SX.filter(function (r, i) { return [1, 3, 6, 9].indexOf(i) >= 0; });
+    var SRV = {
+      searchOpen: !!s.sOpen,
+      openSearch: function () { self.setState({ sOpen: true, q: '' }); },
+      closeSearch: function () { self.setState({ sOpen: false }); },
+      q: s.q || '', onQ: function (e) { self.setState({ q: e.target.value }); },
+      sLabel: sq ? hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for “' + s.q.trim() + '”' : 'RECENT',
+      sHits: hits.map(function (r) { return { type: r[0].toUpperCase(), title: r[1], sub: r[2], href: (MOB ? 'M' : '') + (r[3] === 'Today' ? 'Brief' : r[3]) + '.dc.html', where: r[3] }; }),
+      sNone: sq && hits.length === 0
+    };
+    return Object.assign(WKR, SRV, {
+      theme: this._jpT,
+      aiShow: aiB.show, aiOut: aiB.out, aiStyle: aiB.style, aiTag: aiB.tag, aiTagStyle: aiB.tagStyle, aiTitle: aiB.title, aiBody: aiB.body, aiNote: aiB.note || '', aiRetryLabel: aiB.retryLabel || '',
+      aiRetry: function () { self.setState({ aiRetried: true }); },
+      lead: left === 0 ? 'That’s everything for today. The Kestrel brief is ready when you are.' : (left === 1 ? 'One job left for today, and Kestrel Pay is tomorrow at 3.' : (left + ' strong matches are waiting today, and Kestrel Pay is tomorrow at 3.')),
+      doneLabel: applied + ' of ' + J.length + ' sent', donePct: (applied / J.length * 100) + '%',
+      jobs: J.map(function (j, i) {
+        var st = s.st[j[0]];
+        var pend = aiB.out && i >= 3;
+        return { pend: pend, num: st === 'applied' ? '✓' : String(j[0]), title: j[1], company: j[2], loc: j[3], score: j[4], why: j[5],
+          isOpen: !st, isClosed: !!st,
+          stateLabel: st === 'applied' ? 'Applied · tracking it in Pipeline' : 'Skipped for today',
+          stateStyle: 'font-size: 14px; font-weight: 600; color: ' + (st === 'applied' ? 'var(--green)' : 'var(--ink-3)'),
+          whyStyle: 'font-weight: 600; color: ' + COL[j[6]],
+          numStyle: 'flex: 0 0 26px; font-size: 28px; line-height: 1; color: ' + (st === 'applied' ? 'var(--green)' : 'var(--ink-3)'),
+          titleStyle: 'font-size: 22px; line-height: 1.12; text-decoration: ' + (st ? 'line-through' : 'none') + '; color: ' + (st ? 'var(--ink-3)' : 'var(--ink)'),
+          rowStyle: 'display: flex; flex-direction: column; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--rule); animation-delay: ' + (i * 0.05).toFixed(2) + 's',
+          apply: function () { set(j[0], 'applied'); }, skip: function () { set(j[0], 'skipped'); }, undo: function () { set(j[0], null); } };
+      }),
+      needCount: pendingN + ' waiting',
+      needs: N.map(function (n) { var d = !!s.need[n[0]];
+        return { kind: n[1], text: n[2], action: n[3], doneLabel: '✓ ' + n[4], pending: !d, done: d,
+          approve: function () { var x = Object.assign({}, self.state.need); x[n[0]] = true; self.setState({ need: x }); } }; }),
+      overnight: [{ k: 'Jobs read', v: '163' }, { k: 'Good matches', v: '9' }, { k: 'Scams hidden', v: '2' }, { k: 'Moved from email', v: '2' }],
+      logOpen: s.log, openLog: function () { self.setState({ log: true }); }, closeLog: function () { self.setState({ log: false }); },
+      log: [
+        { t: '6:00 AM', who: 'Job search', what: 'Read 163 jobs from Naukri, Indeed, LinkedIn and 41 careers pages. 9 good matches.' },
+        { t: '6:04 AM', who: 'Safety check', what: 'Hid 2 postings that asked for a registration fee.' },
+        { t: '6:10 AM', who: 'Inbox', what: 'Kestrel Pay invite found. Card moved to Interview.' },
+        { t: '6:12 AM', who: 'Research', what: 'Built the Kestrel Pay brief from 23 sources.' },
+        { t: '6:20 AM', who: 'Writer', what: 'Drafted a follow-up for Pinecrest and a reply to Ananya.' }
+      ]
+    });
+  }
+}
+</script>
+</body>
+</html>

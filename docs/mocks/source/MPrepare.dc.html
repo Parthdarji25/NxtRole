@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Prepare (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--scrim:rgba(24,24,28,.28);--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--scrim:rgba(0,0,0,.55);--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button,textarea{font-family:inherit}
+button{cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet{animation:up .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.fade{animation:fadein .3s ease both}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@keyframes vpulse{0%,100%{opacity:.3}50%{opacity:1}}
+.vpulse{animation:vpulse 1s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <header style="flex: 0 0 auto; padding: 14px 20px 0; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid var(--rule)">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <h1 class="serif" style="margin: 0; font-size: 38px; line-height: 1">Prepare</h1>
+      <button type="button" onClick="{{openPractice}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 10px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 14px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>Mock interview
+      </button>
+    </div>
+    <div style="display: flex; gap: 20px">
+      <sc-for list="{{interviews}}" as="i" hint-placeholder-count="2">
+        <button type="button" onClick="{{i.pick}}" aria-pressed="{{i.pressed}}" style="{{i.style}}">{{i.label}}</button>
+      </sc-for>
+    </div>
+  </header>
+
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; display: flex; flex-direction: column">
+    <section style="flex: 0 0 auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; background: var(--card); border-bottom: 1px solid var(--rule)">
+      <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--red)">{{whenUpper}} · IN {{countdown}}</span>
+      <span class="serif" style="font-size: 22px; line-height: 1.15">{{d.role}}</span>
+      <span style="font-size: 13px; color: var(--ink-3)">Built from {{d.sources}} sources · updated {{d.updated}}</span>
+      <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 6px">
+        <span style="display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2)"><span>Prep plan</span><span class="mono">{{planDone}} of {{planTotal}}</span></span>
+        <sc-for list="{{plan}}" as="p" hint-placeholder-count="5">
+          <label style="display: flex; gap: 12px; align-items: center; min-height: 40px; cursor: pointer"><input type="checkbox" checked="{{p.done}}" onChange="{{p.toggle}}" style="width: 20px; height: 20px; accent-color: var(--blue); flex: 0 0 auto"><span style="{{p.textStyle}}">{{p.label}}</span></label>
+        </sc-for>
+      </div>
+    </section>
+
+    <div class="scroll" role="group" aria-label="Brief sections" style="flex: 0 0 auto; position: sticky; top: 0; z-index: 2; display: flex; gap: 8px; overflow-x: auto; padding: 12px 20px; background: var(--paper); border-bottom: 1px solid var(--rule)">
+      <sc-for list="{{secs}}" as="t" hint-placeholder-count="6">
+        <button type="button" aria-pressed="{{t.selected}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+      </sc-for>
+    </div>
+
+    <div style="padding: 20px 20px 32px">
+      <sc-if value="{{sCompany}}" hint-placeholder-val="{{ true }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 16px">
+          <p class="serif" style="margin: 0; font-size: 24px; line-height: 1.2">{{d.oneLiner}}</p>
+          <p style="margin: 0; color: var(--ink-2)">{{d.detail}}</p>
+          <div style="display: flex; flex-direction: column">
+            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3); padding-bottom: 4px">WHAT THEY MAKE</span>
+            <sc-for list="{{d.products}}" as="p" hint-placeholder-count="3"><div style="padding: 10px 0; border-top: 1px solid var(--rule)"><span style="font-weight: 600">{{p.name}}</span><br><span style="font-size: 14px; color: var(--ink-2)">{{p.desc}}</span></div></sc-for>
+          </div>
+          <div style="display: flex; flex-direction: column">
+            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3); padding-bottom: 4px">WHAT THEY VALUE</span>
+            <sc-for list="{{d.values}}" as="v" hint-placeholder-count="3"><div style="padding: 10px 0; border-top: 1px solid var(--rule); font-size: 14px"><span style="font-weight: 600">{{v.k}}</span><span style="color: var(--ink-2)">: {{v.v}}</span></div></sc-for>
+          </div>
+          <div style="padding: 14px; border-radius: 12px; background: var(--blue-soft); display: flex; flex-direction: column; gap: 6px">
+            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--blue)">CONNECT IT TO YOU</span>
+            <sc-for list="{{d.connect}}" as="c" hint-placeholder-count="2"><span style="font-size: 14px">→ {{c}}</span></sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{sRounds}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column">
+          <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3); padding-bottom: 8px">USUALLY {{d.processLen}}</span>
+          <sc-for list="{{d.rounds}}" as="r" hint-placeholder-count="4">
+            <div style="display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid var(--rule)">
+              <span class="serif" style="flex: 0 0 22px; font-size: 30px; line-height: 1; color: var(--ink-3)">{{r.n}}</span>
+              <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+                <span style="display: flex; justify-content: space-between; gap: 8px"><span style="font-weight: 600">{{r.name}}</span><span style="{{r.diffStyle}}">{{r.diff}}</span></span>
+                <span class="mono" style="font-size: 12px; color: var(--ink-3)">{{r.format}}</span>
+                <span style="font-size: 14px; color: var(--ink-2)">{{r.what}}</span>
+                <span style="font-size: 14px"><span style="font-weight: 600">Tip:</span> {{r.tip}}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{sBehaviour}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 16px">
+          <p style="margin: 0; color: var(--ink-2)">{{d.styleLine}}</p>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">WHAT THEY PROBE MOST</span>
+            <sc-for list="{{d.traits}}" as="t" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; gap: 4px"><span style="display: flex; justify-content: space-between; font-size: 14px"><span>{{t.name}}</span><span class="mono" style="color: var(--ink-3)">{{t.pct}}%</span></span><span style="display: block; height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden"><span style="{{t.bar}}"></span></span></div>
+            </sc-for>
+          </div>
+          <sc-for list="{{d.bq}}" as="b" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid var(--rule)">
+              <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{b.trait}} · {{b.meta}}</span>
+              <span style="font-weight: 600">{{b.q}}</span>
+              <div style="{{b.box}}"><span class="mono" style="{{b.labelStyle}}">{{b.label}}</span><span style="font-size: 14px">{{b.story}}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{sQuestions}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column">
+          <div class="scroll" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px">
+            <sc-for list="{{origins}}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="{{o.style}}">{{o.label}}</button></sc-for>
+          </div>
+          <sc-for list="{{questions}}" as="q" hint-placeholder-count="5">
+            <div style="border-top: 1px solid var(--rule)">
+              <button type="button" onClick="{{q.toggle}}" aria-expanded="{{q.expanded}}" style="display: flex; gap: 10px; width: 100%; padding: 14px 0; background: none; border: none; text-align: left; color: var(--ink)">
+                <span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+                  <span class="mono" style="{{q.tagStyle}}">{{q.tag}} · {{q.meta}}</span>
+                  <span style="font-size: 15px; font-weight: 600">{{q.text}}</span>
+                </span>
+                <span aria-hidden="true" style="flex: 0 0 auto; font-size: 20px; color: var(--ink-3)">{{q.chev}}</span>
+              </button>
+              <sc-if value="{{q.open}}" hint-placeholder-val="{{ false }}">
+                <div class="fade" style="display: flex; flex-direction: column; gap: 6px; padding: 0 0 16px">
+                  <sc-for list="{{q.outline}}" as="l" hint-placeholder-count="3"><span style="font-size: 14px; color: var(--ink-2)">· {{l}}</span></sc-for>
+                  <button type="button" onClick="{{q.practise}}" style="align-self: flex-start; min-height: 44px; padding: 0; background: none; border: none; color: var(--blue); font-weight: 600; font-size: 14px">Practise this →</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{sSalary}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 16px">
+          <span style="display: flex; align-items: baseline; gap: 8px"><span class="serif" style="font-size: 56px; line-height: 1">₹{{d.sal.med}} L</span><span style="color: var(--ink-2); font-size: 14px">median for this role</span></span>
+          <div style="position: relative; height: 34px">
+            <span style="position: absolute; left: 0; right: 0; top: 16px; height: 2px; background: var(--rule-2)"></span>
+            <span style="{{bandStyle}}"></span>
+            <span style="{{askStyle}}"></span>
+          </div>
+          <span style="display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3)" class="mono"><span>₹{{d.sal.min}} L</span><span>₹{{d.sal.max}} L</span></span>
+          <div style="padding: 14px; border-radius: 12px; border: 1px solid var(--rule); background: var(--card); display: flex; flex-direction: column; gap: 4px">
+            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--red)">WHAT TO ASK FOR</span>
+            <span class="serif" style="font-size: 26px">₹{{d.sal.ask}}–{{d.sal.askHi}} LPA</span>
+            <span style="font-size: 14px; color: var(--ink-2)">Most people here get ₹{{d.sal.p25}}–{{d.sal.p75}} L ({{d.sal.n}} data points). Say your range once, then stop talking.</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{sSources}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column">
+          <sc-for list="{{d.srcs}}" as="x" hint-placeholder-count="5">
+            <div style="padding: 12px 0; border-top: 1px solid var(--rule); display: flex; flex-direction: column"><span style="font-weight: 600">{{x.site}}</span><span style="font-size: 14px; color: var(--ink-2)">{{x.what}} · {{x.when}}</span></div>
+          </sc-for>
+          <span style="padding-top: 12px; font-size: 13px; color: var(--ink-3)">Only public pages are read. NxtRole never logs in to these sites as you.</span>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="prepare" hint-size="390px,84px"></dc-import></div>
+
+  <sc-if value="{{practice}}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{closePractice}}" aria-label="Close" class="fade" style="position: absolute; inset: 0; z-index: 40; border: none; padding: 0; background: var(--scrim); cursor: default"></button>
+    <section class="sheet scroll" role="dialog" aria-modal="true" aria-label="Mock interview" style="position: absolute; z-index: 41; left: 0; right: 0; bottom: 0; max-height: 92%; overflow-y: auto; box-sizing: border-box; padding: 10px 20px 28px; border-radius: 18px 18px 0 0; background: var(--paper); border-top: 1px solid var(--rule); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px">
+      <span aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: var(--rule-2)"></span>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">MOCK INTERVIEW · {{pIndex}}</span>
+        <button type="button" onClick="{{closePractice}}" aria-label="Close" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 20px; line-height: 1">×</button>
+      </div>
+      <p class="serif" style="margin: 0; font-size: 24px; line-height: 1.2">{{pQuestion}}</p>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+        <div role="group" aria-label="How you answer" style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 8px; border: 1px solid var(--rule)">
+          <button type="button" onClick="{{modeType}}" aria-pressed="{{typePressed}}" style="{{typeStyle}}">Type</button>
+          <button type="button" onClick="{{modeSpeak}}" aria-pressed="{{speakPressed}}" style="{{speakStyle}}">Speak</button>
+        </div>
+        <button type="button" onClick="{{hear}}" style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0; background: none; border: none; color: var(--blue); font-weight: 600; font-size: 14px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"></path></svg>{{hearLabel}}</button>
+      </div>
+      <sc-if value="{{isSpeak}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; border: 1px solid var(--rule); background: var(--card)">
+          <sc-if value="{{recIdle}}" hint-placeholder-val="{{ true }}">
+            <button type="button" onClick="{{recStart}}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border-radius: 999px; border: none; background: var(--red); color: var(--paper); font-weight: 600; font-size: 15px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: var(--paper)"></span>Start answering</button>
+            <span style="font-size: 13px; color: var(--ink-3)">Answer out loud, as you would in the room. The recording goes to Whisper on Groq to become text, then it is deleted. Only the text is kept.</span>
+          </sc-if>
+          <sc-if value="{{recOn}}" hint-placeholder-val="{{ false }}">
+            <div role="status" aria-label="Recording" style="display: flex; align-items: center; gap: 12px">
+              <span class="vpulse" aria-hidden="true" style="flex: 0 0 auto; width: 12px; height: 12px; border-radius: 50%; background: var(--red)"></span>
+              <span class="mono" style="font-size: 20px">{{recTime}}</span>
+              <span aria-hidden="true" style="display: flex; gap: 3px; align-items: center; height: 30px; overflow: hidden; min-width: 0"><sc-for list="{{levels}}" as="l" hint-placeholder-count="12"><span style="{{l}}"></span></sc-for></span>
+              <button type="button" onClick="{{recStop}}" style="margin-left: auto; flex: 0 0 auto; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600">Stop</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{recBusy}}" hint-placeholder-val="{{ false }}"><span role="status" style="font-size: 14px; color: var(--ink-2)">Turning your answer into text with Whisper…</span></sc-if>
+          <sc-if value="{{recDone}}" hint-placeholder-val="{{ false }}">
+            <label for="mtrans" style="font-size: 13px; font-weight: 600">What Whisper heard. Fix anything it got wrong.</label>
+            <textarea id="mtrans" value="{{answer}}" onChange="{{onAnswer}}" rows="7" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--paper); color: var(--ink); font-size: 16px; line-height: 1.5; resize: vertical"></textarea>
+            <button type="button" onClick="{{recAgain}}" style="align-self: flex-start; padding: 0; min-height: 44px; background: none; border: none; color: var(--ink-2); font-size: 13px; text-decoration: underline">Record again</button>
+          </sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{isType}}" hint-placeholder-val="{{ true }}">
+      <label for="mans" style="font-size: 13px; font-weight: 600">Your answer</label>
+      <textarea id="mans" class="inp" rows="6" value="{{answer}}" onChange="{{onAnswer}}" placeholder="Type it the way you’d say it…" style="padding: 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px; line-height: 1.5; resize: none"></textarea>
+      </sc-if>
+      <sc-if value="{{noFeedback}}" hint-placeholder-val="{{ true }}">
+        <button type="button" onClick="{{submit}}" style="{{submitStyle}}">Get feedback</button>
+      </sc-if>
+      <sc-if value="{{hasFeedback}}" hint-placeholder-val="{{ false }}">
+        <div class="fade" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule)">
+          <span style="display: flex; align-items: baseline; gap: 6px"><span class="serif" style="font-size: 44px; line-height: 1">{{fbScore}}</span><span class="mono" style="font-size: 12px; color: var(--ink-3)">/ 10</span></span>
+          <sc-for list="{{fbBars}}" as="b" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 4px"><span style="display: flex; justify-content: space-between; font-size: 14px"><span>{{b.k}}</span><span class="mono">{{b.v}}</span></span><span style="display: block; height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden"><span style="{{b.bar}}"></span></span></div>
+          </sc-for>
+          <sc-if value="{{hasVoice}}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--rule)">
+              <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">HOW YOU SOUNDED</span>
+              <sc-for list="{{voiceRows}}" as="v" hint-placeholder-count="3"><div style="display: flex; flex-direction: column; gap: 0"><span style="font-size: 13px; color: var(--ink-3)">{{v.k}}</span><span style="{{v.style}}">{{v.v}}</span></div></sc-for>
+            </div>
+          </sc-if>
+          <span style="font-size: 14px; color: var(--ink-2)"><span style="font-weight: 600; color: var(--ink)">Try next time:</span> {{fbTip}}</span>
+          <button type="button" onClick="{{nextQ}}" style="min-height: 48px; border-radius: 12px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 15px">Next question →</button>
+        </div>
+      </sc-if>
+    </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var VOICE = {
+  STARQ: ['qb', 'asked', 'Behavioural', 'Tell me about a bug that reached production. What did you do?', 'Asked 5× · last seen Sep 2026', ['Situation: what broke and who it hit', 'Task: what you owned', 'Action: what you did, step by step', 'Result: a number, and what changed after']],
+  T: {
+    q1: { text: 'Um, so the event loop is how JavaScript runs async work on a single thread. First the call stack runs, then, um, all the microtasks, so promise callbacks, and then the timers. So the promise logs first. Basically, on my dashboard project a state update ran before a fetch finished, and knowing this is how I fixed it.', secs: 25, ok: [true, true, false] },
+    qb: { text: 'So, um, last year a release broke the payment status on our dashboard for about two hours. I was on call, so fixing it was my job. I, like, rolled back first, then found a date being parsed in the wrong time zone, wrote a test for it and shipped the fix the same day. Basically, after that we added a time-zone check to every release.', secs: 23, ok: [true, true, true, false] },
+    q4: { text: 'I have been building dashboards for small businesses for three years, and, um, your merchants are the same kind of customer. Your checkout rebuild post is what made me apply. I am leaving because I want to own a product end to end; my current role is mostly client work.', secs: 22, ok: [true, true, true] }
+  },
+  fillers: function (t) { var m = (t || '').match(/\bum\b|\buh\b|, like,|\bbasically\b|\byou know\b/gi); return m ? m.map(function (x) { return x.replace(/,/g, '').trim().toLowerCase(); }) : []; },
+  levels: function (tick) { var out = []; for (var i = 0; i < 16; i++) { var h = 6 + Math.round(Math.abs(Math.sin((tick + i * 1.7) * 0.9)) * 22); out.push('display: block; width: 3px; height: ' + h + 'px; border-radius: 2px; background: var(--red)'); } return out; },
+  stats: function (q, ans) {
+    var t = VOICE.T[q[0]] || { secs: 40, ok: [] };
+    var words = (ans || '').trim().split(/\s+/).filter(Boolean).length;
+    var f = VOICE.fillers(ans), counts = {};
+    f.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+    var missing = []; q[5].forEach(function (o, i) { if (t.ok[i] === false) missing.push(o); });
+    return { t: t, wpm: Math.round(words / (t.secs / 60)), f: f, counts: counts, missing: missing, star: q[0] === 'qb' };
+  },
+  rows: function (q, ans) {
+    var x = VOICE.stats(q, ans), wpm = x.wpm, ok = wpm >= 120 && wpm <= 160;
+    var fl = Object.keys(x.counts).map(function (k) { return k + ' ×' + x.counts[k]; }).join(', ');
+    var checks = q[5].map(function (o, i) { var good = x.t.ok[i] !== false; if (x.star) return o.split(':')[0] + (good ? ' ✓' : ' missing'); return good ? o + ' ✓' : 'Missing: ' + o.charAt(0).toLowerCase() + o.slice(1); });
+    var st = function (good) { return 'font-size: 14px; color: ' + (good ? 'var(--ink)' : 'var(--amber)'); };
+    return [
+      { k: 'Pace', v: wpm + ' words a minute over ' + x.t.secs + ' s · ' + (ok ? 'a calm range is 120–160' : (wpm > 160 ? 'a little fast; aim for 120–160' : 'a little slow; aim for 120–160')), style: st(ok) },
+      { k: 'Filler words', v: x.f.length ? x.f.length + ': ' + fl : 'None. Nice.', style: st(x.f.length <= 2) },
+      { k: x.star ? 'STAR' : 'Covered', v: checks.join(' · '), style: st(x.missing.length === 0) }
+    ];
+  },
+  tip: function (q, ans) {
+    var x = VOICE.stats(q, ans);
+    if (x.missing.length && x.star) return 'End with the result and a number, for example how many merchants were affected or how long the fix took.';
+    if (x.f.length > 2) return 'Swap “um” and “basically” for a one-second pause. Silence sounds more sure than filler.';
+    if (x.missing.length) return 'Add the missing part: ' + x.missing[0].toLowerCase() + '.';
+    if (x.wpm > 160) return 'Slow down a little. Pausing after the main point gives it time to land.';
+    return 'Good answer. Next time, add one detail only you could know, such as a number from your own project.';
+  },
+  clear: function (self) { if (self._vr) clearInterval(self._vr); if (self._vb) clearTimeout(self._vb); if (self._vh) clearTimeout(self._vh); self._vr = null; self._vb = null; self._vh = null; },
+  vals: function (self, s, pq, mob) {
+    var seg = function (on) { return 'min-height: ' + (mob ? '40px' : '32px') + '; padding: 0 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)'); };
+    var secs = Math.floor((s.tick || 0) * 0.12), speak = s.mode === 'speak';
+    return {
+      isType: !speak, isSpeak: speak,
+      typePressed: speak ? 'false' : 'true', speakPressed: speak ? 'true' : 'false',
+      typeStyle: seg(!speak), speakStyle: seg(speak),
+      modeType: function () { VOICE.clear(self); self.setState({ mode: 'type', rec: 'idle', answer: '', fb: null }); },
+      modeSpeak: function () { VOICE.clear(self); self.setState({ mode: 'speak', rec: 'idle', answer: '', fb: null }); },
+      recIdle: (s.rec || 'idle') === 'idle', recOn: s.rec === 'on', recBusy: s.rec === 'busy', recDone: s.rec === 'done',
+      recTime: Math.floor(secs / 60) + ':' + ('0' + (secs % 60)).slice(-2),
+      levels: s.rec === 'on' ? VOICE.levels(s.tick || 0) : [],
+      recStart: function () { VOICE.clear(self); self.setState({ rec: 'on', tick: 0, fb: null }); self._vr = setInterval(function () { self.setState({ tick: (self.state.tick || 0) + 1 }); }, 120); },
+      recStop: function () { var key = pq[0]; VOICE.clear(self); self.setState({ rec: 'busy' }); self._vb = setTimeout(function () { var t = VOICE.T[key]; self.setState({ rec: 'done', answer: t ? t.text : 'I would start with the problem, then what I did, then the result.' }); }, 1200); },
+      recAgain: function () { VOICE.clear(self); self.setState({ rec: 'idle', answer: '', fb: null }); },
+      hear: function () { if (self._vh) clearTimeout(self._vh); self.setState({ hearing: true }); self._vh = setTimeout(function () { self.setState({ hearing: false }); }, 2600); },
+      hearLabel: s.hearing ? 'Playing the question…' : 'Hear the question',
+      hasVoice: !!(s.fb && s.fb.voice),
+      voiceRows: s.fb && s.fb.voice ? VOICE.rows(pq, s.answer) : []
+    };
+  }
+};
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) { super(props); this.state = { iv: 0, sec: 'company', origin: 'all', openQ: 'q1', plan: { 0: true, 1: true }, practice: false, pq: 0, answer: '', fb: null, mode: 'type', rec: 'idle', tick: 0, hearing: false }; }
+  componentWillUnmount() { VOICE.clear(this); }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state, MOBV = true;
+    var D = [{
+      company: 'Kestrel Pay', role: 'React Engineer · Round 2 of 4', when: 'Wed 21 Oct · 3:00 PM IST', countdown: '1 DAY 7 H', sources: 23, updated: '2 hours ago', processLen: '2–3 WEEKS, 4 ROUNDS',
+      oneLiner: 'Kestrel Pay helps small Indian businesses take online payments and get paid faster.',
+      detail: 'Shops, D2C brands and freelancers use its checkout, payment links and invoicing to accept UPI, cards and netbanking. The frontend team owns checkout and the merchant dashboard.',
+      products: [['Checkout', 'Embeddable payment page for sites and apps.'], ['Payment links', 'Get paid over WhatsApp or SMS, no website needed.'], ['Merchant dashboard', 'Payments, refunds, settlements and GST reports.']],
+      values: [['Merchant first', 'decisions start with the shop owner'], ['Own it end to end', 'ship, measure and fix your own work'], ['Trust is the product', 'payments must never fail silently']],
+      connect: ['Your Next.js dashboard maps to their merchant dashboard', 'Your load-time win echoes their checkout rebuild post'],
+      rounds: [['Online assessment', 'HackerRank · 90 min', 'Medium', 'Two array/string problems plus “what does this print?” JavaScript questions.', 'Do the JS output questions first; they’re quick points.'], ['JS & React deep dive', 'Video · 60 min', 'Hard', 'Closures, the event loop, hooks and rendering, with follow-ups.', 'Think out loud. They care about why, not only what.'], ['Machine coding', 'Video · 75 min', 'Hard', 'Build an autocomplete or payment-form stepper live, then extend it.', 'Get a simple version working first.'], ['Manager + HR', 'Video · 45 min', 'Easy', 'Your projects, disagreements, why Kestrel. HR covers CTC and notice.', 'Have a two-minute project story with a number in it.']],
+      styleLine: 'Strict STAR answers, two or three follow-ups per story, and they notice numbers. The manager round is about 70% behavioural.',
+      traits: [['Ownership', 82], ['Customer focus', 64], ['Handling failure', 58], ['Collaboration', 47]],
+      bq: [['Ownership', 'Asked 6×', 'Tell me about something you shipped end to end. What did you do after it went live?', 'Dashboard rebuild: measured load time before and after, fixed two regressions in week one.'], ['Handling failure', 'Asked 5×', 'Tell me about a bug that reached production.', ''], ['Collaboration', 'Asked 3×', 'Describe a disagreement with a designer or PM.', 'Pushed back on a heavy animation with Lighthouse numbers; agreed a lighter version.']],
+      sal: { n: 14, min: 10, max: 32, p25: 16, p75: 23, med: 19, ask: 20, askHi: 23 },
+      srcs: [['AmbitionBox', '8 interview reviews', 'Jun–Oct 2026'], ['Glassdoor', '6 reviews via search snippets', 'Mar–Sep 2026'], ['GeeksforGeeks', '3 round-by-round write-ups', 'Feb–Aug 2026'], ['Reddit r/developersIndia', '3 threads on process and pay', 'Aug–Oct 2026'], ['Kestrel engineering blog', 'Stack and values', 'Sep 2026']]
+    }, {
+      company: 'Saffron Systems', role: 'React Developer · HR screen', when: 'Thu 22 Oct · 11:00 AM IST', countdown: '2 DAYS 3 H', sources: 9, updated: 'yesterday', processLen: '1–2 WEEKS, 3 ROUNDS',
+      oneLiner: 'Saffron Systems builds dashboards and internal tools for logistics and retail companies.',
+      detail: 'A mix of client projects and its own fleet-tracking product. Frontend developers work in small teams and often talk directly with clients.',
+      products: [['FleetView', 'Live tracking for delivery fleets.'], ['Client projects', 'Custom React apps for enterprises.']],
+      values: [['Client trust', 'deliver what was promised'], ['Practical engineering', 'simple, maintainable code']],
+      connect: ['Your dashboard project is close to FleetView'],
+      rounds: [['HR screen', 'Phone · 20 min', 'Easy', 'Notice period, CTC and location.', 'Have your numbers ready.'], ['Live coding', 'Video · 60 min', 'Medium', 'Plain JavaScript tasks without React.', 'Practise without a framework the day before.'], ['Manager', 'Video · 45 min', 'Medium', 'Deep dive into one project on your resume.', 'Know every decision in your dashboard project.']],
+      styleLine: 'Conversational rather than strict STAR, but they want specifics. Expect a client role-play.',
+      traits: [['Teamwork', 71], ['Client handling', 66], ['Delivery', 54]],
+      bq: [['Client handling', 'Asked 4×', 'How would you tell a client their feature will be a week late?', '']],
+      sal: { n: 9, min: 7, max: 22, p25: 11, p75: 16, med: 13.5, ask: 15, askHi: 16 },
+      srcs: [['AmbitionBox', '6 reviews', 'May–Oct 2026'], ['GeeksforGeeks', '2 write-ups', '2026']]
+    }];
+    var d = D[s.iv];
+    var Q = [
+      ['q1', 'asked', 'JavaScript', 'Explain the event loop. What prints first: setTimeout(…, 0) or a resolved promise?', 'Asked 7×', ['Call stack, then microtasks, then timers', 'So the promise logs first', 'Mention requestAnimationFrame if pushed']],
+      ['q2', 'asked', 'Machine coding', 'Build an accessible autocomplete that calls an API as the user types.', 'Asked 5×', ['Debounce ~300 ms; cancel stale requests', 'Arrow keys, Enter, Escape; aria-activedescendant', 'Loading, empty and error states']],
+      ['q3', 'you', 'React', 'You used Next.js on your dashboard. When would you choose SSR over static generation?', 'From your resume', ['SSR for per-request data', 'SSG/ISR for rarely-changing pages', 'Use your dashboard as the example']],
+      ['q4', 'asked', 'Behavioural', 'Why Kestrel Pay, and why are you leaving your current job?', 'Asked 8×', ['Tie it to payments for small businesses', 'Growth reason, never negative', 'Under a minute']],
+      ['q5', 'you', 'Company', 'How would you design a payment-status component with pending, failed and retry states?', 'From the job post', ['Model status as a state machine', 'Clear next step for each state', 'Avoid double charges on retry']],
+      ['q6', 'asked', 'DSA', 'Group transactions by merchant and return the top 3 by total.', 'Asked 4×', ['Hash map merchant → total', 'Min-heap of size 3', 'O(n log k)']]
+    ];
+    var qList = Q.filter(function (q) { return s.origin === 'all' || q[1] === s.origin; });
+    var SEC = [['company', 'Company'], ['rounds', 'Process'], ['behaviour', 'Behavioural'], ['questions', 'Questions'], ['salary', 'Salary'], ['sources', 'Sources']];
+    var PLAN = ['Re-read the job and your resume', 'Drill the 4 most-asked JS questions', 'One 75-min machine-coding practice', 'Prepare 2 STAR stories with numbers', 'Write 2 questions to ask them'];
+    var pos = function (v) { return ((v - d.sal.min) / (d.sal.max - d.sal.min) * 100).toFixed(1) + '%'; };
+    var chip = function (on) { return 'flex: 0 0 auto; min-height: 36px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)'); };
+    var PQ = [Q[0], VOICE.STARQ, Q[3]];
+    var pq = PQ[s.pq % PQ.length];
+    var fb = s.fb;
+    var can = s.answer.trim().length >= 3 && (s.mode !== 'speak' || s.rec === 'done');
+    return Object.assign({
+      theme: this._jpT,
+      interviews: D.map(function (x, i) { var on = s.iv === i; return { label: x.company, pressed: on ? 'true' : 'false', pick: function () { self.setState({ iv: i, openQ: '' }); },
+        style: 'min-height: 44px; background: none; border: none; padding: 0; font-size: 15px; font-weight: 600; color: ' + (on ? 'var(--ink)' : 'var(--ink-3)') + '; border-bottom: 2px solid ' + (on ? 'var(--blue)' : 'transparent') }; }),
+      d: { company: d.company, role: d.role, sources: d.sources, updated: d.updated, processLen: d.processLen, oneLiner: d.oneLiner, detail: d.detail, styleLine: d.styleLine, connect: d.connect,
+        products: d.products.map(function (p) { return { name: p[0], desc: p[1] }; }),
+        values: d.values.map(function (v) { return { k: v[0], v: v[1] }; }),
+        rounds: d.rounds.map(function (r, i) { var c = r[2] === 'Hard' ? 'var(--red)' : (r[2] === 'Medium' ? 'var(--amber)' : 'var(--green)'); return { n: String(i + 1), name: r[0], format: r[1], diff: r[2], what: r[3], tip: r[4], diffStyle: 'font-size: 12px; font-weight: 600; color: ' + c }; }),
+        traits: d.traits.map(function (t, i) { return { name: t[0], pct: t[1], bar: 'display: block; height: 100%; width: ' + t[1] + '%; background: ' + (i === 0 ? 'var(--ink)' : 'var(--ink-3)') }; }),
+        bq: d.bq.map(function (b) { var has = !!b[3]; return { trait: b[0].toUpperCase(), meta: b[1].toUpperCase(), q: b[2], story: has ? b[3] : 'No story yet. Find one in a mock interview.', label: has ? 'YOUR STORY' : 'GAP', labelStyle: 'font-size: 11px; letter-spacing: .08em; color: ' + (has ? 'var(--green)' : 'var(--red-ink)'), box: 'display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 10px; background: ' + (has ? 'var(--green-soft)' : 'var(--red-soft)') }; }),
+        sal: d.sal, srcs: d.srcs.map(function (x) { return { site: x[0], what: x[1], when: x[2] }; }) },
+      whenUpper: d.when.toUpperCase(), countdown: d.countdown,
+      plan: PLAN.map(function (p, i) { var dn = !!s.plan[i]; return { label: p, done: dn, textStyle: 'font-size: 14px; ' + (dn ? 'color: var(--ink-3); text-decoration: line-through' : 'color: var(--ink-2)'), toggle: function () { var x = Object.assign({}, self.state.plan); x[i] = !x[i]; self.setState({ plan: x }); } }; }),
+      planDone: Object.keys(s.plan).filter(function (k) { return s.plan[k]; }).length, planTotal: PLAN.length,
+      secs: SEC.map(function (t) { var on = s.sec === t[0]; return { label: t[1], selected: on ? 'true' : 'false', style: chip(on), pick: function () { self.setState({ sec: t[0] }); } }; }),
+      sCompany: s.sec === 'company', sRounds: s.sec === 'rounds', sBehaviour: s.sec === 'behaviour', sQuestions: s.sec === 'questions', sSalary: s.sec === 'salary', sSources: s.sec === 'sources',
+      origins: [['all', 'All'], ['asked', 'Asked by them'], ['you', 'Predicted for you']].map(function (o) { var on = s.origin === o[0]; return { label: o[1], pressed: on ? 'true' : 'false', style: chip(on), pick: function () { self.setState({ origin: o[0] }); } }; }),
+      questions: qList.map(function (q) { var open = s.openQ === q[0]; var you = q[1] === 'you';
+        return { text: q[3], meta: q[4].toUpperCase(), outline: q[5], open: open, expanded: open ? 'true' : 'false', chev: open ? '−' : '+', tag: you ? 'FOR YOU' : q[2].toUpperCase(),
+          tagStyle: 'font-size: 10px; letter-spacing: .06em; color: ' + (you ? 'var(--blue)' : 'var(--ink-3)'),
+          toggle: function () { self.setState({ openQ: open ? '' : q[0] }); },
+          practise: function () { self.setState({ practice: true, fb: null, answer: '' }); } }; }),
+      bandStyle: 'position: absolute; top: 14px; height: 6px; border-radius: 3px; background: var(--blue); left: ' + pos(d.sal.p25) + '; width: calc(' + pos(d.sal.p75) + ' - ' + pos(d.sal.p25) + ')',
+      askStyle: 'position: absolute; top: 7px; width: 3px; height: 20px; background: var(--red); left: ' + pos(d.sal.ask),
+      practice: s.practice,
+      openPractice: function () { self.setState({ practice: true, fb: null, answer: '', rec: 'idle' }); },
+      closePractice: function () { VOICE.clear(self); self.setState({ practice: false, rec: 'idle' }); },
+      pIndex: 'QUESTION ' + ((s.pq % PQ.length) + 1) + ' OF ' + PQ.length, pQuestion: pq[3],
+      answer: s.answer, onAnswer: function (e) { self.setState({ answer: e.target.value }); },
+      submitStyle: 'min-height: 50px; border-radius: 12px; border: none; font-weight: 600; font-size: 16px; background: ' + (can ? 'var(--blue)' : 'var(--rule)') + '; color: ' + (can ? 'var(--on-blue)' : 'var(--ink-3)'),
+      submit: function () { if (!can) return; var len = self.state.answer.split(/\s+/).length; var a = Math.min(9, 5 + Math.floor(len / 12)); var b = /then|because|first/i.test(self.state.answer) ? 8 : 6; var c = 8; self.setState({ fb: { score: Math.round((a + b + c) / 3), bars: [['Depth', a], ['Structure', b], ['Clarity', c]], voice: self.state.mode === 'speak' } }); },
+      nextQ: function () { VOICE.clear(self); self.setState({ pq: self.state.pq + 1, answer: '', fb: null, rec: 'idle' }); },
+      noFeedback: !fb, hasFeedback: !!fb, fbScore: fb ? fb.score : 0,
+      fbBars: fb ? fb.bars.map(function (x) { return { k: x[0], v: x[1], bar: 'display: block; height: 100%; width: ' + x[1] * 10 + '%; background: ' + (x[1] >= 7 ? 'var(--green)' : 'var(--amber)') }; }) : [],
+      fbTip: (fb && fb.voice) ? VOICE.tip(pq, s.answer) : pq[5][0] + '. Then give one example from your own project.'
+    }, VOICE.vals(this, s, pq, MOBV));
+  }
+}
+</script>
+</body>
+</html>

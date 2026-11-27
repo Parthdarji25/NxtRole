@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>More (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--red:#C23E2A;--red-ink:#A8321F;--green:#2F6B3A;--on-blue:#FFFFFF;color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--red:#FF8A73;--red-ink:#FF8A73;--green:#8DCB96;--on-blue:#0D1022;color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.row:active{background:var(--card)}
+@keyframes breathe{0%,100%{opacity:.35}50%{opacity:1}}
+.breathe{animation:breathe 2.4s ease-in-out infinite}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 26px">
+    <div style="display: flex; gap: 14px; align-items: center">
+      <span style="flex: 0 0 56px; width: 56px; height: 56px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--ink); color: var(--paper); font-weight: 600; font-size: 18px">AM</span>
+      <span style="display: flex; flex-direction: column">
+        <span class="serif" style="font-size: 28px; line-height: 1.05">Aarav Mehta</span>
+        <span style="font-size: 13px; color: var(--ink-2)">Frontend Developer · Mumbai</span>
+      </span>
+    </div>
+
+    <nav aria-label="More" style="display: flex; flex-direction: column; border-top: 1px solid var(--rule)">
+      <sc-for list="{{links}}" as="l" hint-placeholder-count="3">
+        <a href="{{l.href}}" class="row" style="display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 0 4px; border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--ink)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--ink-2)"><path d="{{l.icon}}"></path></svg>
+          <span style="flex: 1 1 auto; display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 16px">{{l.label}}</span><span style="font-size: 13px; color: var(--ink-3)">{{l.sub}}</span></span>
+          <sc-if value="{{l.hasCount}}" hint-placeholder-val="{{ false }}"><span class="mono" style="min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: var(--red); color: var(--paper); font-size: 11px; line-height: 22px; text-align: center">{{l.count}}</span></sc-if>
+          <span aria-hidden="true" style="color: var(--ink-3); font-size: 20px">›</span>
+        </a>
+      </sc-for>
+    </nav>
+
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">APPEARANCE</span>
+      <div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; border: 1px solid var(--rule)">
+        <button type="button" onClick="{{setLight}}" aria-pressed="{{lightPressed}}" style="{{lightStyle}}">Light</button>
+        <button type="button" onClick="{{setDark}}" aria-pressed="{{darkPressed}}" style="{{darkStyle}}">Dark</button>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule)">
+      <span style="display: flex; align-items: center; gap: 8px; font-weight: 600"><span class="breathe" style="width: 8px; height: 8px; border-radius: 50%; background: var(--green)"></span>Agents are idle</span>
+      <span style="font-size: 14px; color: var(--ink-2)">Next job search at 2:30 PM. Searching runs in the cloud, so your phone can stay asleep.</span>
+      <a href="MToday.dc.html" style="font-size: 14px; font-weight: 600; text-decoration: none; min-height: 32px; display: inline-flex; align-items: center">See the agent log →</a>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 14px">
+      <a href="MLanding.dc.html" style="min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; color: var(--ink-2)">About NxtRole</a>
+      <a href="MLogin.dc.html" style="min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; color: var(--red); font-weight: 600">Sign out</a>
+    </div>
+  </main>
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="more" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  jpSet(n) {
+    try { window.localStorage.setItem('morrow-theme', n); } catch (e) {}
+    this._jpT = n; this.forceUpdate();
+    try { window.dispatchEvent(new Event('jp2-theme')); } catch (e) {}
+  }
+  renderVals() {
+    this.jpInit();
+    var self = this;
+    var dark = this._jpT === 'dark';
+    var seg = function (on) { return 'min-height: 44px; border-radius: 9px; border: none; font-size: 14px; font-weight: 600; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)'); };
+    var L = [
+      ['Ask NxtRole', 'Chat with your job search, with sources', 'MAsk.dc.html', 'M4 5h16v11H9l-5 4zM9 10.5h.01M12 10.5h.01M15 10.5h.01', ''],
+      ['Follow-ups', '2 nudges due, 1 likely ghosted', 'MNudges.dc.html', 'M12 8v4l2.5 2.5M4 12a8 8 0 1 0 16 0a8 8 0 1 0-16 0', '2'],
+      ['Network', 'People you know at your top matches', 'MNetwork.dc.html', 'M8 9a3 3 0 1 0 0-6a3 3 0 1 0 0 6M2 20a6 6 0 0 1 12 0M17 11a2.5 2.5 0 1 0 0-5a2.5 2.5 0 1 0 0 5M15.5 14.2A5 5 0 0 1 22 19', ''],
+      ['Offer check', 'Orchid Pay: in-hand pay and clauses', 'MOfferCheck.dc.html', 'M3 7h18v10H3zM7 12h.01M17 12h.01M12 14.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 1 0 0 5', ''],
+      ['Weekly coach', 'What got replies this week', 'MCoach.dc.html', 'M4 20V10M10 20V4M16 20v-7M2 20h20', ''],
+      ['Studio', 'Drafts waiting for your tap', 'MStudio.dc.html', 'M4 20h4L19 9l-4-4L4 16zM13 7l4 4', '3'],
+      ['Resume', 'LaTeX export, ATS check, keywords', 'MResume.dc.html', 'M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 16h7', ''],
+      ['Progress', 'What’s working and what to learn', 'MProgress.dc.html', 'M4 20V10M10 20V4M16 20v-7M2 20h20', ''],
+      ['Sources and memory', 'Watched companies, alerts, your rules', 'MMemory.dc.html', 'M5 7a7 3 0 1 0 14 0a7 3 0 1 0-14 0M5 7v10c0 1.7 3.1 3 7 3s7-1.3 7-3V7M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3', ''],
+      ['Settings', 'Search, sources, alerts, privacy', 'MSettings.dc.html', 'M4 7h10M18 7h2M4 17h4M12 17h8M14 7a2 2 0 1 0 4 0a2 2 0 1 0-4 0M8 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0', '']
+    ];
+    return {
+      theme: this._jpT,
+      links: L.map(function (l) { return { label: l[0], sub: l[1], href: l[2], icon: l[3], count: l[4], hasCount: !!l[4] }; }),
+      setLight: function () { self.jpSet('light'); }, setDark: function () { self.jpSet('dark'); },
+      lightPressed: dark ? 'false' : 'true', darkPressed: dark ? 'true' : 'false',
+      lightStyle: seg(!dark), darkStyle: seg(dark)
+    };
+  }
+}
+</script>
+</body>
+</html>

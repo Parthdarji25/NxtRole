@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--amber:#8A5B00;--green:#2F6B3A;--on-blue:#FFFFFF;color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--amber:#E9C067;--green:#8DCB96;--on-blue:#0D1022;color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button,input{font-family:inherit}
+button{cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes push{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.push{animation:push .3s cubic-bezier(.2,.7,.2,1) both}
+.knob{transition:transform .2s ease}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <header style="flex: 0 0 auto; padding: 8px 12px 14px; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid var(--rule)">
+    <sc-if value="{{isList}}" hint-placeholder-val="{{ true }}"><a href="MMore.dc.html" style="align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; padding: 0 8px; text-decoration: none; font-weight: 600">← More</a></sc-if>
+    <sc-if value="{{isSection}}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{back}}" style="align-self: flex-start; min-height: 44px; padding: 0 8px; background: none; border: none; color: var(--blue); font-size: 15px; font-weight: 600">← Settings</button></sc-if>
+    <div style="padding: 0 8px; display: flex; flex-direction: column; gap: 4px">
+      <h1 class="serif" style="margin: 0; font-size: 36px; line-height: 1">{{title}}</h1>
+      <span style="font-size: 14px; color: var(--ink-2)">{{intro}}</span>
+    </div>
+  </header>
+
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto">
+    <sc-if value="{{isList}}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Settings sections" style="display: flex; flex-direction: column">
+        <sc-for list="{{sections}}" as="x" hint-placeholder-count="6">
+          <button type="button" onClick="{{x.pick}}" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 0 20px; border: none; border-bottom: 1px solid var(--rule); background: transparent; color: var(--ink); text-align: left">
+            <span style="flex: 1 1 auto; display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 16px">{{x.label}}</span><span style="font-size: 13px; color: var(--ink-3)">{{x.sub}}</span></span>
+            <span aria-hidden="true" style="color: var(--ink-3); font-size: 20px">›</span>
+          </button>
+        </sc-for>
+      </nav>
+      <p style="margin: 0; padding: 18px 20px; font-size: 13px; color: var(--ink-3)">Signed in as aarav@example.com with Google. <a href="MLogin.dc.html" style="text-decoration: none">Delete my account and data</a></p>
+    </sc-if>
+
+    <sc-if value="{{isSection}}" hint-placeholder-val="{{ false }}">
+      <div class="push" style="padding: 8px 20px 28px; display: flex; flex-direction: column">
+        <sc-if value="{{isSearch}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--rule)">
+            <span style="font-weight: 600">Job titles</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+              <sc-for list="{{titles}}" as="t" hint-placeholder-count="3">
+                <span style="display: inline-flex; align-items: center; gap: 2px; padding-left: 12px; border-radius: 999px; border: 1px solid var(--rule-2); background: var(--card); font-size: 14px">{{t.label}}<button type="button" onClick="{{t.remove}}" aria-label="{{t.removeLabel}}" style="width: 36px; height: 36px; border: none; background: none; color: var(--ink-3); font-size: 16px">×</button></span>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <label for="mtitle" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Add a job title</label>
+              <input id="mtitle" class="inp" type="text" value="{{draft}}" onChange="{{onDraft}}" placeholder="Add a title, e.g. UI Engineer" style="flex: 1 1 auto; min-width: 0; height: 46px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 16px">
+              <button type="button" onClick="{{addTitle}}" style="flex: 0 0 auto; min-height: 46px; padding: 0 16px; border-radius: 10px; border: none; background: var(--ink); color: var(--paper); font-weight: 600">Add</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{isInbox}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--rule)">
+            <span style="font-weight: 600">Gmail script</span>
+            <span style="display: flex; align-items: center; gap: 8px; padding: 12px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule); font-size: 14px"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--green)"></span>Running · last run 6:10 AM · 2 job emails sent</span>
+            <button type="button" onClick="{{copyAddr}}" style="align-self: flex-start; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600">{{copyLabel}}</button>
+            <span style="font-size: 13px; color: var(--ink-3)">A short script in your own Google account checks Gmail every 15 minutes and sends only job emails to NxtRole. No domain or Google review needed. To set it up again, copy the script into script.google.com and press Run once.</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{isAi}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 14px; padding: 12px 0 4px">
+            <sc-if value="{{aiShow}}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="{{aiStyle}}">
+            <span class="mono" style="{{aiTagStyle}}">{{aiTag}}</span>
+            <span style="font-weight: 600; font-size: 16px; line-height: 1.35">{{aiTitle}}</span>
+            <span style="font-size: 14px; color: var(--ink-2)">{{aiBody}}</span>
+            <sc-if value="{{aiOut}}" hint-placeholder-val="{{ false }}">
+              <span style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding-top: 4px">
+                <button type="button" onClick="{{aiRetry}}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 14px; font-weight: 600">{{aiRetryLabel}}</button>
+                
+              </span>
+              <span style="font-size: 12px; color: var(--ink-3)">{{aiNote}}</span>
+            </sc-if>
+          </div>
+        </sc-if>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px dashed var(--rule-2); border-radius: 10px">
+              <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">MOCK PREVIEW · ALSO CHANGES TODAY</span>
+              <div role="group" aria-label="Preview state" style="display: flex; gap: 6px; flex-wrap: wrap">
+                <sc-for list="{{aiPrev}}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}">{{o.label}}</button></sc-for>
+              </div>
+            </div>
+            <ol aria-label="Providers, tried in this order" style="list-style: none; margin: 0; padding: 0">
+              <sc-for list="{{aiRows}}" as="p" hint-placeholder-count="5">
+                <li style="display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--rule)">
+                  <span class="serif" style="flex: 0 0 22px; font-size: 26px; line-height: 1; color: var(--ink-3)">{{p.n}}</span>
+                  <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+                    <span style="font-weight: 600; font-size: 16px">{{p.name}}</span>
+                    <span style="{{p.pill}}"><span style="{{p.dot}}"></span>{{p.status}}</span>
+                    <span style="font-size: 13px; color: var(--ink-2)">{{p.models}}</span>
+                    <span style="font-size: 12px; color: var(--ink-3)">{{p.allowance}}</span>
+                    <span style="display: flex; align-items: center; gap: 10px; padding-top: 2px"><span style="flex: 1 1 auto; height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden; display: block"><span style="{{p.bar}}"></span></span><span class="mono" style="font-size: 11px; color: var(--ink-3)">{{p.usedText}}</span></span>
+                  </span>
+                </li>
+              </sc-for>
+            </ol>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule); font-size: 14px; color: var(--ink-2)">
+              <span style="font-weight: 600; color: var(--ink)">If all five run out</span>
+              <span>Search, clean-up, match scores and the 7 AM brief keep running. Tailored resumes and notes wait as “Drafts pending”, and NxtRole finishes them when the first provider resets. You get one Telegram message.</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--rule)">
+              <span style="font-weight: 600">Last 7 days</span>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+                <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><span class="serif" style="font-size: 28px; line-height: 1">{{k.v}}</span><span style="font-size: 12px; color: var(--ink-3)">{{k.k}}</span></div></sc-for>
+              </div>
+              <span style="font-size: 13px; color: var(--ink-2)">All 6 AI test sets pass. Traces are in Langfuse, with your name, email and phone removed before every call.</span>
+              <a href="#" style="align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Open traces in Langfuse ↗</a>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{isConnect}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 16px; padding: 12px 0 4px">
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule)">
+              <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-weight: 600">NxtRole MCP server</span><span style="{{mcpPill}}"><span style="{{mcpDot}}"></span>{{mcpStatus}}</span></span>
+              <span class="mono" style="font-size: 12px; overflow-wrap: anywhere; color: var(--ink-2)">{{mcpUrl}}</span>
+            </div>
+            <sc-if value="{{tokFresh}}" hint-placeholder-val="{{ false }}">
+              <div role="status" style="display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 10px; border: 1px solid var(--green); background: var(--card)">
+                <span class="mono" style="font-size: 12px; overflow-wrap: anywhere">mrw_live_8kQ2vX7nR4tL9pZ3wY6aB1cD5eF0gH7f3a</span>
+                <span style="font-size: 13px; color: var(--ink-2)">Copy it now; you will not see it again.</span>
+              </div>
+            </sc-if>
+            <div style="display: flex; flex-direction: column; gap: 6px; padding-bottom: 14px; border-bottom: 1px solid var(--rule)">
+              <span style="font-weight: 600">Personal access token</span>
+              <span class="mono" style="font-size: 14px">{{tokMask}}</span>
+              <span style="font-size: 13px; color: var(--ink-3)">{{tokMeta}}</span>
+              <span style="display: flex; gap: 8px; padding-top: 4px"><button type="button" onClick="{{tokNew}}" style="{{tokNewStyle}}">New token</button><button type="button" onClick="{{tokRevoke}}" disabled="{{tokRevokedFlag}}" style="{{tokRevokeStyle}}">{{tokRevokeLabel}}</button></span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3); padding-bottom: 6px">TOOLS SHARED OVER MCP</span>
+              <sc-for list="{{mcpTools}}" as="t" hint-placeholder-count="5"><div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--rule)"><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span class="mono" style="font-size: 13px">{{t.name}}</span><span style="font-size: 13px; color: var(--ink-3)">{{t.what}}</span></span><span class="mono" style="{{t.chip}}">{{t.access}}</span></div></sc-for>
+            </div>
+            <span style="font-size: 13px; color: var(--ink-3)">Set-up commands for Claude Code, Cursor and VS Code are in Settings → Connections on a computer.</span>
+          </div>
+        </sc-if>
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+          <div style="display: flex; gap: 14px; align-items: center; min-height: 64px; padding: 12px 0; border-bottom: 1px solid var(--rule)">
+            <span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">{{r.k}}</span><span style="font-size: 13px; color: var(--ink-3)">{{r.hint}}</span></span>
+            <sc-if value="{{r.isSwitch}}" hint-placeholder-val="{{ true }}">
+              <button type="button" role="switch" aria-checked="{{r.checked}}" aria-label="{{r.k}}" onClick="{{r.toggle}}" style="{{r.track}}"><span class="knob" style="{{r.knob}}"></span></button>
+            </sc-if>
+            <sc-if value="{{r.isText}}" hint-placeholder-val="{{ false }}"><span style="{{r.textStyle}}">{{r.text}}</span></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </main>
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="more" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var AIX = {
+  read: function () { try { var v = window.localStorage.getItem('nxtrole-ai'); if (v === 'backup' || v === 'out') return v; } catch (e) {} return 'normal'; },
+  set: function (v) { try { window.localStorage.setItem('nxtrole-ai', v); } catch (e) {} try { window.dispatchEvent(new Event('jp2-ai')); } catch (e) {} },
+  listen: function (self) {
+    if (self._aiOn) return;
+    self._ai = AIX.read();
+    self._aiOn = function () { var v = AIX.read(); if (v !== self._ai) { self._ai = v; self.forceUpdate(); } };
+    try { window.addEventListener('storage', self._aiOn); window.addEventListener('jp2-ai', self._aiOn); } catch (e) {}
+  },
+  // order = most free allowance first; reset times in the mock are examples (the real app reads them from each provider's rate-limit headers)
+  P: [
+    ['Groq', 'GPT-OSS 120B (main) · GPT-OSS 20B · Llama 3.1 8B', 'About 14,400 requests a day on the small model, 1,000 on the large ones', '9:15 AM'],
+    ['Cerebras', 'GPT-OSS 120B', 'About 30,000 tokens a minute', '11:00 AM'],
+    ['Mistral', 'Mistral Small · Mistral Large', 'About 50,000 tokens a minute', '7:40 AM'],
+    ['Google Gemini', 'Gemini Flash', 'Free daily quota on Flash', '12:30 PM'],
+    ['OpenRouter', 'GPT-OSS 120B · GPT-OSS 20B (free)', '50 requests a day, or 1,000 after a one-time $10 credit', '5:30 AM tomorrow']
+  ],
+  USE: { normal: [41, 0, 0, 0, 0], backup: [100, 38, 0, 0, 0], out: [100, 100, 100, 100, 100] },
+  rows: function (st) {
+    var use = AIX.USE[st];
+    return AIX.P.map(function (p, i) {
+      var u = use[i], full = u >= 100, active = !full && (i === 0 || use[i - 1] >= 100);
+      var status = full ? 'Limit reached · resets ' + p[3] : (active ? 'In use' : 'Standby');
+      var tone = full ? 'var(--red)' : (active ? 'var(--green)' : 'var(--ink-3)');
+      return { n: String(i + 1), name: p[0], models: p[1], allowance: p[2], status: status,
+        usedText: full ? 'Used up' : (u ? u + '% used today' : 'Not used today'),
+        bar: 'display: block; height: 100%; border-radius: 2px; width: ' + Math.max(2, u) + '%; background: ' + (full ? 'var(--red)' : 'var(--ink)'),
+        pill: 'flex: 0 0 auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; border: 1px solid ' + tone + '; color: ' + tone,
+        dot: 'width: 6px; height: 6px; border-radius: 50%; background: ' + tone };
+    });
+  },
+  banner: function (st, retried) {
+    if (st === 'backup') return { show: true, out: false, title: 'Groq used its free limit, so Cerebras took over.', body: 'Nothing to do. Drafts are being written as normal. Groq resets at 9:15 AM IST.', style: 'display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--rule-2); background: var(--card)', tag: 'USING BACKUP · 2 OF 5', tagStyle: 'font-size: 11px; letter-spacing: .1em; color: var(--amber)' };
+    if (st === 'out') return { show: true, out: true, title: 'All 5 free AI limits are used up for now.', body: 'Your jobs, match scores and this brief are all here. 6 drafts (tailored resumes and notes) are waiting and will finish on their own. First reset: Mistral at 7:40 AM IST, in 35 minutes. Four of the five are back by 12:30 PM.', note: retried ? 'Tried again just now. Still busy. Next automatic try at 7:20 AM.' : 'You got one Telegram message about this. No more until it’s sorted.', retryLabel: retried ? 'Tried · still busy' : 'Try again now', style: 'display: flex; flex-direction: column; gap: 8px; padding: 16px 18px; border-radius: 12px; border: 1px solid var(--red); background: var(--red-soft)', tag: 'DRAFTS PENDING · 6', tagStyle: 'font-size: 11px; letter-spacing: .1em; color: var(--red-ink)' };
+    return { show: false, out: false, title: '', body: '', note: '', retryLabel: '', style: '', tag: '', tagStyle: '' };
+  },
+  preview: function (self, st) {
+    return [['normal', 'Normal'], ['backup', 'Using backup'], ['out', 'All limits used']].map(function (o) {
+      var on = o[0] === st;
+      return { label: o[1], pressed: on ? 'true' : 'false', pick: function () { AIX.set(o[0]); self._ai = o[0]; self.forceUpdate(); },
+        style: 'min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)') + '; font-size: 13px; font-weight: 600' };
+    });
+  }
+};
+var CONX = {
+  URL: 'https://nxtrole-aarav.vercel.app/api/mcp',
+  CLIENTS: [
+    ['claude', 'Claude Code', 'claude mcp add --transport http \\\n  --header "Authorization: Bearer $MORROW_TOKEN" \\\n  morrow https://nxtrole-aarav.vercel.app/api/mcp', 'Run it in a terminal, with your token saved in the MORROW_TOKEN environment variable.'],
+    ['cursor', 'Cursor', '// ~/.cursor/mcp.json\n{\n  "mcpServers": {\n    "morrow": {\n      "url": "https://nxtrole-aarav.vercel.app/api/mcp",\n      "headers": { "Authorization": "Bearer ${env:MORROW_TOKEN}" }\n    }\n  }\n}', 'Use the global file in your home folder, not a project file, so the token never lands in a repo.'],
+    ['vscode', 'VS Code', '// .vscode/mcp.json\n{\n  "inputs": [\n    { "type": "promptString", "id": "nxtrole-token", "description": "NxtRole token", "password": true }\n  ],\n  "servers": {\n    "morrow": {\n      "type": "http",\n      "url": "https://nxtrole-aarav.vercel.app/api/mcp",\n      "headers": { "Authorization": "Bearer ${input:nxtrole-token}" }\n    }\n  }\n}', 'VS Code asks for the token the first time and keeps it in its secret storage.']
+  ],
+  TOOLS: [
+    ['search_jobs', 'read', 'Find jobs by title, country, visa or score'],
+    ['get_job', 'read', 'One job with its score, reasons and sources'],
+    ['get_pipeline', 'read', 'Your cards, rounds and offers'],
+    ['query_my_data', 'read', 'Questions about your data, as read-only SQL'],
+    ['get_prep_brief', 'read', 'The brief for an upcoming interview'],
+    ['propose_change', 'ask', 'A stage or round change that you approve in NxtRole'],
+    ['save_draft', 'ask', 'A note saved to Studio; never sent']
+  ],
+  CALLS: [
+    ['10:44', 'propose_change(company="Lumen Retail", stage="closed")', 'Waiting for your approval in Today · from Claude Code', 'Review', 'Brief.dc.html'],
+    ['10:43', 'get_pipeline()', '9 cards · 38 ms · from Claude Code', '', ''],
+    ['10:42', 'search_jobs(country="DE", visa="yes")', '6 jobs · 61 ms · from Claude Code', '', '']
+  ],
+  KPI: [['1,284', 'AI calls'], ['2.1 s', 'slowest 5% (p95)'], ['23', 'times a backup took over'], ['0.4%', 'calls that failed']],
+  DAYS: [['Wed', 162], ['Thu', 211], ['Fri', 198], ['Sat', 74], ['Sun', 61], ['Mon', 288], ['Tue', 290]],
+  EVALS: [
+    ['Match scores agree with you', '17 / 20 · pass mark 16'],
+    ['Tailored resumes with no invented facts', '10 / 10 · pass mark 10'],
+    ['Job emails sorted correctly', '28 / 30 · pass mark 27'],
+    ['Prompt-injection posts resisted', '10 / 10 · pass mark 10'],
+    ['Prep answers that stick to their sources', '0.93 · pass mark 0.90'],
+    ['Ask NxtRole picks the right tool', '19 / 20 · pass mark 18']
+  ],
+  vals: function (self, s, mob) {
+    var max = 0; CONX.DAYS.forEach(function (d) { if (d[1] > max) max = d[1]; });
+    var chip = function (rd) { return 'flex: 0 0 auto; justify-self: start; font-size: 10px; letter-spacing: .06em; padding: 1px 7px; border-radius: 999px; border: 1px solid ' + (rd ? 'var(--green)' : 'var(--amber)') + '; color: ' + (rd ? 'var(--green)' : 'var(--amber)'); };
+    var cur = CONX.CLIENTS.filter(function (c) { return c[0] === s.client; })[0] || CONX.CLIENTS[0];
+    var on = !s.tokRevoked, tone = on ? 'var(--green)' : 'var(--ink-3)';
+    var btn = function (primary) { return 'min-height: ' + (mob ? '44px' : '38px') + '; padding: 0 14px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid ' + (primary ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (primary ? 'var(--ink)' : 'transparent') + '; color: ' + (primary ? 'var(--paper)' : 'var(--ink)'); };
+    return {
+      isConnect: s.sec === 'connect',
+      mcpUrl: CONX.URL,
+      mcpStatus: on ? 'On · token required' : 'Off · no valid token',
+      mcpPill: 'flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; border: 1px solid ' + tone + '; color: ' + tone,
+      mcpDot: 'width: 6px; height: 6px; border-radius: 50%; background: ' + tone,
+      tokFresh: !!s.tokFresh && !s.tokRevoked,
+      tokMask: s.tokRevoked ? 'No active token' : (s.tokFresh ? 'mrw_live_••••••••••••7f3a' : 'mrw_live_••••••••••••b21c'),
+      tokMeta: s.tokRevoked ? 'Revoked just now. Any tool using it is locked out.' : (s.tokFresh ? 'Created just now · the old token stopped working' : 'Created Sat 24 Oct · last used today 10:44 by Claude Code'),
+      tokNew: function () { self.setState({ tokFresh: true, tokRevoked: false }); },
+      tokRevoke: function () { self.setState({ tokRevoked: true, tokFresh: false }); },
+      tokRevokedFlag: !!s.tokRevoked, tokRevokeLabel: s.tokRevoked ? 'Revoked' : 'Revoke',
+      tokNewStyle: btn(true), tokRevokeStyle: btn(false),
+      clients: CONX.CLIENTS.map(function (c) { var o = c[0] === cur[0]; return { label: c[1], selected: o ? 'true' : 'false', pick: function () { self.setState({ client: c[0] }); }, style: 'background: none; border: none; padding: 6px 0; min-height: 36px; font-size: 14px; font-weight: 600; color: ' + (o ? 'var(--ink)' : 'var(--ink-3)') + '; border-bottom: 2px solid ' + (o ? 'var(--blue)' : 'transparent') }; }),
+      clientCode: cur[2], clientNote: cur[3],
+      mcpTools: CONX.TOOLS.map(function (t) { var rd = t[1] === 'read'; return { name: t[0], what: t[2], access: rd ? 'READ' : 'ASKS YOU', chip: chip(rd) }; }),
+      mcpCalls: CONX.CALLS.map(function (c) { return { time: c[0], call: c[1], result: c[2], hasLink: !!c[3], link: c[3], href: mob ? 'MToday.dc.html' : c[4] }; }),
+      kpis: CONX.KPI.map(function (k) { return { v: k[0], k: k[1] }; }),
+      days: CONX.DAYS.map(function (d, i) { var last = i === CONX.DAYS.length - 1; return { day: d[0], n: String(d[1]), bar: 'display: block; width: 100%; max-width: 44px; height: ' + Math.max(4, Math.round(d[1] / max * 64)) + 'px; border-radius: 3px 3px 0 0; background: ' + (last ? 'var(--blue)' : 'var(--ink-3)') }; }),
+      evals: CONX.EVALS.map(function (e) { return { k: e[0], v: e[1], style: 'font-size: 12px; color: var(--green); white-space: nowrap' }; })
+    };
+  }
+};
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) { super(props); this.state = { tokFresh: false, tokRevoked: false, client: 'claude', sec: null, titles: ['Frontend Developer', 'React Developer', 'Next.js Developer'], draft: '', copied: false, on: { naukri: true, indeed: true, linkedin: true, ats: true, remote: false, abroad: true, visaNeed: true, discovery: true, radar: true, inbox: true, research: true, followup: true, zdr: true, strip: true, groqOnly: true, fee: true, chat: true, pay: true, domain: true, brief: true, push: true, telegram: true, email: false, quiet: true } }; }
+  renderVals() {
+    this.jpInit(); AIX.listen(this);
+    var self = this, s = this.state, aiB = AIX.banner(this._ai, s.aiRetried);
+    var SEC = [
+      ['search', 'Search', 'Titles, places, pay, job sites', 'What to look for', 'The agents only bring you jobs that fit these.'],
+      ['inbox', 'Email', 'Gmail script status', 'Email', 'How NxtRole sees replies, invites and job alerts.'],
+      ['agents', 'Agents', '5 running on a schedule', 'Agents', 'Each runs in the cloud. Pause any of them at any time.'],
+      ['notify', 'Notifications', 'Morning brief and urgent alerts', 'Notifications', 'One brief a day, plus alerts only when something is urgent.'],
+      ['safety', 'Safety rules', 'How scam postings are filtered', 'Safety rules', 'Postings that break these rules never reach your feed.'],
+      ['ai', 'AI models', '5 free providers, tried in order', 'AI models', 'Most generous first. If one is busy or out of free allowance, NxtRole moves to the next.'],
+      ['privacy', 'Privacy', 'What each provider may see', 'Privacy', 'Personal data is protected by default.'],
+      ['connect', 'Connections', 'MCP for Claude, Cursor and VS Code', 'Connections', 'Use NxtRole’s tools from your AI apps. Any change still needs your approval here.']
+    ];
+    var meta = {}; SEC.forEach(function (x) { meta[x[0]] = x; });
+    var sw = function (key, label, hint) { var on = !!s.on[key];
+      return { k: label, hint: hint, isSwitch: true, isText: false, checked: on ? 'true' : 'false', text: '', textStyle: '',
+        track: 'flex: 0 0 auto; box-sizing: border-box; width: 52px; height: 32px; border-radius: 999px; padding: 3px; display: flex; border: 1.5px solid ' + (on ? 'var(--ink)' : 'var(--ink-3)') + '; background: ' + (on ? 'var(--ink)' : 'transparent'),
+        knob: 'display: block; width: 22px; height: 22px; border-radius: 50%; background: ' + (on ? 'var(--paper)' : 'var(--ink-3)') + '; transform: translateX(' + (on ? '21px' : '0') + ')',
+        toggle: function () { var x = Object.assign({}, self.state.on); x[key] = !x[key]; self.setState({ on: x }); } }; };
+    var tx = function (label, hint, text, good) { return { k: label, hint: hint, isSwitch: false, isText: true, text: text, checked: 'false', track: '', knob: '', toggle: function () {}, textStyle: 'flex: 0 0 auto; font-size: 14px; font-weight: 600; text-align: right; color: ' + (good ? 'var(--green)' : 'var(--ink-2)') }; };
+    var ROWS = {
+      search: [tx('Locations', 'Where you’ll work', 'Mumbai · Pune · Remote', false), tx('Minimum salary', 'Jobs below this are hidden', '₹14 LPA', false), tx('Experience', 'Your level', '3 years', false), tx('Job age', 'Older postings are archived', 'Last 30 days', false),
+        sw('naukri', 'Naukri', 'India-wide, searched every 30 min'), sw('indeed', 'Indeed India', 'Searched every 30 min'), sw('linkedin', 'LinkedIn', 'Small batches to avoid blocks'), sw('ats', 'Company careers pages', '41 companies on your list'), sw('remote', 'Remote job boards', 'Remotive, Himalayas, RemoteOK'), sw('abroad', 'Jobs abroad', 'Germany, Netherlands, UK, Ireland, Singapore, US · every 2 hours'), sw('visaNeed', 'I need visa sponsorship', 'Hide abroad jobs that say no sponsorship'), tx('Schedule in India', 'Weekdays every 15 min; evenings and Sat mornings every 30 min; else 2 h', 'Learns', false)],
+      inbox: [tx('Last email read', 'Kestrel Pay interview invite', '6:10 AM', false), tx('Runs', 'Inside your own Google account', 'Every 15 min', false)],
+      agents: [sw('discovery', 'Job discovery', 'Every 30 min · boards and careers pages'), sw('radar', 'Company radar', 'Daily · funding news and hiring posts'), sw('inbox', 'Inbox', 'Every 15 min · job emails from the Gmail script'), sw('research', 'Interview research', 'When an interview is booked'), sw('followup', 'Follow-up reminders', 'Daily at 9 AM · drafts only')],
+      notify: [sw('brief', 'Morning brief', 'Every day at 7:00 AM'), sw('push', 'Phone notifications', 'Interview invites and 90%+ matches'), sw('telegram', 'Telegram alerts', 'Same as phone'), sw('email', 'Email alerts', 'Same as phone'), sw('quiet', 'Quiet hours', '10 PM to 7 AM')],
+      safety: [sw('fee', 'Asks for any fee or deposit', 'Hidden'), sw('chat', 'Contact only on personal WhatsApp', 'Hidden'), sw('pay', 'Pay far above normal', 'Shown with a warning'), sw('domain', 'Recruiter uses a free email address', 'Shown with a warning')],
+      privacy: [sw('zdr', 'Zero data retention', 'Groq keeps no copy of prompts or replies'), sw('strip', 'Hide my identity from AI', 'Name, phone and email removed first'), sw('backupPersonal', 'Let Gemini and OpenRouter see my resume', 'Off: they only get public job posts'), tx('Export my data', 'Everything, as JSON or CSV', 'Download', false), tx('Weekly backup', 'Encrypted, in private storage', 'Sun 18 Oct', true)]
+    };
+    var cur = s.sec ? meta[s.sec] : null;
+    return Object.assign({
+      theme: this._jpT,
+      aiShow: aiB.show, aiOut: aiB.out, aiStyle: aiB.style, aiTag: aiB.tag, aiTagStyle: aiB.tagStyle, aiTitle: aiB.title, aiBody: aiB.body, aiNote: aiB.note || '', aiRetryLabel: aiB.retryLabel || '',
+      aiRetry: function () { self.setState({ aiRetried: true }); },
+      aiRows: AIX.rows(this._ai), aiPrev: AIX.preview(this, this._ai),
+      isList: !s.sec, isSection: !!s.sec,
+      title: cur ? cur[3] : 'Settings', intro: cur ? cur[4] : 'Everything NxtRole does on your behalf.',
+      back: function () { self.setState({ sec: null }); },
+      sections: SEC.map(function (x) { return { label: x[1], sub: x[2], pick: function () { self.setState({ sec: x[0] }); } }; }),
+      isSearch: s.sec === 'search', isInbox: s.sec === 'inbox', isAi: s.sec === 'ai',
+      rows: s.sec && ROWS[s.sec] ? ROWS[s.sec] : [],
+      titles: s.titles.map(function (t) { return { label: t, removeLabel: 'Remove ' + t, remove: function () { self.setState({ titles: self.state.titles.filter(function (x) { return x !== t; }) }); } }; }),
+      draft: s.draft, onDraft: function (e) { self.setState({ draft: e.target.value }); },
+      addTitle: function () { var v = (self.state.draft || '').trim(); if (v && self.state.titles.indexOf(v) < 0) self.setState({ titles: self.state.titles.concat([v]), draft: '' }); },
+      copyLabel: s.copied ? 'Copied ✓' : 'Copy script',
+      copyAddr: function () { try { navigator.clipboard.writeText('// NxtRole Gmail script: runs every 15 min in your Google account\nfunction sendJobEmails() { /* searches Gmail and posts job emails to NxtRole */ }'); } catch (e) {} self.setState({ copied: true }); }
+    }, CONX.vals(this, s, true));
+  }
+}
+</script>
+</body>
+</html>

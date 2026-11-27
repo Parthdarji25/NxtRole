@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NxtRole · landing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--green:#2F6B3A;--amber:#8A5B00;--on-blue:#FFFFFF;--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.25);--head:rgba(244,241,234,.88);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--green:#8DCB96;--amber:#E9C067;--on-blue:#0D1022;--shadow:0 18px 40px -18px rgba(0,0,0,.7);--head:rgba(17,18,20,.86);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+html{scroll-behavior:smooth}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+section[id]{scroll-margin-top:76px}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.btn{transition:transform .2s ease,background .2s ease}
+.btn:hover{transform:translateY(-1px)}
+.lnk{text-decoration:none;color:var(--ink-2)}.lnk:hover{color:var(--ink)}
+.tab{transition:opacity .25s ease,border-color .25s ease}
+.tab:hover{opacity:1 !important}
+.dawn{transition:opacity 1.6s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.swap{animation:fadein .45s ease both}
+.scrollx{scrollbar-width:none}.scrollx::-webkit-scrollbar{display:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 16px; line-height: 1.6">
+  <header style="position: sticky; top: 0; z-index: 10; background: var(--head); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule)">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 68px; display: flex; align-items: center; gap: 36px">
+      <a href="#top" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" style="color: var(--blue)"><path d="M5 7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM9 12h6M12.5 9l3 3-3 3"></path></svg><span class="serif" style="font-size: 28px; font-style: italic; letter-spacing: -0.01em; line-height: 1">Nxt<span style="color: var(--blue)">Role</span></span>
+      </a>
+      <nav aria-label="Primary" style="display: flex; gap: 28px; font-size: 15px">
+        <a href="#how" class="lnk">How it works</a>
+        <a href="#trust" class="lnk">Is it safe?</a>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 10px">
+        <button type="button" onClick="{{toggleTheme}}" aria-label="{{themeLabel}}" style="height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px">
+          <sc-if value="{{isLight}}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></sc-if>
+          <sc-if value="{{isDark}}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg></sc-if>
+          {{themeWord}}
+        </button>
+        <a href="Login.dc.html" class="btn" style="height: 40px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 8px; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 14px; text-decoration: none">Open the app</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- hero -->
+  <section id="top" style="max-width: 1200px; margin: 0 auto; padding: 84px 24px 56px; display: flex; flex-direction: column; gap: 28px">
+    <span class="mono rise" style="font-size: 12px; letter-spacing: .12em; color: var(--ink-3)">YOUR OVERNIGHT JOB SEARCH · FREE · JUST FOR YOU</span>
+    <h1 class="serif rise" style="margin: 0; font-size: clamp(56px, 7.4vw, 104px); line-height: .96; letter-spacing: -0.02em; animation-delay: .08s; max-width: 1080px">Sleep tonight. Wake up to <em style="color: var(--blue)">only the jobs worth applying to.</em></h1>
+    <div class="rise" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px; animation-delay: .16s">
+      <p style="margin: 0; max-width: 620px; font-size: 19px; line-height: 1.55; color: var(--ink-2)">NxtRole is your personal job-search assistant. Overnight it searches the job sites, removes the noise and scores every job against your resume. At 7 AM you get a short list with the work already started. You make every final call.</p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap">
+        <a href="#how" class="btn" style="height: 52px; display: inline-flex; align-items: center; gap: 10px; padding: 0 22px; border-radius: 10px; background: var(--ink); color: var(--paper); font-weight: 600; text-decoration: none">See how it works <span aria-hidden="true">↓</span></a>
+        <a href="Login.dc.html" class="btn" style="height: 52px; display: inline-flex; align-items: center; padding: 0 22px; border-radius: 10px; border: 1px solid var(--rule-2); color: var(--ink); font-weight: 600; text-decoration: none">Open the app</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- how it works: the 3D night -->
+  <section id="how" style="max-width: 1200px; margin: 0 auto; padding: 0 24px 104px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 22px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <span class="mono" style="font-size: 12px; letter-spacing: .12em; color: var(--ink-3)">HOW IT WORKS</span>
+        <h2 class="serif" style="margin: 0; font-size: 52px; line-height: 1; letter-spacing: -0.015em">One night with NxtRole, in six steps.</h2>
+      </div>
+      <p style="margin: 0; font-size: 15px; color: var(--ink-3); max-width: 340px">Every dot is one job posting. The tour plays on its own, or pick any step.</p>
+    </div>
+    <div role="tablist" aria-label="Steps" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-top: 1px solid var(--rule)">
+      <sc-for list="{{steps}}" as="s" hint-placeholder-count="6">
+        <button type="button" role="tab" class="tab" aria-selected="{{s.selected}}" aria-controls="m3panel" onClick="{{s.pick}}" style="{{s.style}}">
+          <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{s.time}}</span>
+          <span style="font-weight: 600; font-size: 15px; color: var(--ink)"><span class="mono" style="font-weight: 400; color: var(--ink-3); margin-right: 6px">{{s.n}}</span>{{s.short}}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="margin-top: 18px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); border-radius: 20px; overflow: hidden; border: 1px solid var(--rule); background: var(--card); box-shadow: var(--shadow)">
+      <div role="img" aria-label="{{stageLabel}}" style="position: relative; min-height: 620px; overflow: hidden; background: radial-gradient(120% 90% at 50% 115%, #22307A 0%, #0D1130 52%, #07080F 100%)">
+        <div class="dawn" aria-hidden="true" style="position: absolute; inset: 0; opacity: {{dawn}}; background: linear-gradient(180deg, #27336E 0%, #6D5A8C 38%, #D98E6E 72%, #F3C99B 100%)"></div>
+        <div id="m3stage" aria-hidden="true" style="position: absolute; inset: 0"></div>
+        <div style="position: absolute; left: 24px; top: 24px; display: flex; flex-direction: column; gap: 2px; color: #FFFFFF; pointer-events: none">
+          <span class="mono" style="font-size: 11px; letter-spacing: .12em; opacity: .75">{{curLab}}</span>
+          <span class="serif swap" style="font-size: 64px; line-height: 1; text-shadow: 0 2px 24px rgba(0,0,0,.35)">{{curNum}}</span>
+        </div>
+        <div style="position: absolute; left: 24px; right: 24px; bottom: 24px; display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none">
+          <sc-for list="{{legend}}" as="g" hint-placeholder-count="2">
+            <span style="display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 12px; border-radius: 999px; background: rgba(10,12,28,.55); border: 1px solid rgba(255,255,255,.18); color: #FFFFFF; font-size: 12px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px)"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{g.dot}}"></span>{{g.label}}</span>
+          </sc-for>
+        </div>
+        <sc-if value="{{fail}}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 32px; text-align: center; color: rgba(255,255,255,.85); font-size: 14px">The 3D view needs WebGL, which this browser has turned off. The steps still explain everything.</div>
+        </sc-if>
+      </div>
+      <div id="m3panel" role="tabpanel" aria-live="polite" style="padding: 36px 34px 28px; display: flex; flex-direction: column; gap: 18px; min-width: 0">
+        <span class="mono" style="font-size: 11px; letter-spacing: .12em; color: var(--blue)">{{stepOf}} · {{curWhen}}</span>
+        <h3 class="serif swap" style="margin: 0; font-size: 40px; line-height: 1.02; letter-spacing: -0.01em">{{curTitle}}</h3>
+        <p style="margin: 0; font-size: 16px; color: var(--ink-2)">{{curLead}}</p>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <span class="mono" style="font-size: 11px; letter-spacing: .12em; color: var(--ink-3)">WHAT HAPPENS</span>
+          <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
+            <sc-for list="{{curBullets}}" as="b" hint-placeholder-count="3">
+              <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.5"><span class="mono" style="flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--rule-2); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: var(--ink-2)">{{b.n}}</span><span>{{b.t}}</span></li>
+            </sc-for>
+          </ol>
+        </div>
+        <dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 14px">
+          <dt class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3); padding-top: 2px">YOUR PART</dt><dd style="margin: 0; font-weight: 600">{{curYou}}</dd>
+          <dt class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3); padding-top: 2px">RUNS ON</dt><dd style="margin: 0; color: var(--ink-2)">{{curRuns}}</dd>
+        </dl>
+        <div style="margin-top: auto; display: flex; align-items: center; gap: 8px; padding-top: 6px">
+          <button type="button" onClick="{{prev}}" aria-label="Previous step" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 18px">←</button>
+          <button type="button" onClick="{{next}}" class="btn" style="flex: 1 1 auto; height: 44px; border-radius: 10px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">{{nextWord}}</button>
+          <button type="button" onClick="{{togglePlay}}" aria-pressed="{{playingPressed}}" style="height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 600; white-space: nowrap">{{playWord}}</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- trust -->
+  <section id="trust" style="background: var(--paper-2); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule)">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 88px 24px 96px; display: flex; flex-direction: column; gap: 40px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <span class="mono" style="font-size: 12px; letter-spacing: .12em; color: var(--ink-3)">IS IT SAFE?</span>
+        <h2 class="serif" style="margin: 0; font-size: 52px; line-height: 1; letter-spacing: -0.015em">Three numbers to know before you start.</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--rule-2)">
+        <sc-for list="{{trust}}" as="t" hint-placeholder-count="3">
+          <div style="{{t.style}}">
+            <span class="serif" style="font-size: 96px; line-height: .9; color: var(--blue)">{{t.big}}</span>
+            <span style="font-weight: 600; font-size: 18px">{{t.label}}</span>
+            <span style="font-size: 15px; color: var(--ink-2)">{{t.body}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- cta -->
+  <section style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 40px">
+    <div style="border-radius: 20px; background: var(--ink); color: var(--paper); padding: 64px 52px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 28px">
+      <h2 class="serif" style="margin: 0; font-size: 56px; line-height: 1; max-width: 680px">Set it up tonight. Read your first brief at <em>7 AM.</em></h2>
+      <a href="Login.dc.html" class="btn" style="height: 54px; display: inline-flex; align-items: center; padding: 0 26px; border-radius: 10px; background: var(--paper); color: var(--ink); font-weight: 600; text-decoration: none">Open the app →</a>
+    </div>
+    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 28px; font-size: 13px; color: var(--ink-3)">
+      <span class="serif" style="font-size: 20px; font-style: italic; color: var(--ink)">NxtRole</span>
+      <span>A personal project · Mock data · Nothing is sent without your OK</span>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2610}}'>
+var M3 = {
+  SRC: ['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js'],
+  JOBS: [['Northwind Labs', 'Frontend Developer', '92'], ['Marigold Fintech', 'Frontend Developer', '90'], ['Kestrel Pay', 'React Engineer', '87'], ['Cobalt Commerce', 'Next.js Developer', '84'], ['Banyan Health', 'UI Engineer', '83'], ['Quill Learning', 'React Developer', '82'], ['Fernway Travel', 'Frontend Engineer II', '81'], ['Arcadia Maps', 'UI Engineer', '81'], ['Copperleaf', 'Frontend Engineer', '80']],
+  boot: function (self) {
+    if (self._m3) return;
+    self._m3 = 'loading';
+    var tries = 0;
+    var go = function () {
+      var el = document.getElementById('m3stage');
+      if (!el || !el.clientWidth) { if (++tries < 80) setTimeout(go, 100); return; }
+      M3.load(function (ok) {
+        if (!ok) { self._m3 = 'fail'; self.forceUpdate(); return; }
+        try { M3.build(self, el); self._m3 = 'ok'; } catch (e) { self._m3 = 'fail'; try { console.warn('NxtRole 3D', e); } catch (x) {} }
+        self.forceUpdate();
+      });
+    };
+    setTimeout(go, 0);
+  },
+  load: function (cb) {
+    if (window.THREE) { cb(true); return; }
+    var i = 0;
+    var next = function () {
+      if (i >= M3.SRC.length) { cb(false); return; }
+      var s = document.createElement('script');
+      s.src = M3.SRC[i++]; s.async = true;
+      s.onload = function () { if (window.THREE) cb(true); else next(); };
+      s.onerror = next;
+      document.head.appendChild(s);
+    };
+    next();
+  },
+  rng: function (seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; },
+  tex: function (T, w, h, draw) { var c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); var t = new T.CanvasTexture(c); t.needsUpdate = true; return t; },
+  rr: function (g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.lineTo(x + w - r, y); g.quadraticCurveTo(x + w, y, x + w, y + r); g.lineTo(x + w, y + h - r); g.quadraticCurveTo(x + w, y + h, x + w - r, y + h); g.lineTo(x + r, y + h); g.quadraticCurveTo(x, y + h, x, y + h - r); g.lineTo(x, y + r); g.quadraticCurveTo(x, y, x + r, y); g.closePath(); },
+  build: function (self, el) {
+    var T = window.THREE, MOB = !!self._mob;
+    var reduced = false; try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    var W = el.clientWidth, H = el.clientHeight;
+    var renderer = new T.WebGLRenderer({ antialias: true, alpha: true });
+    var PR = Math.min(2, window.devicePixelRatio || 1);
+    renderer.setPixelRatio(PR); renderer.setSize(W, H);
+    renderer.setClearColor(0x000000, 0);
+    var cv = renderer.domElement; cv.style.position = 'absolute'; cv.style.left = '0'; cv.style.top = '0'; cv.style.width = '100%'; cv.style.height = '100%'; cv.setAttribute('aria-hidden', 'true');
+    el.appendChild(cv);
+    var scene = new T.Scene();
+    var camera = new T.PerspectiveCamera(42, W / H, 0.1, 200);
+    camera.position.set(0, 1.2, 7.5);
+
+    // particles: every dot is one job posting
+    var N = 1240, R = M3.rng(7), P = [];
+    for (var i = 0; i < N; i++) P.push({ a: R() * Math.PI * 2, r: R(), h: R(), j: R(), sp: 0.6 + R() * 0.8, src: Math.floor(R() * 4) });
+    var SRC = [[0.62, 0.70, 1.0], [0.97, 0.80, 0.50], [0.55, 0.90, 0.68], [1, 1, 1]];
+    var REJ = [1.0, 0.45, 0.38], MATCH = [0.72, 0.80, 1.0], DIM = [0.50, 0.53, 0.66], CORE = [0.80, 0.85, 1.0];
+    var pos = new Float32Array(N * 3), col = new Float32Array(N * 3), alp = new Float32Array(N), siz = new Float32Array(N);
+    var tp = new Float32Array(N * 3), tc = new Float32Array(N * 3), ta = new Float32Array(N), ts = new Float32Array(N);
+    var geo = new T.BufferGeometry();
+    geo.setAttribute('position', new T.BufferAttribute(pos, 3));
+    geo.setAttribute('aColor', new T.BufferAttribute(col, 3));
+    geo.setAttribute('aAlpha', new T.BufferAttribute(alp, 1));
+    geo.setAttribute('aSize', new T.BufferAttribute(siz, 1));
+    var VS = 'attribute vec3 aColor; attribute float aAlpha; attribute float aSize; uniform float uPR; uniform float uFade; varying vec3 vC; varying float vA; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_PointSize = aSize * uPR * (10.0 / max(0.5, -mv.z)); gl_Position = projectionMatrix * mv; vC = aColor; vA = aAlpha * uFade; }';
+    var FS = 'varying vec3 vC; varying float vA; void main(){ vec2 c = gl_PointCoord - vec2(0.5); float d = length(c); if (d > 0.5) discard; float a = 1.0 - smoothstep(0.05, 0.5, d); gl_FragColor = vec4(vC, vA * a); }';
+    var mkMat = function () { return new T.ShaderMaterial({ uniforms: { uPR: { value: PR }, uFade: { value: 1 } }, vertexShader: VS, fragmentShader: FS, transparent: true, depthWrite: false }); };
+    var pts = new T.Points(geo, mkMat()); pts.frustumCulled = false; scene.add(pts);
+
+    // far stars for the night sky
+    var SN = 500, sp = new Float32Array(SN * 3), sc = new Float32Array(SN * 3), sa = new Float32Array(SN), ss = new Float32Array(SN), R2 = M3.rng(11);
+    for (var k = 0; k < SN; k++) { var th = R2() * Math.PI * 2, ph = Math.acos(2 * R2() - 1), rr = 38 + R2() * 10; sp[k * 3] = rr * Math.sin(ph) * Math.cos(th); sp[k * 3 + 1] = Math.abs(rr * Math.cos(ph)) * 0.8 - 4; sp[k * 3 + 2] = rr * Math.sin(ph) * Math.sin(th); sc[k * 3] = sc[k * 3 + 1] = sc[k * 3 + 2] = 1; sa[k] = 0.25 + R2() * 0.5; ss[k] = 4 + R2() * 6; }
+    var sgeo = new T.BufferGeometry();
+    sgeo.setAttribute('position', new T.BufferAttribute(sp, 3)); sgeo.setAttribute('aColor', new T.BufferAttribute(sc, 3)); sgeo.setAttribute('aAlpha', new T.BufferAttribute(sa, 1)); sgeo.setAttribute('aSize', new T.BufferAttribute(ss, 1));
+    var stars = new T.Points(sgeo, mkMat()); stars.frustumCulled = false; scene.add(stars);
+
+    // you: the core everything is measured against
+    var core = new T.Group(); scene.add(core);
+    var wire = new T.Mesh(new T.IcosahedronGeometry(0.78, 1), new T.MeshBasicMaterial({ color: 0x9fb0ff, wireframe: true, transparent: true, opacity: 0.6 }));
+    var ball = new T.Mesh(new T.IcosahedronGeometry(0.5, 3), new T.MeshBasicMaterial({ color: 0x2443e0 }));
+    var glowT = M3.tex(T, 128, 128, function (g, w) { var gr = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); gr.addColorStop(0, 'rgba(120,145,255,0.85)'); gr.addColorStop(0.35, 'rgba(70,100,255,0.35)'); gr.addColorStop(1, 'rgba(36,67,224,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, w); });
+    var glow = new T.Sprite(new T.SpriteMaterial({ map: glowT, transparent: true, depthWrite: false })); glow.scale.set(3.6, 3.6, 1);
+    var youT = M3.tex(T, 256, 96, function (g) { g.fillStyle = 'rgba(255,255,255,0.95)'; g.font = '600 40px "IBM Plex Mono", monospace'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('YOU', 128, 48); });
+    var you = new T.Sprite(new T.SpriteMaterial({ map: youT, transparent: true, depthWrite: false })); you.scale.set(1.0, 0.375, 1); you.position.set(0, 1.25, 0);
+    core.add(glow); core.add(ball); core.add(wire); core.add(you);
+    core.scale.set(0.01, 0.01, 0.01);
+
+    // the brief cards: every strong match
+    var cards = M3.JOBS.map(function (j, i) {
+      var t = M3.tex(T, 512, 300, function (g, w, h) {
+        M3.rr(g, 4, 4, w - 8, h - 8, 28); g.fillStyle = '#FBF9F4'; g.fill(); g.lineWidth = 3; g.strokeStyle = i === 0 ? '#2443E0' : '#C4BCAA'; g.stroke();
+        g.fillStyle = '#2443E0'; g.font = '600 84px "Geist", system-ui, sans-serif'; g.textBaseline = 'alphabetic'; g.fillText(j[2], 34, 118); var nw = g.measureText(j[2]).width;
+        g.font = '500 22px "IBM Plex Mono", monospace'; g.fillStyle = '#625F57'; g.fillText('% MATCH', 34 + nw + 10, 112);
+        g.fillStyle = '#18181C'; g.font = '700 34px "Geist", system-ui, sans-serif'; g.fillText(j[0], 34, 182);
+        g.fillStyle = '#45443F'; g.font = '400 28px "Geist", system-ui, sans-serif'; g.fillText(j[1], 34, 222);
+        g.fillStyle = '#2F6B3A'; g.font = '500 22px "IBM Plex Mono", monospace'; g.fillText('✓ RESUME READY', 34, 268);
+      });
+      var m = new T.Mesh(new T.PlaneGeometry(2.0, 1.17), new T.MeshBasicMaterial({ map: t, transparent: true, opacity: 0, depthWrite: false, side: T.DoubleSide }));
+      m.scale.set(0.2, 0.2, 0.2); scene.add(m); return m;
+    });
+
+    // the tracker line: applied, interview, offer
+    var NODES = ['APPLIED', 'INTERVIEW', 'OFFER'], NX = [-2.1, 0, 2.1], NY = -0.75, NZ = 2.4;
+    var lineGeo = new T.BufferGeometry(); lineGeo.setAttribute('position', new T.BufferAttribute(new Float32Array([NX[0], NY, NZ, NX[2], NY, NZ]), 3));
+    var line = new T.Line(lineGeo, new T.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 })); scene.add(line);
+    var nodes = NODES.map(function (n, i) {
+      var mk = function (on) { return M3.tex(T, 320, 96, function (g, w, h) { M3.rr(g, 4, 4, w - 8, h - 8, 44); g.fillStyle = on ? '#2443E0' : 'rgba(24,24,28,0.72)'; g.fill(); g.lineWidth = 3; g.strokeStyle = on ? '#B1BEFF' : 'rgba(255,255,255,0.35)'; g.stroke(); g.fillStyle = '#FFFFFF'; g.font = '500 30px "IBM Plex Mono", monospace'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(n, w / 2, h / 2 + 2); }); };
+      var off = mk(false), on = mk(true);
+      var s = new T.Sprite(new T.SpriteMaterial({ map: off, transparent: true, opacity: 0, depthWrite: false })); s.scale.set(1.3, 0.39, 1); s.position.set(NX[i], NY, NZ); scene.add(s);
+      return { s: s, off: off, on: on, lit: false };
+    });
+
+    var lerp = function (a, b, k) { return a + (b - a) * k; };
+    var step = -1, stepAt = 0, t0 = performance.now(), visible = true, raf = 0;
+    var CAM = [[0, 1.2, 7.5], [0, 7.5, 15.5], [0, 5.5, 12.5], [0, 3.2, 9.5], [0, 1.0, 10.4], [0, 0.8, 9.8]];
+    var fit = function () { var a = W / H; return a < 1.15 ? Math.min(1.3, 1.15 / a) : 1; };
+
+    var target = function (s, t, ts0) {
+      var n, p, R1, ang, y, c, A, S, x, z;
+      for (n = 0; n < N; n++) {
+        p = P[n]; c = SRC[p.src]; A = 0; S = 3;
+        // default: hold where it is
+        x = pos[n * 3]; y = pos[n * 3 + 1]; z = pos[n * 3 + 2];
+        if (s === 0) {
+          if (n < 360) { var th = p.a + t * 0.25, ph = Math.acos(2 * p.h - 1), rr = 1.15 + p.r * 0.3; x = rr * Math.sin(ph) * Math.cos(th); y = rr * Math.cos(ph); z = rr * Math.sin(ph) * Math.sin(th); c = CORE; A = 0.85; S = 2.6; }
+          else { R1 = 2 + p.r * 10; ang = p.a; x = Math.cos(ang) * R1; z = Math.sin(ang) * R1; y = (p.h - 0.5) * 0.12 * R1; A = 0; }
+        } else if (s === 1) {
+          R1 = 2 + ((((p.r * 10 - t * 0.32 * p.sp) % 10) + 10) % 10);
+          ang = p.a + t * 0.5 / R1; x = Math.cos(ang) * R1; z = Math.sin(ang) * R1; y = (p.h - 0.5) * 0.12 * R1;
+          A = Math.min(1, (R1 - 2) / 1.2) * Math.min(1, (12 - R1) / 2) * 0.95; S = 2.4 + p.j * 2.2;
+        } else if (s === 2) {
+          if (n < 163) { R1 = 3.0 + p.r * 1.8; ang = p.a + t * 0.12; x = Math.cos(ang) * R1; z = Math.sin(ang) * R1; y = (p.h - 0.5) * 0.4; A = 0.95; S = 3.4; }
+          else { R1 = 2 + p.r * 10; ang = p.a; x = Math.cos(ang) * R1; z = Math.sin(ang) * R1; y = -2.5 - p.h * 4; c = REJ; A = ts0 < 1.2 ? 0.9 : 0; S = 3; }
+        } else if (s === 3) {
+          if (n < 9) { R1 = 1.95; ang = n / 9 * Math.PI * 2 + t * 0.35; x = Math.cos(ang) * R1; z = Math.sin(ang) * R1; y = Math.sin(t * 1.2 + n) * 0.25; c = MATCH; A = 1; S = 11; }
+          else if (n < 163) { R1 = 4.2 + p.r * 1.6; ang = p.a + t * 0.06; x = Math.cos(ang) * R1; z = Math.sin(ang) * R1; y = (p.h - 0.5) * 0.6; c = DIM; A = 0.4; S = 2.6; }
+          else { c = REJ; A = 0; }
+        } else {
+          if (n < 9) { var cp = cardPos(n, s, t, ts0); x = cp[0]; y = cp[1]; z = cp[2]; c = MATCH; A = 0; S = 10; }
+          else if (n < 163) { R1 = 5.5 + p.r * 2.2; ang = p.a + t * 0.04; x = Math.cos(ang) * R1; z = Math.sin(ang) * R1 - 2; y = (p.h - 0.5) * 0.8 - 0.4; c = DIM; A = 0.22; S = 2.4; }
+          else { c = REJ; A = 0; }
+        }
+        tp[n * 3] = x; tp[n * 3 + 1] = y; tp[n * 3 + 2] = z;
+        tc[n * 3] = c[0]; tc[n * 3 + 1] = c[1]; tc[n * 3 + 2] = c[2]; ta[n] = A; ts[n] = S;
+      }
+    };
+    var cardPos = function (i, s, t, ts0) {
+      var SL = [[0, 1], [0, 0], [0, 2], [1, 1], [1, 0], [1, 2], [2, 1], [2, 0], [2, 2]][i], c = SL[1] - 1, r = SL[0];
+      if (s === 4) return [c * 1.45, 1.05 - r * 0.92 + Math.sin(t * 0.9 + i) * 0.05, 2.0 - Math.abs(c) * 0.35];
+      if (s === 5) { if (i === 0) { var seg = Math.floor(ts0 / 2.6) % 3; return [NX[seg], 0.55, NZ]; } return [c * 1.6, 1.3 - r * 0.7, -3]; }
+      return [0, 0, 0];
+    };
+
+    var frame = function () {
+      raf = window.requestAnimationFrame(frame);
+      if (!visible) return;
+      var now = (performance.now() - t0) / 1000, t = reduced ? 0 : now;
+      var s = (self.state && self.state.fs) || 0;
+      if (s !== step) { step = s; stepAt = now; }
+      var ts0 = reduced ? 3 : now - stepAt;
+      target(s, t, ts0);
+      var kp = reduced ? 1 : (ts0 > 2 ? 0.25 : 0.05), ka = reduced ? 1 : (s === 2 ? 0.035 : 0.08), kc = reduced ? 1 : 0.12, n;
+      for (n = 0; n < N * 3; n++) { pos[n] = lerp(pos[n], tp[n], kp); col[n] = lerp(col[n], tc[n], kc); }
+      for (n = 0; n < N; n++) { alp[n] = lerp(alp[n], ta[n], ka); siz[n] = lerp(siz[n], ts[n], 0.1); }
+      geo.attributes.position.needsUpdate = true; geo.attributes.aColor.needsUpdate = true; geo.attributes.aAlpha.needsUpdate = true; geo.attributes.aSize.needsUpdate = true;
+      var dawn = s >= 4;
+      stars.material.uniforms.uFade.value = lerp(stars.material.uniforms.uFade.value, dawn ? 0.12 : 1, reduced ? 1 : 0.04);
+      stars.rotation.y = t * 0.01;
+      // core
+      var cs = s >= 4 ? 0.55 : 1, k2 = reduced ? 1 : 0.06;
+      core.scale.setScalar(lerp(core.scale.x, cs, k2));
+      core.position.z = lerp(core.position.z, s >= 4 ? -2.5 : 0, k2); core.position.y = lerp(core.position.y, s >= 4 ? -0.2 : 0, k2);
+      wire.rotation.y = t * 0.3; wire.rotation.x = t * 0.17; ball.rotation.y = -t * 0.2;
+      var pulse = 1 + Math.sin(t * 2.2) * 0.06; glow.scale.set(3.6 * pulse, 3.6 * pulse, 1);
+      you.material.opacity = lerp(you.material.opacity, s === 0 || s === 3 ? 1 : 0, 0.08);
+      // cards
+      cards.forEach(function (m, i) {
+        var on = s === 4 || (s === 5 && i === 0), dim = s === 5 && i > 0, cp = cardPos(i, s, t, ts0), kk = reduced ? 1 : 0.07;
+        m.position.x = lerp(m.position.x, cp[0], kk); m.position.y = lerp(m.position.y, cp[1], kk); m.position.z = lerp(m.position.z, cp[2], kk);
+        var sc2 = on ? (s === 4 ? (i === 0 ? 0.7 : 0.64) : 1) : (dim ? 0.5 : 0.2); m.scale.setScalar(lerp(m.scale.x, sc2, kk));
+        m.material.opacity = lerp(m.material.opacity, on ? 1 : (dim ? 0.1 : 0), kk);
+        m.rotation.y = lerp(m.rotation.y, s === 4 ? -([1, 0, 2, 1, 0, 2, 1, 0, 2][i] - 1) * 0.22 : 0, kk);
+      });
+      // tracker
+      var tk = s === 5 ? 1 : 0, seg = Math.floor(ts0 / 2.6) % 3;
+      line.material.opacity = lerp(line.material.opacity, tk * 0.6, 0.08);
+      nodes.forEach(function (nd, i) {
+        var lit = s === 5 && i <= seg;
+        if (lit !== nd.lit) { nd.lit = lit; nd.s.material.map = lit ? nd.on : nd.off; nd.s.material.needsUpdate = true; }
+        nd.s.material.opacity = lerp(nd.s.material.opacity, tk, 0.08);
+      });
+      // camera
+      var cc = CAM[s], f = fit() * (MOB && s >= 4 ? 0.8 : 1), sway = reduced ? 0 : Math.sin(now * 0.13) * (MOB ? 0.5 : 1.0);
+      camera.position.x = lerp(camera.position.x, cc[0] + sway, reduced ? 1 : 0.03);
+      camera.position.y = lerp(camera.position.y, cc[1] * f, reduced ? 1 : 0.03);
+      camera.position.z = lerp(camera.position.z, cc[2] * f, reduced ? 1 : 0.03);
+      camera.lookAt(0, s >= 4 ? 0.2 : 0, 0);
+      renderer.render(scene, camera);
+    };
+    // start from the setup state
+    target(0, 0, 0);
+    for (var q = 0; q < N * 3; q++) { pos[q] = tp[q] * 0.2; col[q] = tc[q]; }
+    for (q = 0; q < N; q++) { alp[q] = 0; siz[q] = ts[q]; }
+    try { new ResizeObserver(function () { W = el.clientWidth; H = el.clientHeight; if (!W || !H) return; renderer.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix(); }).observe(el); } catch (e) {}
+    try { new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }).observe(el); } catch (e) {}
+    self._m3stop = function () { window.cancelAnimationFrame(raf); };
+    frame();
+  }
+};
+
+var STEPS = [["9 PM", "Set up", "ONCE · ABOUT 5 MINUTES", "Tell NxtRole what you want.", "You set NxtRole up once. Your resume and wishes become the centre that every job is measured against. That is the glowing core in the scene.", ["Upload your resume. NxtRole reads your skills, years of experience and projects.", "Pick roles, cities, a salary floor and the companies you want to follow.", "Connect Gmail as read-only, so replies from companies can update your tracker."], "Five minutes, one time.", "Your own private Supabase database", "1", "PROFILE · YOURS", [["You: your resume and wishes", "#8EA2FF"]]], ["9 PM – 7 AM", "Search", "ALL NIGHT · EVERY 15–30 MINUTES", "It searches everywhere jobs appear.", "Small agents check the places Indian tech jobs are posted, on a timetable that follows when recruiters post. Each dot flowing in is one posting.", ["Naukri, Indeed and LinkedIn searches for your titles and cities.", "Careers pages of the 41 companies you follow, read straight from their job feeds.", "Links you paste, and job emails that land in your Gmail."], "Nothing. Your laptop can be off.", "GitHub Actions and Supabase Cron, in the cloud", "1,240", "POSTINGS FOUND TONIGHT", [["Job boards", "#9FB2FF"], ["Careers pages", "#F7CC80"], ["Gmail", "#8CE6AE"], ["Links you paste", "#FFFFFF"]]], ["Each run", "Clean up", "EVERY RUN · A FEW SECONDS", "It throws out the noise.", "Most postings are repeats, stale or unsafe. They are removed before you ever see them, so 1,240 becomes 163.", ["The same job on three sites is merged into one.", "Posts older than 30 days, and jobs you already applied to, are dropped.", "Jobs that ask for fees, use WhatsApp-only contact or hide the company are flagged as likely scams."], "Nothing. You can still see what was hidden, and why.", "Simple rules in a Supabase Edge Function", "163", "NEW AND REAL", [["Kept", "#9FB2FF"], ["Removed: repeat, old or scam", "#FF735F"]]], ["Each run", "Match", "EVERY RUN · ABOUT A MINUTE", "It scores every job against you.", "Each remaining job is read by AI and compared with your resume. 163 becomes 9 strong matches, pulled in close to you.", ["A score from 0 to 100, based on skills, experience, location and salary.", "A plain reason for each score: why it fits, and what is missing.", "A note if someone you know works there and could refer you."], "Nothing.", "Groq’s free AI, with OpenRouter as a backup", "9", "STRONG MATCHES · 80+", [["Strong match", "#B8C6FF"], ["Weaker match", "#7F86A3"]]], ["7 AM", "Brief", "EVERY MORNING · 7:00 AM", "Your morning brief.", "You wake up to a short list, not a feed: every strong match from the night, best first, with the work already started.", ["Every job that scored 80 or more is in it, ranked by match, freshness and closing date.", "Each one has a tailored resume and a short note ready for you to review.", "Sent to the app and to Telegram. It takes about three minutes to read."], "Read it with your morning tea.", "The NxtRole web app on Vercel, plus a Telegram bot", "9", "STRONG MATCHES IN TODAY’S BRIEF", [["Job card, resume ready", "#FBF9F4"]]], ["Daytime", "Apply & track", "WHEN YOU ARE READY", "You decide. It keeps track.", "Nothing is sent without your tap. Once you apply, NxtRole follows the job for you, all the way to an offer.", ["You apply on the company’s own site, using the tailored resume.", "Replies in Gmail move the card on their own: Applied, then Interview, then Offer.", "An interview invite builds a prep brief: the rounds, likely questions and salary range."], "Tap Apply, then prepare.", "A Google Apps Script that reads Gmail (read-only)", "1", "APPLIED · NOW TRACKED", [["Applied → Interview → Offer", "#8EA2FF"]]]];
+var TRUST = [["₹0", "a month to run", "It runs on free cloud tiers: Vercel, Supabase, GitHub Actions and Groq. No domain, no subscription, no card."], ["1", "person can see it: you", "One account and one private database. Gmail is read-only, and you can export or delete everything at any time."], ["0", "things sent without your tap", "NxtRole drafts and you approve. It never applies, emails or messages anyone on its own, and runs no bots on LinkedIn or Naukri."]];
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var rm = false; try { rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    this.state = { fs: 0, paused: rm };
+    this._mob = false;
+  }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+    try { this._tick = window.setInterval(function () { if (!self.state.paused) self.setState({ fs: ((self.state.fs || 0) + 1) % STEPS.length }); }, 8000); } catch (e) {}
+    M3.boot(this);
+  }
+  jpToggle() {
+    var n = this._jpT === 'dark' ? 'light' : 'dark';
+    try { window.localStorage.setItem('morrow-theme', n); } catch (e) {}
+    this._jpT = n; this.forceUpdate();
+    try { window.dispatchEvent(new Event('jp2-theme')); } catch (e) {}
+  }
+  renderVals() {
+    this.jpInit();
+    var self = this, st = this.state, dark = this._jpT === 'dark', i0 = st.fs || 0, c = STEPS[i0], last = i0 === STEPS.length - 1;
+    return {
+      theme: this._jpT, isLight: !dark, isDark: dark,
+      themeWord: dark ? 'Light' : 'Dark', themeLabel: dark ? 'Switch to light theme' : 'Switch to dark theme',
+      toggleTheme: function () { self.jpToggle(); },
+      steps: STEPS.map(function (s, i) {
+        var on = i === i0;
+        return { n: '0' + (i + 1), time: s[0], short: s[1], selected: on ? 'true' : 'false',
+          pick: function () { self.setState({ fs: i, paused: true }); },
+          style: 'display: flex; flex-direction: column; gap: 4px; align-items: flex-start; padding: 16px 12px 14px 0; background: none; border: none; border-top: 3px solid ' + (on ? 'var(--blue)' : 'transparent') + '; margin-top: -2px; text-align: left; opacity: ' + (on ? '1' : '0.6'),
+          mstyle: 'flex: 0 0 auto; height: 40px; padding: 0 14px; border-radius: 999px; font-size: 14px; font-weight: 600; white-space: nowrap; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)') };
+      }),
+      stepOf: 'STEP ' + (i0 + 1) + ' OF ' + STEPS.length, curWhen: c[2], curTitle: c[3], curLead: c[4],
+      curBullets: c[5].map(function (t, i) { return { n: String(i + 1), t: t }; }),
+      curYou: c[6], curRuns: c[7], curNum: c[8], curLab: c[9],
+      legend: c[10].map(function (g) { return { label: g[0], dot: g[1] }; }),
+      stageLabel: 'Step ' + (i0 + 1) + ': ' + c[3] + ' ' + c[8] + ' ' + c[9].toLowerCase() + '.',
+      dawn: i0 >= 4 ? '1' : '0',
+      fail: this._m3 === 'fail',
+      prev: function () { self.setState({ fs: (i0 + STEPS.length - 1) % STEPS.length, paused: true }); },
+      next: function () { self.setState({ fs: (i0 + 1) % STEPS.length, paused: true }); },
+      nextWord: last ? 'Start again' : 'Next: ' + STEPS[i0 + 1][1] + ' →',
+      togglePlay: function () { self.setState({ paused: !st.paused }); },
+      playWord: st.paused ? '▶ Play' : '❚❚ Pause', playingPressed: st.paused ? 'false' : 'true',
+      trust: TRUST.map(function (t, i) { return { big: t[0], label: t[1], body: t[2],
+        style: 'display: flex; flex-direction: column; gap: 12px; padding: 28px 28px 0 ' + (i ? '28px' : '0') + (i ? '; border-left: 1px solid var(--rule-2)' : '') }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

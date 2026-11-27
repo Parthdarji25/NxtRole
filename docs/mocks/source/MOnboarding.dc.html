@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Onboarding (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--green:#2F6B3A;--green-soft:#E2EDDF;--on-blue:#FFFFFF;color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--green:#8DCB96;--green-soft:#16281A;--on-blue:#0D1022;color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes push{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.push{animation:push .35s cubic-bezier(.2,.7,.2,1) both}
+.fill{transition:width .4s cubic-bezier(.2,.7,.2,1)}
+.knob{transition:transform .2s ease}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <header style="flex: 0 0 auto; padding: 16px 24px 12px; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <span class="mono" style="font-size: 11px; letter-spacing: .1em; color: var(--ink-3)">STEP {{step}} OF 5</span>
+      <a href="MToday.dc.html" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; text-decoration: none; color: var(--ink-2)">Skip for now</a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px">
+      <sc-for list="{{dots}}" as="d" hint-placeholder-count="5"><span style="{{d.style}}"></span></sc-for>
+    </div>
+  </header>
+
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 12px 24px 24px">
+    <sc-if value="{{s1}}" hint-placeholder-val="{{ true }}">
+      <div class="push" style="display: flex; flex-direction: column; gap: 16px">
+        <h1 class="serif" style="margin: 0; font-size: 36px; line-height: 1.05">Start with your resume.</h1>
+        <p style="margin: 0; color: var(--ink-2)">NxtRole reads it once to learn your skills and experience. It only uses facts you’ve confirmed.</p>
+        <button type="button" onClick="{{upload}}" style="{{uploadStyle}}">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5l5 5M4 20h16"></path></svg>
+          <span style="font-weight: 600">{{uploadLabel}}</span>
+          <span style="font-size: 13px; color: var(--ink-3)">{{uploadSub}}</span>
+        </button>
+        <sc-if value="{{hasFile}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: var(--green-soft)">
+            <span style="font-weight: 600; color: var(--green)">Found in your resume</span>
+            <span style="font-size: 14px">3 years · React, TypeScript, Next.js, Tailwind · Acme Digital, Mumbai</span>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{s2}}" hint-placeholder-val="{{ false }}">
+      <div class="push" style="display: flex; flex-direction: column; gap: 16px">
+        <h1 class="serif" style="margin: 0; font-size: 36px; line-height: 1.05">Which roles should we look for?</h1>
+        <p style="margin: 0; color: var(--ink-2)">Suggested from your resume. Pick any number.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <sc-for list="{{titles}}" as="t" hint-placeholder-count="4"><button type="button" onClick="{{t.toggle}}" aria-pressed="{{t.pressed}}" style="{{t.style}}">{{t.label}}</button></sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{s3}}" hint-placeholder-val="{{ false }}">
+      <div class="push" style="display: flex; flex-direction: column; gap: 16px">
+        <h1 class="serif" style="margin: 0; font-size: 36px; line-height: 1.05">Where, and for how much?</h1>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <sc-for list="{{places}}" as="p" hint-placeholder-count="4"><button type="button" onClick="{{p.toggle}}" aria-pressed="{{p.pressed}}" style="{{p.style}}">{{p.label}}</button></sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 8px">
+          <span style="font-weight: 600">Minimum salary</span>
+          <div style="display: flex; align-items: center; gap: 16px">
+            <button type="button" onClick="{{salDown}}" aria-label="Lower" style="width: 48px; height: 48px; border-radius: 12px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 22px">−</button>
+            <span class="serif" style="flex: 1 1 auto; text-align: center; font-size: 44px; line-height: 1">₹{{salary}} L</span>
+            <button type="button" onClick="{{salUp}}" aria-label="Raise" style="width: 48px; height: 48px; border-radius: 12px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-size: 22px">+</button>
+          </div>
+          <span style="font-size: 13px; color: var(--ink-3); text-align: center">Jobs that pay less are hidden. Most matches for you pay ₹14–20 L.</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{s4}}" hint-placeholder-val="{{ false }}">
+      <div class="push" style="display: flex; flex-direction: column; gap: 6px">
+        <h1 class="serif" style="margin: 0 0 6px; font-size: 36px; line-height: 1.05">Where should we search?</h1>
+        <sc-for list="{{sources}}" as="r" hint-placeholder-count="6">
+          <div style="display: flex; gap: 14px; align-items: center; min-height: 60px; border-bottom: 1px solid var(--rule)">
+            <span style="flex: 1 1 auto; display: flex; flex-direction: column"><span style="font-weight: 600">{{r.k}}</span><span style="font-size: 13px; color: var(--ink-3)">{{r.hint}}</span></span>
+            <button type="button" role="switch" aria-checked="{{r.checked}}" aria-label="{{r.k}}" onClick="{{r.toggle}}" style="{{r.track}}"><span class="knob" style="{{r.knob}}"></span></button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{s5}}" hint-placeholder-val="{{ false }}">
+      <div class="push" style="display: flex; flex-direction: column; gap: 16px">
+        <h1 class="serif" style="margin: 0; font-size: 36px; line-height: 1.05">Let replies come to NxtRole.</h1>
+        <p style="margin: 0; color: var(--ink-2)">A short script in your Gmail sends job emails here, and your Pipeline updates itself. No domain needed.</p>
+        <ol style="margin: 0; padding: 14px 14px 14px 34px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule); font-size: 14px; display: flex; flex-direction: column; gap: 6px"><li>Copy the script below.</li><li>Open script.google.com, create a project and paste it.</li><li>Press Run once and allow access. It then runs every 15 minutes.</li></ol>
+        <button type="button" onClick="{{copy}}" style="align-self: flex-start; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600">{{copyLabel}}</button>
+        <div style="display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 12px; border: 1px solid var(--rule)">
+          <span style="flex: 1 1 auto; display: flex; flex-direction: column"><span style="font-weight: 600">Phone alerts</span><span style="font-size: 13px; color: var(--ink-3)">Only interview invites and 90%+ matches</span></span>
+          <button type="button" onClick="{{toggleTg}}" style="{{tgStyle}}">{{tgLabel}}</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{s6}}" hint-placeholder-val="{{ false }}">
+      <div class="push" style="display: flex; flex-direction: column; gap: 16px; padding-top: 40px">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" style="color: var(--blue)"><path d="M5 7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM9 12h6M12.5 9l3 3-3 3"></path></svg>
+        <h1 class="serif" style="margin: 0; font-size: 40px; line-height: 1.02">You’re set. Sleep on it.</h1>
+        <p style="margin: 0; color: var(--ink-2)">Agents start searching {{titleCount}} roles across {{srcCount}} sources tonight. Your first brief arrives at 7 AM.</p>
+      </div>
+    </sc-if>
+  </main>
+
+  <footer style="flex: 0 0 auto; display: flex; gap: 10px; padding: 12px 24px 28px; border-top: 1px solid var(--rule)">
+    <sc-if value="{{canBack}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{back}}" style="flex: 0 0 auto; min-height: 52px; padding: 0 18px; border-radius: 12px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600">Back</button></sc-if>
+    <sc-if value="{{notLast}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{next}}" style="flex: 1 1 auto; min-height: 52px; border-radius: 12px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 16px">{{nextLabel}}</button></sc-if>
+    <sc-if value="{{isLast}}" hint-placeholder-val="{{ false }}"><a href="MToday.dc.html" style="flex: 1 1 auto; min-height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 16px; text-decoration: none">Go to Today →</a></sc-if>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) { super(props); this.state = { step: 1, file: false, busy: false, copied: false, tg: false, salary: 14,
+    titles: { 'Frontend Developer': true, 'React Developer': true, 'Next.js Developer': false, 'UI Engineer': false, 'Full-stack (React)': false },
+    places: { Mumbai: true, Pune: true, 'Remote (India)': true, Bengaluru: false, Hyderabad: false },
+    src: { naukri: true, indeed: true, linkedin: true, ats: true, remote: false, email: true } }; }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var chip = function (on) { return 'min-height: 44px; padding: 0 16px; border-radius: 999px; font-size: 15px; font-weight: 600; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)'); };
+    var toggler = function (group) { return function (k) { var on = !!s[group][k]; return { label: (on ? '✓ ' : '') + k, pressed: on ? 'true' : 'false', style: chip(on), toggle: function () { var x = Object.assign({}, self.state[group]); x[k] = !x[k]; var o = {}; o[group] = x; self.setState(o); } }; }; };
+    var SRC = [['naukri', 'Naukri', 'India-wide'], ['indeed', 'Indeed India', 'Most reliable'], ['linkedin', 'LinkedIn', 'Small batches to avoid blocks'], ['ats', 'Company careers pages', 'Greenhouse, Lever, Ashby and more'], ['remote', 'Remote job boards', 'Remotive, Himalayas, RemoteOK'], ['email', 'Your job-alert emails', 'Read by the Gmail script']];
+    var titleCount = Object.keys(s.titles).filter(function (k) { return s.titles[k]; }).length;
+    var srcCount = Object.keys(s.src).filter(function (k) { return s.src[k]; }).length;
+    var shown = Math.min(s.step, 5);
+    return {
+      theme: this._jpT,
+      step: shown,
+      dots: [1, 2, 3, 4, 5].map(function (n) { return { style: 'display: block; height: 4px; border-radius: 2px; background: ' + (n <= s.step ? 'var(--blue)' : 'var(--rule)') }; }),
+      s1: s.step === 1, s2: s.step === 2, s3: s.step === 3, s4: s.step === 4, s5: s.step === 5, s6: s.step === 6,
+      hasFile: s.file,
+      uploadLabel: s.busy ? 'Reading your resume…' : (s.file ? 'resume_2026.pdf' : 'Upload your resume'),
+      uploadSub: s.file ? 'Tap to replace' : 'PDF or Word, up to 5 MB',
+      uploadStyle: 'display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 28px 16px; border-radius: 14px; border: 1.5px dashed ' + (s.file ? 'var(--green)' : 'var(--rule-2)') + '; background: var(--card); color: ' + (s.file ? 'var(--green)' : 'var(--ink)'),
+      upload: function () { self.setState({ busy: true }); window.setTimeout(function () { self.setState({ busy: false, file: true }); }, 900); },
+      titles: Object.keys(s.titles).map(toggler('titles')),
+      places: Object.keys(s.places).map(toggler('places')),
+      salary: s.salary,
+      salDown: function () { self.setState({ salary: Math.max(3, self.state.salary - 1) }); },
+      salUp: function () { self.setState({ salary: Math.min(60, self.state.salary + 1) }); },
+      sources: SRC.map(function (r) { var on = !!s.src[r[0]];
+        return { k: r[1], hint: r[2], checked: on ? 'true' : 'false',
+          track: 'flex: 0 0 auto; box-sizing: border-box; width: 52px; height: 32px; border-radius: 999px; padding: 3px; display: flex; border: 1.5px solid ' + (on ? 'var(--ink)' : 'var(--ink-3)') + '; background: ' + (on ? 'var(--ink)' : 'transparent'),
+          knob: 'display: block; width: 22px; height: 22px; border-radius: 50%; background: ' + (on ? 'var(--paper)' : 'var(--ink-3)') + '; transform: translateX(' + (on ? '21px' : '0') + ')',
+          toggle: function () { var x = Object.assign({}, self.state.src); x[r[0]] = !x[r[0]]; self.setState({ src: x }); } }; }),
+      copyLabel: s.copied ? 'Copied ✓' : 'Copy script',
+      copy: function () { try { navigator.clipboard.writeText('// NxtRole Gmail script: runs every 15 min in your Google account\nfunction sendJobEmails() { /* searches Gmail and posts job emails to NxtRole */ }'); } catch (e) {} self.setState({ copied: true }); },
+      tgLabel: s.tg ? 'On' : 'Turn on',
+      tgStyle: 'flex: 0 0 auto; min-height: 44px; padding: 0 16px; border-radius: 10px; font-weight: 600; border: 1px solid ' + (s.tg ? 'var(--green)' : 'var(--ink)') + '; background: ' + (s.tg ? 'transparent' : 'var(--ink)') + '; color: ' + (s.tg ? 'var(--green)' : 'var(--paper)'),
+      toggleTg: function () { self.setState({ tg: !self.state.tg }); },
+      titleCount: titleCount, srcCount: srcCount,
+      canBack: s.step > 1 && s.step < 6,
+      notLast: s.step < 6, isLast: s.step === 6,
+      nextLabel: s.step === 5 ? 'Finish' : (s.step === 1 && !s.file ? 'I’ll add it later' : 'Continue'),
+      back: function () { self.setState({ step: Math.max(1, self.state.step - 1) }); },
+      next: function () { self.setState({ step: Math.min(6, self.state.step + 1) }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

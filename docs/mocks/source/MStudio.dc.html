@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Studio (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--scrim:rgba(24,24,28,.28);--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--scrim:rgba(0,0,0,.55);--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button,textarea{font-family:inherit}
+button{cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes push{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.push{animation:push .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.fade{animation:fadein .3s ease both}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.pulse{animation:pulse 1s ease-in-out infinite}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+
+  <sc-if value="{{isList}}" hint-placeholder-val="{{ true }}">
+    <header style="flex: 0 0 auto; padding: 8px 12px 14px; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid var(--rule)">
+      <a href="MMore.dc.html" style="align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; padding: 0 8px; text-decoration: none; font-weight: 600">← More</a>
+      <div style="padding: 0 8px; display: flex; flex-direction: column; gap: 4px">
+        <h1 class="serif" style="margin: 0; font-size: 38px; line-height: 1">Studio</h1>
+        <span class="mono" style="font-size: 12px; color: var(--ink-3)">{{pendingLabel}}</span>
+      </div>
+    </header>
+    <main class="scroll" style="flex: 1 1 auto; overflow-y: auto">
+      <sc-for list="{{drafts}}" as="d" hint-placeholder-count="6">
+        <button type="button" onClick="{{d.pick}}" class="rise" style="{{d.style}}">
+          <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; text-align: left">
+            <span class="mono" style="{{d.kindStyle}}">{{d.kind}}</span>
+            <span style="font-weight: 600; font-size: 16px">{{d.title}}</span>
+            <span style="font-size: 13px; color: var(--ink-3)">{{d.state}}</span>
+          </span>
+          <span aria-hidden="true" style="color: var(--ink-3); font-size: 18px">›</span>
+        </button>
+      </sc-for>
+      <p style="margin: 0; padding: 18px 20px 24px; font-size: 13px; color: var(--ink-3)">Nothing is sent without your tap. Drafts use only facts from your profile; gaps show as [brackets].</p>
+    </main>
+  </sc-if>
+
+  <sc-if value="{{isEdit}}" hint-placeholder-val="{{ false }}">
+    <header style="flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--rule)">
+      <button type="button" onClick="{{back}}" style="min-height: 44px; padding: 0 8px; background: none; border: none; color: var(--blue); font-size: 15px; font-weight: 600">← Drafts</button>
+      <sc-if value="{{cur.isMessage}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{copy}}" style="min-height: 44px; padding: 0 12px; background: none; border: none; color: var(--ink-2); font-size: 15px; font-weight: 600">{{copyLabel}}</button></sc-if>
+    </header>
+    <main class="scroll push" style="flex: 1 1 auto; overflow-y: auto; padding: 18px 20px 24px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">{{cur.kindUpper}} · TO {{cur.toUpper}}</span>
+        <h2 class="serif" style="margin: 0; font-size: 30px; line-height: 1.05">{{cur.title}}</h2>
+      </div>
+
+      <sc-if value="{{cur.isMessage}}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+            <div style="display: flex; gap: 6px">
+              <sc-for list="{{tones}}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="{{t.style}}">{{t.label}}</button></sc-for>
+            </div>
+            <button type="button" onClick="{{regen}}" style="min-height: 36px; padding: 0 4px; background: none; border: none; color: var(--blue); font-size: 13px; font-weight: 600">Rewrite</button>
+          </div>
+          <sc-if value="{{cur.hasSubject}}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--rule)"><span style="color: var(--ink-3)">Subject </span>{{cur.subject}}</span></sc-if>
+          <sc-if value="{{busy}}" hint-placeholder-val="{{ false }}"><div class="pulse" style="min-height: 280px; padding: 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule); color: var(--ink-3)">Rewriting…</div></sc-if>
+          <sc-if value="{{notBusy}}" hint-placeholder-val="{{ true }}">
+            <label for="mbody" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Message</label>
+            <textarea id="mbody" class="inp" rows="12" value="{{body}}" onChange="{{onEdit}}" style="padding: 14px; border-radius: 12px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); font-size: 16px; line-height: 1.55; resize: none"></textarea>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{cur.isResume}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 12px">
+                <a href="MResume.dc.html" style="align-self: flex-start; min-height: 40px; display: inline-flex; align-items: center; padding: 0 14px; margin-bottom: 12px; border-radius: 8px; border: 1px solid var(--ink); color: var(--ink); text-decoration: none; font-weight: 600; font-size: 14px">Open the resume builder: LaTeX, ATS check, keywords →</a>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <span style="display: flex; justify-content: space-between; font-size: 14px"><span>Keyword match with the job</span><span class="mono">{{coverage}}%</span></span>
+            <span style="display: block; height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden"><span style="display: block; height: 100%; background: var(--blue); width: {{coverage}}%"></span></span>
+          </div>
+          <sc-for list="{{edits}}" as="e" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; border: 1px solid var(--rule); background: var(--card)">
+              <span class="mono" style="font-size: 10px; letter-spacing: .08em; color: var(--ink-3)">{{e.section}}</span>
+              <span style="font-size: 14px; color: var(--ink-3); text-decoration: line-through">{{e.before}}</span>
+              <span style="font-size: 15px">{{e.after}}</span>
+              <sc-if value="{{e.pending}}" hint-placeholder-val="{{ true }}">
+                <span style="display: flex; gap: 10px">
+                  <button type="button" onClick="{{e.accept}}" style="flex: 1 1 0; min-height: 44px; border-radius: 10px; border: none; background: var(--ink); color: var(--paper); font-weight: 600">Use this</button>
+                  <button type="button" onClick="{{e.reject}}" style="flex: 1 1 0; min-height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600">Keep mine</button>
+                </span>
+              </sc-if>
+              <sc-if value="{{e.decided}}" hint-placeholder-val="{{ false }}"><span style="display: flex; gap: 14px; align-items: center"><span style="{{e.stateStyle}}">{{e.stateLabel}}</span><button type="button" onClick="{{e.undo}}" style="min-height: 44px; background: none; border: none; padding: 0; color: var(--ink-3); text-decoration: underline; font-size: 13px">Undo</button></span></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <div style="display: flex; flex-direction: column">
+        <sc-for list="{{cur.context}}" as="c" hint-placeholder-count="3">
+          <div style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--rule); font-size: 13px"><span style="color: var(--ink-3)">{{c.k}}</span><span style="text-align: right">{{c.v}}</span></div>
+        </sc-for>
+      </div>
+    </main>
+    <div style="flex: 0 0 auto; padding: 12px 20px; border-top: 1px solid var(--rule); background: var(--paper)">
+      <button type="button" onClick="{{approve}}" style="{{approveStyle}}">{{approveLabel}}</button>
+    </div>
+  </sc-if>
+
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="more" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) { super(props); this.state = { view: 'list', sel: 0, tone: 'warm', edited: {}, sent: {}, busy: false, variant: 0, copied: false, dec: {} }; }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var tone = s.tone;
+    var T = function (warm, formal, brief) { return { warm: warm, formal: formal, brief: brief }[tone]; };
+    var DR = [
+      { kind: 'Referral ask', title: 'Riya Kulkarni', to: 'Riya Kulkarni', type: 'message', subject: '',
+        body: T('Hi Riya,\n\nI saw we went to the same college, which made me smile. I’m applying for the Frontend Developer role at Northwind Labs. I’ve spent three years building React and TypeScript dashboards, and the role looks like a close fit.\n\nWould you be comfortable referring me? I can send my resume and a two-line note you can forward.\n\nThanks either way,\nAarav',
+                'Dear Riya,\n\nI am applying for the Frontend Developer position at Northwind Labs and noticed we are alumni of the same college. Would you consider referring me? I would be glad to share my resume.\n\nKind regards,\nAarav',
+                'Hi Riya, fellow alum here. Applying for Frontend Developer at Northwind; would you refer me? Happy to send my resume. Thanks! Aarav'),
+        context: [['For', 'Frontend Developer · Northwind Labs'], ['Why Riya', 'Alumna, Senior Frontend Engineer on that team'], ['Sent via', 'You copy it to LinkedIn or WhatsApp']], action: 'Copy & mark sent' },
+      { kind: 'Cover letter', title: 'Northwind Labs', to: 'Hiring team', type: 'message', subject: 'Application: Frontend Developer',
+        body: T('Hello Northwind team,\n\nYour Frontend Developer role caught my attention because it sits right where I do my best work: fast, accessible React dashboards. At Acme Digital I rebuilt our reporting dashboard in Next.js and cut load time by [X]%.\n\nI’d love to bring the same care to the tools your customers use every day.\n\nBest,\nAarav Mehta',
+                'Dear Hiring Team,\n\nI am writing to apply for the Frontend Developer position. Over three years I have built production React and TypeScript applications, most recently a Next.js dashboard with a [X]% faster load time.\n\nI would welcome the opportunity to contribute.\n\nSincerely,\nAarav Mehta',
+                'Hello,\n\nApplying for Frontend Developer. 3 years of React, TypeScript and Next.js; recently made a dashboard [X]% faster. Resume attached.\n\nAarav'),
+        context: [['For', 'Frontend Developer · Northwind Labs'], ['Angle', 'Dashboard performance, their main product'], ['Sent with', 'Tailored resume v3']], action: 'Approve & attach' },
+      { kind: 'Follow-up', title: 'Pinecrest Studio', to: 'Recruiter', type: 'message', subject: 'Following up: Frontend Developer',
+        body: T('Hi [Recruiter name],\n\nI applied for the Frontend Developer role nine days ago and wanted to check in. I’m still very keen, and happy to share more about my React work if that helps.\n\nThanks,\nAarav',
+                'Dear [Recruiter name],\n\nI am following up on my application for the Frontend Developer role submitted on 10 October. I remain very interested.\n\nRegards,\nAarav',
+                'Hi, checking in on my Frontend Developer application from 10 Oct. Still interested. Thanks, Aarav'),
+        context: [['Applied', '10 Oct · 9 days ago'], ['Their usual reply time', '7–10 days'], ['Best time to send', 'Tomorrow, 10:00 AM']], action: 'Schedule for 10:00 AM' },
+      { kind: 'Recruiter reply', title: 'Ananya · Kestrel Pay', to: 'Ananya Rao', type: 'message', subject: 'Re: Next steps',
+        body: T('Hi Ananya,\n\nThanks for reaching out! My current CTC is ₹11 LPA and I’m looking at ₹20–23 LPA for this role. My notice period is 30 days, and I can try to bring it down to 15.\n\nLooking forward to Wednesday.\nAarav',
+                'Dear Ananya,\n\nCurrent CTC: ₹11 LPA. Expected: ₹20–23 LPA. Notice period: 30 days (negotiable to 15).\n\nRegards,\nAarav',
+                'Hi Ananya: current ₹11 L, expecting ₹20–23 L, 30-day notice (can do 15). Thanks! Aarav'),
+        context: [['They asked', 'Current CTC, expected CTC, notice period'], ['Your saved answers', 'Used automatically'], ['Market for this role', 'Median ₹19 L']], action: 'Approve & send' },
+      { kind: 'Resume', title: 'Tailored for Northwind', to: 'your resume', type: 'resume', subject: '', body: '', context: [['For', 'Frontend Developer · Northwind Labs'], ['Base version', 'resume_2026.pdf'], ['Rule', 'Only adds skills you’ve confirmed']], action: 'Save version' },
+      { kind: 'Note to manager', title: 'Pooja Nair · Marigold', to: 'Pooja Nair', type: 'message', subject: 'Applied for Frontend Developer: quick hello',
+        body: T('Hi Pooja,\n\nI just applied for the Frontend Developer role on your team. I’ve spent three years on React and TypeScript dashboards, and fintech is where I want to grow.\n\nIf there’s a fit, I’d love a short chat.\n\nThanks,\nAarav',
+                'Dear Ms Nair,\n\nI have applied for the Frontend Developer role on your team and wanted to introduce myself briefly. I would welcome a conversation if there is a fit.\n\nRegards,\nAarav',
+                'Hi Pooja, applied for Frontend Developer on your team: 3 yrs React + TS, keen on fintech. Open to a quick chat? Aarav'),
+        context: [['Found via', 'Marigold’s team page'], ['Email', 'pooja@marigold.example · verified'], ['Daily limit', '1 of 5 direct emails today']], action: 'Approve & send' }
+    ];
+    var cur = DR[s.sel];
+    var key = s.sel + '-' + tone + '-' + s.variant;
+    var body = s.edited[key] !== undefined ? s.edited[key] : cur.body;
+    var EDITS = [['e1', 'EXPERIENCE · ACME DIGITAL', 'Worked on the company website using React.', 'Built and shipped [N] responsive pages in React and TypeScript, using Next.js image optimisation to cut load time by [X]%.'], ['e2', 'EXPERIENCE · ACME DIGITAL', 'Fixed bugs reported by users.', 'Resolved [N] UI and accessibility issues, bringing key pages to WCAG AA contrast and full keyboard support.']];
+    var acc = EDITS.filter(function (e) { return s.dec[e[0]] === 'a'; }).length;
+    var sent = !!s.sent[s.sel];
+    var pending = DR.filter(function (d, i) { return !s.sent[i]; }).length;
+    var chip = function (on) { return 'min-height: 36px; padding: 0 12px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)'); };
+    return {
+      theme: this._jpT,
+      isList: s.view === 'list', isEdit: s.view === 'edit',
+      back: function () { self.setState({ view: 'list' }); },
+      pendingLabel: pending + ' waiting · ' + (DR.length - pending) + ' done today',
+      drafts: DR.map(function (d, i) { var dn = !!s.sent[i];
+        return { kind: d.kind.toUpperCase(), title: d.title, state: dn ? '✓ Done' : 'Waiting for you',
+          kindStyle: 'font-size: 10px; letter-spacing: .08em; color: ' + (dn ? 'var(--green)' : 'var(--ink-3)'),
+          style: 'display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 20px; border: none; border-bottom: 1px solid var(--rule); color: var(--ink); background: transparent; opacity: ' + (dn ? '0.6' : '1') + '; animation-delay: ' + (i * 0.04).toFixed(2) + 's',
+          pick: function () { self.setState({ sel: i, view: 'edit', busy: false }); } }; }),
+      cur: { kindUpper: cur.kind.toUpperCase(), toUpper: cur.to.toUpperCase(), title: cur.title, subject: cur.subject, hasSubject: !!cur.subject, isMessage: cur.type === 'message', isResume: cur.type === 'resume',
+        context: cur.context.map(function (c) { return { k: c[0], v: c[1] }; }) },
+      tones: [['warm', 'Warm'], ['formal', 'Formal'], ['brief', 'Brief']].map(function (t) { var on = tone === t[0]; return { label: t[1], pressed: on ? 'true' : 'false', style: chip(on), pick: function () { self.setState({ tone: t[0] }); } }; }),
+      body: body, busy: s.busy, notBusy: !s.busy,
+      onEdit: function (e) { var x = Object.assign({}, self.state.edited); x[key] = e.target.value; self.setState({ edited: x }); },
+      regen: function () { self.setState({ busy: true }); window.setTimeout(function () { self.setState({ busy: false, variant: self.state.variant + 1 }); }, 1100); },
+      copyLabel: s.copied ? 'Copied ✓' : 'Copy',
+      copy: function () { try { navigator.clipboard.writeText(body); } catch (e) {} self.setState({ copied: true }); window.setTimeout(function () { self.setState({ copied: false }); }, 1400); },
+      coverage: 64 + acc * 12,
+      edits: EDITS.map(function (e) { var d = s.dec[e[0]];
+        return { section: e[1], before: e[2], after: e[3], pending: !d, decided: !!d, stateLabel: d === 'a' ? '✓ Using the new line' : 'Kept yours', stateStyle: 'font-size: 13px; font-weight: 600; color: ' + (d === 'a' ? 'var(--green)' : 'var(--ink-3)'),
+          accept: function () { var x = Object.assign({}, self.state.dec); x[e[0]] = 'a'; self.setState({ dec: x }); },
+          reject: function () { var x = Object.assign({}, self.state.dec); x[e[0]] = 'r'; self.setState({ dec: x }); },
+          undo: function () { var x = Object.assign({}, self.state.dec); delete x[e[0]]; self.setState({ dec: x }); } }; }),
+      approveLabel: sent ? '✓ Done' : cur.action,
+      approveStyle: 'width: 100%; min-height: 50px; border-radius: 12px; font-weight: 600; font-size: 16px; border: 1px solid ' + (sent ? 'var(--green)' : 'var(--blue)') + '; background: ' + (sent ? 'transparent' : 'var(--blue)') + '; color: ' + (sent ? 'var(--green)' : 'var(--on-blue)'),
+      approve: function () { var x = Object.assign({}, self.state.sent); x[self.state.sel] = !x[self.state.sel]; self.setState({ sent: x }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

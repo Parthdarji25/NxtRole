@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Resume</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;family=Source+Serif+4:ital,wght@0,400;0,700;1,400&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--scrim:rgba(24,24,28,.28);--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--scrim:rgba(0,0,0,.55);--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button,select,input,textarea{font-family:inherit}
+button,select{cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes slide{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.slide{animation:slide .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet{animation:up .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.fade{animation:fadein .25s ease both}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+.cardb{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.cardb:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--rule-2) !important}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="resume" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 64px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px">
+        <header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; border-bottom: 2px solid var(--ink); padding-bottom: 16px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <h1 class="serif" style="margin: 0; font-size: 52px; line-height: 1">Resume</h1>
+            <span style="color: var(--ink-2)">One master resume, tailored per job. Exports to LaTeX, PDF and Word.</span>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap">
+            <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--ink-2)">Tailor for
+            <select class="inp" value="{{jobVal}}" onChange="{{onJob}}" style="height: 42px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 14px; font-weight: 500"><sc-for list="{{jobs}}" as="o" hint-placeholder-count="2"><option value="{{o.v}}">{{o.label}}</option></sc-for></select>
+          </label>
+            <span style="display: flex; flex-direction: column; align-items: flex-end"><span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">KEYWORD MATCH</span><span class="serif" style="font-size: 36px; line-height: 1">{{covLabel}}</span></span>
+            <span style="display: flex; flex-direction: column; align-items: flex-end"><span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">ATS CHECK</span><span style="{{atsStyle}}">{{atsLabel}}</span></span>
+          </div>
+        </header>
+        <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+          <section aria-label="Preview" style="flex: 1.25 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 10px; padding: 24px; border-radius: 14px; background: var(--paper-2)">
+            <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">LIVE PREVIEW · A4 · ONE PAGE</span>
+            <article aria-label="Resume preview" style="background: #FFFFFF; color: #141414; font-family: {{pvFont}}; font-size: {{pvSize}}; line-height: 1.38; padding: {{pvPad}}; border-radius: 4px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 12px 32px -14px rgba(0,0,0,.35); display: flex; flex-direction: column; gap: 4px">
+  <div style="text-align: center; display: flex; flex-direction: column; gap: 2px">
+    <span style="font-size: 2em; font-weight: 700; letter-spacing: .01em">Aarav Mehta</span>
+    <span style="font-size: .92em">Mumbai, India | +91 [PHONE] | aarav@example.com | github.com/[you] | linkedin.com/in/[you]</span>
+  </div>
+  <span style="margin-top: 10px; font-weight: 700; font-size: 1.15em; border-bottom: 1px solid #141414; padding-bottom: 1px">Summary</span>
+  <span>{{summary}}</span>
+  <span style="margin-top: 10px; font-weight: 700; font-size: 1.15em; border-bottom: 1px solid #141414; padding-bottom: 1px">Experience</span>
+  <span style="display: flex; justify-content: space-between; gap: 8px"><b>Frontend Developer</b><span>Oct 2023 – Present</span></span>
+  <span style="display: flex; justify-content: space-between; gap: 8px; font-style: italic"><span>Acme Digital</span><span>Mumbai</span></span>
+  <ul style="margin: 2px 0 4px; padding-left: 1.2em; display: flex; flex-direction: column; gap: 1px"><sc-for list="{{acme}}" as="b" hint-placeholder-count="3"><li>{{b.text}}</li></sc-for></ul>
+  <span style="display: flex; justify-content: space-between; gap: 8px"><b>Frontend Intern</b><span>Jan 2023 – Sep 2023</span></span>
+  <span style="display: flex; justify-content: space-between; gap: 8px; font-style: italic"><span>Brightwave Solutions</span><span>Pune</span></span>
+  <ul style="margin: 2px 0 4px; padding-left: 1.2em; display: flex; flex-direction: column; gap: 1px"><sc-for list="{{bright}}" as="b" hint-placeholder-count="2"><li>{{b.text}}</li></sc-for></ul>
+  <span style="margin-top: 10px; font-weight: 700; font-size: 1.15em; border-bottom: 1px solid #141414; padding-bottom: 1px">Projects</span>
+  <span><b>FleetBoard</b> – real-time delivery dashboard (React, WebSockets, Recharts)</span>
+  <span style="margin-top: 10px; font-weight: 700; font-size: 1.15em; border-bottom: 1px solid #141414; padding-bottom: 1px">Skills</span>
+  <span>{{skillsLine}}</span>
+  <span style="margin-top: 10px; font-weight: 700; font-size: 1.15em; border-bottom: 1px solid #141414; padding-bottom: 1px">Education</span>
+  <span style="display: flex; justify-content: space-between; gap: 8px"><b>B.E. Computer Engineering</b><span>2019 – 2023</span></span>
+  <span style="font-style: italic">[College], Mumbai</span>
+</article>
+          </section>
+          <section aria-label="Tools" style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 16px">
+            <div role="group" aria-label="Tool" style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{panels}}" as="p" hint-placeholder-count="4"><button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="{{p.style}}">{{p.label}}</button></sc-for></div>
+            <sc-if value="{{pKeywords}}" hint-placeholder-val="{{ true }}"><div class="fade" style="display: flex; flex-direction: column; gap: 14px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <span style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-weight: 600">Keyword match</span><span class="mono" style="font-size: 13px">{{matchedN}} · {{covLabel}}</span></span>
+    <span style="display: block; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden"><span style="{{covStyle}}"></span></span>
+    <span style="font-size: 13px; color: var(--ink-2)"><span style="{{deltaStyle}}">{{deltaText}}</span><br>Compared with the job post for {{jobLabel}}. AI suggests wording; you decide, and only add what’s true.</span>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--green)">ALREADY IN YOUR RESUME</span>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{kwHit}}" as="k" hint-placeholder-count="5"><span style="padding: 4px 10px; border-radius: 999px; background: var(--green-soft); color: var(--green); font-size: 13px; font-weight: 600">✓ {{k.name}}{{k.viaText}}</span></sc-for></div>
+  </div>
+  <div style="display: flex; flex-direction: column">
+    <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--red-ink); padding-bottom: 4px">MISSING · AI SUGGESTIONS</span>
+    <sc-for list="{{kwMiss}}" as="k" hint-placeholder-count="3">
+      <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-top: 1px solid var(--rule)">
+        <span style="font-weight: 600">{{k.name}} <span class="mono" style="{{k.tagStyle}}">{{k.tag}}</span></span>
+        <span style="font-size: 14px">{{k.what}}</span>
+        <span style="font-size: 13px; color: var(--ink-2)">{{k.why}}</span>
+        <span style="display: flex; gap: 10px; flex-wrap: wrap">
+          <button type="button" onClick="{{k.add}}" style="{{k.addStyle}}">{{k.addLabel}}</button>
+          <button type="button" onClick="{{k.skip}}" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">I don’t have this yet</button>
+        </span>
+      </div>
+    </sc-for>
+    <sc-if value="{{noMiss}}" hint-placeholder-val="{{ false }}"><span style="padding: 12px 0; border-top: 1px solid var(--rule); font-size: 14px; color: var(--green); font-weight: 600">Every key term is covered.</span></sc-if>
+  </div>
+  <sc-if value="{{hasLearn}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">MOVED TO YOUR LEARNING PLAN</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{kwLearn}}" as="k" hint-placeholder-count="1"><span style="padding: 4px 10px; border-radius: 999px; border: 1px solid var(--rule-2); font-size: 13px">{{k.name}}</span></sc-for></div>
+    </div>
+  </sc-if>
+</div></sc-if>
+            <sc-if value="{{pAts}}" hint-placeholder-val="{{ false }}"><div class="fade" style="display: flex; flex-direction: column; gap: 12px">
+  <div style="padding: 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule); display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <span style="display: flex; flex-direction: column"><span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">ATS SCORE · {{jobShort}}</span><span style="display: flex; align-items: baseline; gap: 6px"><span class="serif" style="{{scoreStyle}}">{{atsScore}}</span><span class="mono" style="font-size: 13px; color: var(--ink-3)">/ 100</span></span></span>
+      <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right"><span style="{{atsStyle}}">{{atsBand}}</span><span style="font-size: 12px; color: var(--ink-3)">{{stableText}}</span></span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <sc-for list="{{parts}}" as="p" hint-placeholder-count="5">
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <span style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="font-weight: 600">{{p.name}}</span><span class="mono" style="color: var(--ink-2)">{{p.pts}}</span></span>
+          <span style="display: block; height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden"><span style="{{p.bar}}"></span></span>
+          <span style="font-size: 12px; color: var(--ink-3)">{{p.how}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <span style="font-size: 12px; color: var(--ink-3); border-top: 1px dotted var(--rule-2); padding-top: 8px">Written by GPT-OSS 120B, reviewed by Mistral Large, a different model, so the writer doesn’t grade its own work.</span>
+  </div>
+  <div style="display: flex; flex-direction: column">
+    <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--red-ink); padding-bottom: 4px">FIX THESE FIRST · BIGGEST GAIN AT THE TOP</span>
+    <sc-for list="{{fixes}}" as="x" hint-placeholder-count="3">
+      <div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--rule)">
+        <span style="flex: 1 1 auto; font-size: 14px">{{x.text}}</span>
+        <span class="mono" style="flex: 0 0 auto; font-size: 12px; font-weight: 600; color: var(--green)">{{x.pts}}</span>
+        <button type="button" onClick="{{x.go}}" style="flex: 0 0 auto; min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">{{x.goLabel}}</button>
+      </div>
+    </sc-for>
+    <sc-if value="{{noFixes}}" hint-placeholder-val="{{ false }}"><span style="padding: 10px 0; border-top: 1px solid var(--rule); font-size: 14px; color: var(--green); font-weight: 600">Nothing left to fix for this job.</span></sc-if>
+  </div>
+  <span style="font-weight: 600">Checks passed · {{passN}}</span>
+  <div style="display: flex; flex-direction: column">
+    <sc-for list="{{checks}}" as="c" hint-placeholder-count="8">
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--rule)">
+        <span aria-hidden="true" style="{{c.markStyle}}">{{c.mark}}</span>
+        <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600; font-size: 14px">{{c.label}}</span><span style="font-size: 13px; color: var(--ink-2)">{{c.note}}</span></span>
+      </div>
+    </sc-for>
+  </div>
+  <div style="padding: 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule); display: flex; flex-direction: column; gap: 8px">
+    <span style="font-weight: 600">What an ATS reads from your PDF</span>
+    <span style="font-size: 13px; color: var(--ink-2)">NxtRole parses the exported PDF with an open-source resume parser, the same way an ATS does.</span>
+    <sc-if value="{{parsed}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column"><sc-for list="{{parsedRows}}" as="r" hint-placeholder-count="6"><span style="display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px dotted var(--rule-2); font-size: 13px"><span style="color: var(--ink-2)">{{r.k}}</span><span style="text-align: right">{{r.v}}</span></span></sc-for></div>
+    </sc-if>
+    <button type="button" onClick="{{runParse}}" style="align-self: flex-start; min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">Parse my PDF</button>
+  </div>
+  <span style="font-size: 12px; color: var(--ink-3)">No tool can promise every ATS will rank you first. This checks that your file parses cleanly and uses the job’s words.</span>
+</div></sc-if>
+            <sc-if value="{{pEdit}}" hint-placeholder-val="{{ false }}"><div class="fade" style="display: flex; flex-direction: column; gap: 14px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <label for="rb-sum" style="font-size: 13px; font-weight: 600">Summary</label>
+    <textarea id="rb-sum" class="inp" rows="4" value="{{summary}}" onChange="{{onSummary}}" style="padding: 10px 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+  </div>
+  <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">ACME DIGITAL · BULLETS</span>
+  <sc-for list="{{acme}}" as="b" hint-placeholder-count="3"><div style="display: flex; flex-direction: column">
+    <label for="{{b.id}}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{b.label}}</label>
+    <textarea id="{{b.id}}" class="inp" rows="2" value="{{b.text}}" onChange="{{b.on}}" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 14px; line-height: 1.45; resize: vertical"></textarea>
+  </div></sc-for>
+  <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">BRIGHTWAVE · BULLETS</span>
+  <sc-for list="{{bright}}" as="b" hint-placeholder-count="2"><div style="display: flex; flex-direction: column">
+    <label for="{{b.id}}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{b.label}}</label>
+    <textarea id="{{b.id}}" class="inp" rows="2" value="{{b.text}}" onChange="{{b.on}}" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 14px; line-height: 1.45; resize: vertical"></textarea>
+  </div></sc-for>
+  <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">SKILLS</span>
+  <div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{skills}}" as="k" hint-placeholder-count="6"><span style="display: inline-flex; align-items: center; padding-left: 10px; border-radius: 999px; border: 1px solid var(--rule-2); font-size: 13px">{{k.label}}<button type="button" onClick="{{k.remove}}" aria-label="{{k.removeLabel}}" style="width: 32px; height: 32px; border: none; background: none; color: var(--ink-3)">×</button></span></sc-for></div>
+  <div style="display: flex; gap: 8px">
+    <label for="rb-skill" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Add a skill</label>
+    <input id="rb-skill" class="inp" type="text" value="{{skillDraft}}" onChange="{{onSkillDraft}}" placeholder="Add a skill you really have" style="flex: 1 1 auto; min-width: 0; height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 15px">
+    <button type="button" onClick="{{addSkill}}" style="min-height: 44px; padding: 0 14px; border-radius: 10px; border: none; background: var(--ink); color: var(--paper); font-weight: 600">Add</button>
+  </div>
+</div></sc-if>
+            <sc-if value="{{pExport}}" hint-placeholder-val="{{ false }}"><div class="fade" style="display: flex; flex-direction: column; gap: 14px">
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span style="font-weight: 600">Template · all single-column and ATS-safe</span>
+    <div style="display: flex; gap: 8px"><sc-for list="{{tpls}}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="{{t.style}}"><span style="font-weight: 600; font-size: 14px">{{t.label}}</span><span style="font-size: 12px; color: var(--ink-2)">{{t.sub}}</span></button></sc-for></div>
+  </div>
+  <sc-if value="{{hasPh}}" hint-placeholder-val="{{ false }}"><span style="padding: 10px 12px; border-radius: 10px; background: var(--red-soft); color: var(--red-ink); font-size: 13px">{{phCount}} placeholders like [N] are still in the text. Fill them in before you send it.</span></sc-if>
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <form action="https://www.overleaf.com/docs" method="post" target="_blank" style="margin: 0">
+      <input type="hidden" name="encoded_snip" value="{{texEncoded}}">
+      <input type="hidden" name="engine" value="pdflatex">
+      <button type="submit" style="width: 100%; min-height: 48px; border-radius: 10px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">Open in Overleaf (LaTeX → PDF) ↗</button>
+    </form>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <button type="button" onClick="{{copyTex}}" style="min-height: 44px; border-radius: 10px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">{{copyLabel}}</button>
+      <button type="button" onClick="{{mockDl}}" style="min-height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">Download PDF</button>
+      <button type="button" onClick="{{mockDocx}}" style="min-height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 13px">Download .docx</button>
+    </div>
+    <span class="mono" style="font-size: 12px; color: var(--ink-3)">{{fileName}}</span>
+  </div>
+  <button type="button" onClick="{{toggleTex}}" style="align-self: flex-start; min-height: 36px; padding: 0; background: none; border: none; color: var(--blue); font-weight: 600; font-size: 14px">{{texLabel}}</button>
+  <sc-if value="{{showTex}}" hint-placeholder-val="{{ false }}"><pre style="margin: 0; max-height: 320px; overflow: auto; padding: 12px; border-radius: 10px; background: var(--paper-2); color: var(--ink); font-family: 'Geist Mono', monospace; font-size: 11.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word">{{tex}}</pre></sc-if>
+</div></sc-if>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+    <div role="status" class="rise" style="position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); max-width: min(560px, 92vw); z-index: 60; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: var(--ink); color: var(--paper); box-shadow: var(--shadow); font-size: 14px">
+      <span style="flex: 1 1 auto">{{toastText}}</span>
+      <button type="button" onClick="{{toastClose}}" aria-label="Dismiss" style="width: 32px; height: 32px; border: none; background: transparent; color: var(--paper); font-size: 18px">×</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  constructor(props) {
+    super(props);
+    this.state = { job: 'northwind', tpl: 'classic', panel: 'keywords', mtab: 'preview', copied: false, toast: '', parsed: false, showTex: false, skillDraft: '',
+      summary: 'Frontend developer with 3 years of experience building fast, accessible React and Next.js dashboards. Cut load time on a production dashboard from 4.1 s to 2.3 s.',
+      skills: ['React', 'TypeScript', 'Next.js', 'JavaScript', 'Tailwind CSS', 'HTML', 'CSS', 'REST APIs', 'Git', 'Accessibility'],
+      bullets: {
+        acme: ['Rebuilt the reporting dashboard in Next.js and TypeScript, cutting LCP from 4.1 s to 2.3 s.', 'Built and shipped [N] responsive pages in React and TypeScript.', 'Resolved [N] UI and accessibility issues, bringing key pages to WCAG AA contrast and full keyboard support.'],
+        bright: ['Built landing pages in React and Tailwind CSS for 12 client sites.', 'Set up reusable form components that cut new-page build time by [X]%.']
+      },
+      kw: {}, learn: {} };
+    this._baseText = (this.state.summary + ' ' + this.state.skills.join(' ') + ' ' + this.state.bullets.acme.join(' ') + ' ' + this.state.bullets.bright.join(' ')).toLowerCase();
+  }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var JOBSK = {
+      northwind: { label: 'Frontend Developer · Northwind Labs', kws: [['React', ['react']], ['TypeScript', ['typescript']], ['Next.js', ['next.js']], ['Accessibility', ['accessibility', 'wcag']], ['Performance', ['lcp', 'load time', 'performance']], ['Design systems', ['design system', 'component library']], ['GraphQL', ['graphql']], ['Jest', ['jest']], ['Code review', ['code review', 'pull request']], ['CI/CD', ['ci/cd', 'github actions']]] },
+      kestrel: { label: 'React Engineer · Kestrel Pay', kws: [['React', ['react']], ['TypeScript', ['typescript']], ['Payments', ['payment', 'checkout']], ['Storybook', ['storybook']], ['Testing', ['jest', 'testing library', 'playwright', 'test']], ['Performance', ['lcp', 'load time', 'performance']], ['Accessibility', ['accessibility', 'wcag']], ['Monitoring', ['sentry', 'monitoring']]] }
+    };
+    var SUG = {
+      'Design systems': { kind: 'bullet', where: 'acme', text: 'Built a shared component library (design system) of [N] components used across the dashboard.', why: 'You mention reusable components at Brightwave; say it in the job’s words.' },
+      'Jest': { kind: 'bullet', where: 'acme', text: 'Wrote Jest and React Testing Library tests for the dashboard, raising coverage to [X]%.', why: 'Only if you’ve written tests. Testing is in 6 of your 9 matches.' },
+      'Testing': { kind: 'bullet', where: 'acme', text: 'Wrote Jest and React Testing Library tests for the dashboard, raising coverage to [X]%.', why: 'Only if you’ve written tests.' },
+      'Code review': { kind: 'bullet', where: 'acme', text: 'Reviewed teammates’ pull requests weekly and wrote the team’s frontend code review checklist.', why: 'Shows you work well in a team; Northwind lists it under “what you’ll do”.' },
+      'GraphQL': { kind: 'skill', text: 'GraphQL', why: 'Listed as a plus. Add only if you’ve used it; otherwise it goes to your learning plan.' },
+      'CI/CD': { kind: 'skill', text: 'GitHub Actions (CI/CD)', why: 'Add only if you’ve set up or maintained a pipeline.' },
+      'Storybook': { kind: 'skill', text: 'Storybook', why: 'Kestrel uses it for their checkout components. Add only if you’ve used it.' },
+      'Payments': { kind: 'summary', text: ' Keen to build payment and checkout experiences.', why: 'Connects your dashboard work to their product.' },
+      'Monitoring': { kind: 'skill', text: 'Sentry (error monitoring)', why: 'Add only if you’ve used an error-monitoring tool.' }
+    };
+    var job = JOBSK[s.job];
+    var allText = (s.summary + ' ' + s.skills.join(' ') + ' ' + s.bullets.acme.join(' ') + ' ' + s.bullets.bright.join(' ')).toLowerCase();
+    var kwRows = job.kws.map(function (k) { var hit = k[1].some(function (w) { return allText.indexOf(w) >= 0; }); return { name: k[0], hit: hit, sug: SUG[k[0]], learned: !!s.learn[k[0]] }; });
+    var matched = kwRows.filter(function (k) { return k.hit; }).length;
+    var cov = Math.round(matched / kwRows.length * 100);
+    var placeholders = (allText.match(/\[(n|x)\]/g) || []).length;
+    var CHECKS = [
+      ['One column, no tables or text boxes', true, 'Every NxtRole template is single-column, so ATS parsers read it top to bottom.'],
+      ['Standard headings', true, 'Summary, Experience, Projects, Skills, Education.'],
+      ['Contact details as plain text', true, 'Not in a header, footer or image.'],
+      ['No images, icons or charts', true, 'Skill bars and icons confuse parsers.'],
+      ['Dates in one format', true, '“Jan 2023 – Present” style throughout.'],
+      ['Text can be copied from the PDF', true, 'LaTeX is compiled with \\pdfgentounicode=1 so every character is extractable.'],
+      ['Placeholders filled in', placeholders === 0, placeholders === 0 ? 'No [N] or [X] left.' : placeholders + ' placeholders like [N] are still in the text. Replace them with real numbers.'],
+      ['Keyword match with the job', cov >= 75, cov + '% of the job’s key terms appear. Aim for 75% or more, using only skills you really have.']
+    ];
+
+    var NICE = { northwind: ['GraphQL', 'Jest', 'Design systems', 'CI/CD'], kestrel: ['Storybook', 'Monitoring'] }[s.job];
+    kwRows = kwRows.map(function (k) { var src = job.kws.filter(function (q) { return q[0] === k.name; })[0]; var via = ''; src[1].some(function (w) { if (allText.indexOf(w) >= 0) { via = w; return true; } return false; });
+      return Object.assign(k, { nice: NICE.indexOf(k.name) >= 0, via: via && via !== k.name.toLowerCase() ? via : '' }); });
+    var mustRows = kwRows.filter(function (k) { return !k.nice; }), niceRows = kwRows.filter(function (k) { return k.nice; });
+    var mustHit = mustRows.filter(function (k) { return k.hit; }).length, niceHit = niceRows.filter(function (k) { return k.hit; }).length;
+    var baseText = this._baseText, baseCov = Math.round(job.kws.filter(function (k) { return k[1].some(function (w) { return baseText.indexOf(w) >= 0; }); }).length / job.kws.length * 100);
+    var allB = s.bullets.acme.concat(s.bullets.bright), noNum = allB.filter(function (b) { return !/\d/.test(b.replace(/\[(N|X)\]/g, '')); }).length;
+    var BANNED = ['results-driven', 'team player', 'go-getter', 'hardworking', 'synergy', 'detail-oriented'], banned = BANNED.filter(function (w) { return allText.indexOf(w) >= 0; });
+    var pRead = s.parsed ? 29 : 27, pMust = Math.round(30 * mustHit / Math.max(1, mustRows.length)), pNice = Math.round(10 * niceHit / Math.max(1, niceRows.length));
+    var pStr = Math.max(0, 20 - 3 * placeholders - 2 * noNum - 2 * banned.length), pFmt = allB.length > 9 ? 8 : 10;
+    var atsScore = pRead + pMust + pNice + pStr + pFmt, again = atsScore + (s.job === 'kestrel' ? 3 : 2);
+    var band = atsScore >= 80 ? ['Strong', 'var(--green)'] : (atsScore >= 60 ? ['Needs work', 'var(--amber)'] : ['Weak', 'var(--red-ink)']);
+    var FX = [];
+    if (placeholders) FX.push([3 * placeholders, 'Replace ' + placeholders + ' placeholder' + (placeholders > 1 ? 's' : '') + ' like [N] with real numbers', 'Edit', 'edit']);
+    mustRows.filter(function (k) { return !k.hit && !k.learned; }).forEach(function (k) { FX.push([Math.round(30 / mustRows.length), 'Add “' + k.name + '” (must-have), only if you have it', 'Keywords', 'keywords']); });
+    if (!s.parsed) FX.push([2, 'Parse your PDF to confirm what hiring systems read', 'Parse', 'parse']);
+    niceRows.filter(function (k) { return !k.hit && !k.learned; }).forEach(function (k) { FX.push([Math.round(10 / niceRows.length), 'Add “' + k.name + '” (nice to have), only if you have it', 'Keywords', 'keywords']); });
+    if (banned.length) FX.push([2 * banned.length, 'Remove filler phrases: ' + banned.join(', '), 'Edit', 'edit']);
+    FX.sort(function (a, b) { return b[0] - a[0]; });
+    var go = function (t) { return function () { if (t === 'parse') self.setState({ parsed: true }); else self.setState({ panel: t, mtab: t }); }; };
+    var partBar = function (v, max) { var r = v / max; return 'display: block; height: 100%; border-radius: 2px; width: ' + Math.round(r * 100) + '%; background: ' + (r >= 0.8 ? 'var(--green)' : (r >= 0.6 ? 'var(--amber)' : 'var(--red)')); };
+    var ATSX = {
+      atsScore: String(atsScore), atsBand: band[0], jobShort: s.job === 'kestrel' ? 'KESTREL PAY' : 'NORTHWIND LABS',
+      scoreStyle: 'font-size: 56px; line-height: .95; color: ' + band[1],
+      stableText: Math.abs(again - atsScore) <= 5 ? 'Scored twice: ' + atsScore + ' and ' + again + ' · stable' : 'Scores differ, marked unsure',
+      parts: [['Can systems read it?', pRead, 30, s.parsed ? 'From parsing your exported PDF: dates, sections and contact all read correctly.' : 'Estimated from the template. Parse your PDF to confirm.'],
+        ['Must-have keywords', pMust, 30, mustHit + ' of ' + mustRows.length + ' required skills found, counting variants such as ReactJS for React.'],
+        ['Nice-to-have keywords', pNice, 10, niceHit + ' of ' + niceRows.length + ' optional skills found.'],
+        ['Content strength', pStr, 20, (placeholders ? placeholders + ' placeholders left · ' : '') + (noNum ? noNum + ' bullets without a number · ' : '') + (banned.length ? banned.length + ' filler phrases' : 'no filler phrases')],
+        ['Format and length', pFmt, 10, 'One page, single column, standard headings.']].map(function (p) { return { name: p[0], pts: p[1] + ' / ' + p[2], bar: partBar(p[1], p[2]), how: p[3] }; }),
+      fixes: FX.slice(0, 5).map(function (f) { return { pts: '+' + f[0] + ' pts', text: f[1], goLabel: f[2], go: go(f[3]) }; }),
+      noFixes: FX.length === 0,
+      deltaText: 'Before tailoring ' + baseCov + '% → now ' + cov + '%' + (cov > baseCov ? ' · +' + (cov - baseCov) + ' points' : ''),
+      deltaStyle: 'font-size: 13px; font-weight: 600; color: ' + (cov > baseCov ? 'var(--green)' : 'var(--ink-2)')
+    };
+    var passN = CHECKS.filter(function (c) { return c[1]; }).length;
+    var ready = passN === CHECKS.length;
+    var esc = function (t) { return String(t).replace(/[\\&%$#_{}~^]/g, function (c) { return c === '\\' ? '\\textbackslash{}' : (c === '~' ? '\\textasciitilde{}' : (c === '^' ? '\\textasciicircum{}' : '\\' + c)); }).replace(/–/g, '--').replace(/’/g, "'"); };
+    var items = function (arr) { return '\\begin{itemize}\n' + arr.map(function (b) { return '  \\item ' + esc(b); }).join('\n') + '\n\\end{itemize}'; };
+    var TPL = { classic: ['11pt', '0.7in', ''], compact: ['10pt', '0.5in', ''], modern: ['10pt', '0.6in', '\\renewcommand{\\familydefault}{\\sfdefault}\n'] }[s.tpl];
+    var tex = '% NxtRole resume · template: ' + s.tpl + ' · compile with pdflatex\n\\documentclass[' + TPL[0] + ',a4paper]{article}\n\\usepackage[margin=' + TPL[1] + ']{geometry}\n\\usepackage[T1]{fontenc}\n\\usepackage[hidelinks]{hyperref}\n\\usepackage{enumitem}\n\\input{glyphtounicode}\n\\pdfgentounicode=1\n' + TPL[2] + '\\setlist[itemize]{leftmargin=1.2em,itemsep=1pt,topsep=2pt}\n\\pagestyle{empty}\n\\newcommand{\\rsection}[1]{\\vspace{8pt}{\\large\\bfseries #1}\\\\[-7pt]\\rule{\\linewidth}{0.4pt}\\\\[-4pt]}\n\\newcommand{\\role}[4]{\\textbf{#1} \\hfill #3\\\\ \\textit{#2} \\hfill \\textit{#4}}\n\n\\begin{document}\n\\begin{center}\n  {\\LARGE\\bfseries Aarav Mehta}\\\\[2pt]\n  Mumbai, India | +91 [PHONE] | \\href{mailto:aarav@example.com}{aarav@example.com} | github.com/[you] | linkedin.com/in/[you]\n\\end{center}\n\n\\rsection{Summary}\n' + esc(s.summary) + '\n\n\\rsection{Experience}\n\\role{Frontend Developer}{Acme Digital}{Oct 2023 -- Present}{Mumbai}\n' + items(s.bullets.acme) + '\n\\role{Frontend Intern}{Brightwave Solutions}{Jan 2023 -- Sep 2023}{Pune}\n' + items(s.bullets.bright) + '\n\n\\rsection{Projects}\n\\textbf{FleetBoard} -- real-time delivery dashboard (React, WebSockets, Recharts)\n\n\\rsection{Skills}\n' + esc(s.skills.join(', ')) + '\n\n\\rsection{Education}\n\\role{B.E. Computer Engineering}{[College]}{2019 -- 2023}{Mumbai}\n\\end{document}\n';
+    var addBullet = function (where, text) { var b = { acme: s.bullets.acme.slice(), bright: s.bullets.bright.slice() }; b[where].push(text); return b; };
+    var panelBtn = function (on) { return 'min-height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule-2)') + '; background: ' + (on ? 'var(--ink)' : 'transparent') + '; color: ' + (on ? 'var(--paper)' : 'var(--ink-2)'); };
+    var TPLS = [['classic', 'Classic', 'Serif, 11 pt, generous spacing'], ['compact', 'Compact', 'Fits more on one page'], ['modern', 'Modern', 'Sans-serif, clean']];
+    var RBR = {
+      theme: this._jpT,
+      atsScore: ATSX.atsScore, atsBand: ATSX.atsBand, jobShort: ATSX.jobShort, scoreStyle: ATSX.scoreStyle, stableText: ATSX.stableText, parts: ATSX.parts, fixes: ATSX.fixes, noFixes: ATSX.noFixes,
+      jobs: Object.keys(JOBSK).map(function (k) { return { v: k, label: JOBSK[k].label }; }), jobVal: s.job,
+      onJob: function (e) { self.setState({ job: e.target.value }); },
+      jobLabel: job.label,
+      cov: cov, covLabel: cov + '%', covStyle: 'display: block; height: 100%; border-radius: 3px; width: ' + cov + '%; background: ' + (cov >= 75 ? 'var(--green)' : 'var(--amber)'),
+      matchedN: matched + ' of ' + kwRows.length, deltaText: ATSX.deltaText, deltaStyle: ATSX.deltaStyle,
+      kwHit: kwRows.filter(function (k) { return k.hit; }).map(function (k) { return { name: k.name, viaText: k.via ? ' · via “' + k.via + '”' : '' }; }),
+      kwMiss: kwRows.filter(function (k) { return !k.hit && !k.learned; }).sort(function (a, b) { return (a.nice ? 1 : 0) - (b.nice ? 1 : 0); }).map(function (k, ki) { var sg = k.sug || { kind: 'skill', text: k.name, why: 'Add only if you have it.' };
+        return { addStyle: 'min-height: 40px; padding: 0 12px; border-radius: 8px; font-weight: 600; font-size: 13px; border: 1px solid ' + (ki === 0 ? 'var(--blue)' : 'var(--ink)') + '; background: ' + (ki === 0 ? 'var(--blue)' : 'transparent') + '; color: ' + (ki === 0 ? 'var(--on-blue)' : 'var(--ink)'), name: k.name, tag: k.nice ? 'NICE TO HAVE' : 'MUST-HAVE', tagStyle: 'font-size: 10.5px; font-weight: 500; letter-spacing: .06em; color: ' + (k.nice ? 'var(--ink-3)' : 'var(--red-ink)'), why: sg.why, what: sg.kind === 'bullet' ? 'Suggested bullet: “' + sg.text + '”' : (sg.kind === 'summary' ? 'Add to summary: “' + sg.text.trim() + '”' : 'Add to Skills: ' + sg.text),
+          addLabel: sg.kind === 'bullet' ? 'Add bullet' : (sg.kind === 'summary' ? 'Add to summary' : 'I have this · add'),
+          add: function () { if (sg.kind === 'bullet') self.setState({ bullets: addBullet(sg.where, sg.text), toast: 'Bullet added. Replace [N] or [X] with your real number.' }); else if (sg.kind === 'summary') self.setState({ summary: self.state.summary + sg.text, toast: 'Added to your summary.' }); else self.setState({ skills: self.state.skills.concat([sg.text]), toast: sg.text + ' added to Skills.' }); },
+          skip: function () { var x = Object.assign({}, self.state.learn); x[k.name] = true; self.setState({ learn: x, toast: k.name + ' moved to your learning plan in Progress.' }); } }; }),
+      kwLearn: kwRows.filter(function (k) { return !k.hit && k.learned; }).map(function (k) { return { name: k.name }; }),
+      hasLearn: kwRows.some(function (k) { return !k.hit && k.learned; }),
+      noMiss: !kwRows.some(function (k) { return !k.hit && !k.learned; }),
+      checks: CHECKS.map(function (c) { return { label: c[0], ok: c[1], note: c[2], mark: c[1] ? '✓' : '!', markStyle: 'flex: 0 0 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: ' + (c[1] ? 'var(--green)' : 'var(--red-ink)') + '; background: ' + (c[1] ? 'var(--green-soft)' : 'var(--red-soft)') }; }),
+      atsLabel: atsScore + ' / 100 · ' + band[0], atsStyle: 'font-size: 13px; font-weight: 600; color: ' + band[1],
+      passN: passN + ' of ' + CHECKS.length,
+      parsed: s.parsed, runParse: function () { self.setState({ parsed: true }); },
+      parsedRows: [['Name', 'Aarav Mehta'], ['Email', 'aarav@example.com'], ['Latest title', 'Frontend Developer · Acme Digital'], ['Experience', '3 yrs 10 mos (Jan 2023 – present)'], ['Skills found', s.skills.length + ': ' + s.skills.slice(0, 6).join(', ') + (s.skills.length > 6 ? '…' : '')], ['Education', 'B.E. Computer Engineering · 2023']].map(function (r) { return { k: r[0], v: r[1] }; }),
+      panels: [['keywords', 'Keywords'], ['ats', 'ATS check'], ['edit', 'Edit content'], ['export', 'Export']].map(function (p) { var on = s.panel === p[0]; return { label: p[1], pressed: on ? 'true' : 'false', style: panelBtn(on), pick: function () { self.setState({ panel: p[0] }); } }; }),
+      pKeywords: s.panel === 'keywords', pAts: s.panel === 'ats', pEdit: s.panel === 'edit', pExport: s.panel === 'export',
+      mtabs: [['preview', 'Preview'], ['keywords', 'Keywords'], ['ats', 'ATS'], ['edit', 'Edit'], ['export', 'Export']].map(function (p) { var on = s.mtab === p[0]; return { label: p[1], pressed: on ? 'true' : 'false', style: panelBtn(on).replace('padding: 0 14px', 'padding: 0 12px; flex: 0 0 auto'), pick: function () { self.setState({ mtab: p[0] }); } }; }),
+      mPreview: s.mtab === 'preview', mKeywords: s.mtab === 'keywords', mAts: s.mtab === 'ats', mEdit: s.mtab === 'edit', mExport: s.mtab === 'export',
+      tpls: TPLS.map(function (t) { var on = s.tpl === t[0]; return { label: t[1], sub: t[2], pressed: on ? 'true' : 'false', pick: function () { self.setState({ tpl: t[0] }); },
+        style: 'flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; align-items: flex-start; text-align: left; padding: 10px 12px; border-radius: 10px; color: var(--ink); background: ' + (on ? 'var(--card)' : 'transparent') + '; border: ' + (on ? '2px solid var(--blue)' : '1px solid var(--rule)') }; }),
+      pvFont: s.tpl === 'modern' ? "'Geist', system-ui, sans-serif" : "'Source Serif 4', Georgia, serif",
+      pvSize: s.tpl === 'compact' ? '11.5px' : (s.tpl === 'classic' ? '12.5px' : '12px'),
+      pvPad: s.tpl === 'compact' ? '28px 30px' : '36px 40px',
+      summary: s.summary, onSummary: function (e) { self.setState({ summary: e.target.value }); },
+      acme: s.bullets.acme.map(function (b, i) { return { text: b, id: 'acme-' + i, label: 'Acme Digital bullet ' + (i + 1), on: function (e) { var x = { acme: self.state.bullets.acme.slice(), bright: self.state.bullets.bright.slice() }; x.acme[i] = e.target.value; self.setState({ bullets: x }); } }; }),
+      bright: s.bullets.bright.map(function (b, i) { return { text: b, id: 'bright-' + i, label: 'Brightwave bullet ' + (i + 1), on: function (e) { var x = { acme: self.state.bullets.acme.slice(), bright: self.state.bullets.bright.slice() }; x.bright[i] = e.target.value; self.setState({ bullets: x }); } }; }),
+      skills: s.skills.map(function (k) { return { label: k, removeLabel: 'Remove ' + k, remove: function () { self.setState({ skills: self.state.skills.filter(function (x) { return x !== k; }) }); } }; }),
+      skillsLine: s.skills.join(', '),
+      skillDraft: s.skillDraft, onSkillDraft: function (e) { self.setState({ skillDraft: e.target.value }); },
+      addSkill: function () { var v = (self.state.skillDraft || '').trim(); if (v && self.state.skills.indexOf(v) < 0) self.setState({ skills: self.state.skills.concat([v]), skillDraft: '' }); },
+      tex: tex, texEncoded: encodeURIComponent(tex),
+      showTex: s.showTex, toggleTex: function () { self.setState({ showTex: !self.state.showTex }); }, texLabel: s.showTex ? 'Hide LaTeX source' : 'View LaTeX source',
+      copyLabel: s.copied ? 'Copied ✓' : 'Copy LaTeX',
+      copyTex: function () { try { navigator.clipboard.writeText(tex); } catch (e) {} self.setState({ copied: true, toast: 'LaTeX copied. Paste it into any .tex file or Overleaf.' }); },
+      mockDl: function () { self.setState({ toast: 'In the app this downloads the compiled PDF. In this mock, use Open in Overleaf to get the PDF.' }); },
+      mockDocx: function () { self.setState({ toast: 'In the app this downloads a Word file with the same single-column layout.' }); },
+      fileName: 'Aarav_Mehta_Frontend_Developer_Resume.pdf',
+      hasToast: !!s.toast, toastText: s.toast, toastClose: function () { self.setState({ toast: '' }); },
+      phCount: placeholders, hasPh: placeholders > 0
+    };
+    return RBR;
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weekly coach (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.scroll{scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+main.scroll > *{flex-shrink:0}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+  <main class="scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 18px">
+    <header style="display: flex; flex-direction: column; gap: 6px">
+      <span class="mono" style="font-size: 12px; letter-spacing: .08em; color: var(--ink-3)">WEEKLY COACH · 13–19 OCT</span>
+      <h1 class="serif" style="margin: 0; font-size: 30px; line-height: 1.1">Fast applications got 5 of your 8 replies</h1>
+      <span style="font-size: 13px; color: var(--ink-3)">From your 31 applications since 1 Sep</span>
+    </header>
+
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+      <section style="display: flex; flex-direction: column; gap: 8px">
+        <h2 class="serif" style="margin: 0; font-size: 18px">{{g.t}}</h2>
+        <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="2">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px"><span style="font-weight: 600">{{r.l}}</span><span class="mono" style="{{r.vs}}">{{r.v}}</span></span>
+            <span style="display: block; height: 10px; border-radius: 3px; background: var(--rule)"><span style="{{r.bar}}"></span></span>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+
+    <section style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule-2)">
+      <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--blue)">ONE CHANGE FOR NEXT WEEK</span>
+      <span class="serif" style="font-size: 20px; line-height: 1.2">Ask for one referral at a top-5 match.</span>
+      <span style="font-size: 13px; color: var(--ink-2)">Both referral applications got replies.</span>
+      <button type="button" onClick="{{plan}}" style="{{planStyle}}">{{planLabel}}</button>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 14px; border: 1px solid var(--rule-2)">
+      <span class="mono" style="font-size: 11px; letter-spacing: .08em; color: var(--ink-3)">SUGGESTED RULE · NEEDS YOUR OK</span>
+      <span style="font-weight: 600">{{ruleTitle}}</span>
+      <sc-if value="{{rulePending}}" hint-placeholder-val="{{ true }}">
+        <span style="font-size: 13px; color: var(--ink-2)">You skipped 4 IT services jobs this month.</span>
+        <span style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <button type="button" onClick="{{yes}}" style="min-height: 44px; border-radius: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px">Add rule</button>
+          <button type="button" onClick="{{no}}" style="min-height: 44px; border-radius: 10px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 14px">Not now</button>
+        </span>
+      </sc-if>
+    </section>
+    <span style="font-size: 12px; color: var(--ink-3)">Code counts; the AI only words the advice. Under 5 applications is “too few”.</span>
+  </main>
+  <div style="flex: 0 0 84px"><dc-import name="MTabs" active="more" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var G = [
+  ['When you applied', [['Within 24 hours', 5, 14], ['After 24 hours', 3, 17]]],
+  ['Where the job came from', [['Career pages', 4, 12], ['Adzuna', 1, 8], ['Alert emails', 1, 9], ['Referrals', 2, 2]]]
+];
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { plan: false, rule: 'ask' }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    return {
+      theme: this._jpT,
+      groups: G.map(function (g) { return { t: g[0], rows: g[1].map(function (r) { var few = r[2] < 5, rate = r[1] / r[2];
+        return { l: r[0], v: few ? r[1] + ' of ' + r[2] + ' · too few' : r[1] + ' of ' + r[2] + ' · ' + Math.round(rate * 100) + '%', vs: 'font-size: 12px; color: ' + (few ? 'var(--ink-3)' : 'var(--ink)'),
+          bar: 'display: block; height: 100%; border-radius: 3px; background: var(--ink); width: ' + (few ? 0 : Math.round(Math.min(rate / 0.4, 1) * 100)) + '%' }; }) }; }),
+      planLabel: s.plan ? '✓ Added to Thursday' : 'Add to next week',
+      planStyle: 'min-height: 44px; border-radius: 10px; font-weight: 600; font-size: 14px; ' + (s.plan ? 'border: 1px solid var(--green); background: var(--green-soft); color: var(--green)' : 'border: none; background: var(--blue); color: var(--on-blue)'),
+      plan: function () { self.setState({ plan: !self.state.plan }); },
+      rulePending: s.rule === 'ask',
+      ruleTitle: s.rule === 'yes' ? '✓ Rule added: hide IT services companies' : (s.rule === 'no' ? 'Okay. Not asking again for 30 days.' : 'Hide IT services companies?'),
+      yes: function () { self.setState({ rule: 'yes' }); }, no: function () { self.setState({ rule: 'no' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

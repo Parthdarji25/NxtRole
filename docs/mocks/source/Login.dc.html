@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--green:#2F6B3A;--green-soft:#E2EDDF;--on-blue:#FFFFFF;--shadow:0 1px 0 rgba(24,24,28,.04),0 24px 48px -20px rgba(24,24,28,.25);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--green:#8DCB96;--green-soft:#16281A;--on-blue:#0D1022;--shadow:0 24px 48px -20px rgba(0,0,0,.7);color-scheme:dark}
+.j2 *{transition-property:background-color,border-color,color;transition-duration:.25s}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button,input{font-family:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default;opacity:.5}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.rise{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .9s linear infinite}
+.inp:focus{outline:2px solid var(--blue);outline-offset:1px}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.j2 .mono[style*="font-size: 10px"],.j2 .mono[style*="font-size: 10.5px"],.j2 .mono[style*="font-size: 11px"]{font-size:12px !important}.j2 .mono[style*="letter-spacing"]{letter-spacing:.05em !important}
+.serif{font-family:'Geist',system-ui,sans-serif !important;font-weight:600 !important;letter-spacing:-.025em}.serif em,em.serif,.serif[style*="italic"]{font-style:normal !important}.serif em{font-weight:500;color:var(--ink-2)}h1.serif{letter-spacing:-.035em}.mono{font-family:'Geist Mono',ui-monospace,monospace !important}body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+
+  <!-- editorial side -->
+  <section style="flex: 1 1 520px; min-width: 0; background: var(--paper-2); border-right: 1px solid var(--rule); padding: 40px 56px; box-sizing: border-box; display: flex; flex-direction: column; gap: 40px">
+    <a href="Landing.dc.html" class="serif" style="display: inline-flex; align-items: center; gap: 8px; font-size: 28px; font-style: italic; color: var(--ink); text-decoration: none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" style="color: var(--blue); align-self: center"><path d="M5 7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM9 12h6M12.5 9l3 3-3 3"></path></svg>Nxt<span style="color: var(--blue)">Role</span></a>
+    <div style="margin: auto 0; display: flex; flex-direction: column; gap: 28px; max-width: 520px">
+      <h1 class="serif rise" style="margin: 0; font-size: 64px; line-height: 1; letter-spacing: -0.015em">Wake up to only the <em style="color: var(--blue)">jobs worth your time</em>, not five hundred.</h1>
+      <div class="rise" style="display: flex; flex-direction: column; gap: 0; border-top: 2px solid var(--ink); animation-delay: .1s">
+        <sc-for list="{{points}}" as="p" hint-placeholder-count="3">
+          <div style="display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--rule)"><span class="serif" style="font-size: 26px; line-height: 1; color: var(--ink-3); min-width: 22px">{{p.n}}</span><span style="color: var(--ink-2)">{{p.t}}</span></div>
+        </sc-for>
+      </div>
+    </div>
+    <span style="font-size: 13px; color: var(--ink-3)">Free · nothing to install · nothing sent without your OK</span>
+  </section>
+
+  <!-- auth side -->
+  <section style="flex: 1 1 440px; min-width: 0; padding: 40px 24px; box-sizing: border-box; display: flex; flex-direction: column">
+    <div style="display: flex; justify-content: flex-end">
+      <button type="button" onClick="{{toggleTheme}}" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink-2); font-size: 13px">{{themeWord}}</button>
+    </div>
+    <div style="margin: auto; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 22px">
+
+      <sc-if value="{{isStart}}" hint-placeholder-val="{{ true }}">
+        <div class="rise" style="display: flex; flex-direction: column; gap: 22px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <h2 class="serif" style="margin: 0; font-size: 40px; line-height: 1">Sign in</h2>
+            <span style="color: var(--ink-2)">New here? The same steps create your account.</span>
+          </div>
+          <button type="button" onClick="{{google}}" disabled="{{busy}}" style="height: 50px; display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-weight: 600; font-size: 15px">
+            <sc-if value="{{googleBusy}}" hint-placeholder-val="{{ false }}"><span class="spin" style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--rule-2); border-top-color: var(--blue)"></span></sc-if>
+            <sc-if value="{{googleIdle}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" class="mono" style="width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--rule-2); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500">G</span></sc-if>
+            {{googleLabel}}
+          </button>
+          <div style="display: flex; align-items: center; gap: 14px; color: var(--ink-3); font-size: 13px"><span style="flex: 1; height: 1px; background: var(--rule)"></span>or with email<span style="flex: 1; height: 1px; background: var(--rule)"></span></div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <label for="em" style="font-size: 13px; font-weight: 600">Email</label>
+            <input id="em" class="inp" type="email" value="{{email}}" onChange="{{onEmail}}" placeholder="you@example.com" style="height: 48px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-size: 15px">
+            <sc-if value="{{emailError}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: var(--red)">Enter a valid email address.</span></sc-if>
+          </div>
+          <button type="button" onClick="{{sendCode}}" disabled="{{busy}}" style="height: 50px; border-radius: 10px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">{{sendLabel}}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isCode}}" hint-placeholder-val="{{ false }}">
+        <div class="rise" style="display: flex; flex-direction: column; gap: 20px">
+          <button type="button" onClick="{{back}}" style="align-self: flex-start; background: none; border: none; padding: 0; color: var(--ink-2); font-size: 14px">← Use a different email</button>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <h2 class="serif" style="margin: 0; font-size: 40px; line-height: 1">Check your inbox</h2>
+            <span style="color: var(--ink-2)">We sent a 6-digit code to <strong style="color: var(--ink)">{{email}}</strong>. It expires in 10 minutes.</span>
+          </div>
+          <label for="code" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">6-digit code</label>
+          <div style="position: relative">
+            <input id="code" class="inp" type="text" inputmode="numeric" autocomplete="one-time-code" value="{{code}}" onChange="{{onCode}}" placeholder="••••••" style="width: 100%; box-sizing: border-box; height: 64px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--rule-2); background: var(--card); color: var(--ink); font-family: 'Geist Mono', monospace; font-size: 30px; letter-spacing: .5em; text-align: center">
+          </div>
+          <sc-if value="{{codeError}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: var(--red)">That code didn’t match. Try again.</span></sc-if>
+          <button type="button" onClick="{{verify}}" disabled="{{cantVerify}}" style="height: 50px; border-radius: 10px; border: none; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 15px">{{verifyLabel}}</button>
+          <span style="font-size: 13px; color: var(--ink-3)">Didn’t get it? Check spam, or <button type="button" onClick="{{resend}}" style="background: none; border: none; padding: 0; color: var(--blue); font-size: 13px; text-decoration: underline">{{resendLabel}}</button>. Demo code: 123456</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+        <div class="rise" style="display: flex; flex-direction: column; gap: 18px">
+          <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--green)">✓ SIGNED IN</span>
+          <h2 class="serif" style="margin: 0; font-size: 40px; line-height: 1.05">{{doneTitle}}</h2>
+          <span style="color: var(--ink-2)">{{doneText}}</span>
+          <a href="{{doneHref}}" style="height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: var(--blue); color: var(--on-blue); font-weight: 600; text-decoration: none">{{doneCta}}</a>
+          <button type="button" onClick="{{toggleReturning}}" style="background: none; border: none; padding: 0; color: var(--ink-3); font-size: 13px; text-decoration: underline">{{returningToggle}}</button>
+        </div>
+      </sc-if>
+
+      <span style="font-size: 12px; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 16px">By continuing you agree to the Terms and Privacy Policy. We never post or apply anywhere without your approval.</span>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() {
+    if (this._jpOn) return;
+    var self = this;
+    this._jpT = this.jpRead();
+    this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } };
+    try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {}
+  }
+  jpToggle() {
+    var n = this._jpT === 'dark' ? 'light' : 'dark';
+    try { window.localStorage.setItem('morrow-theme', n); } catch (e) {}
+    this._jpT = n; this.forceUpdate();
+    try { window.dispatchEvent(new Event('jp2-theme')); } catch (e) {}
+  }
+  constructor(props) { super(props); this.state = { step: 'start', email: '', code: '', busy: '', emailError: false, codeError: false, resent: false, returning: false }; }
+  componentWillUnmount() { if (this.t) clearTimeout(this.t); }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var dark = this._jpT === 'dark';
+    var later = function (fn, ms) { self.t = setTimeout(fn, ms); };
+    return {
+      theme: this._jpT, themeWord: dark ? 'Light' : 'Dark', toggleTheme: this.jpToggle.bind(this),
+      points: [['1', 'Agents read new jobs overnight and score each one against your resume.'], ['2', 'Every morning, a short brief with the few worth applying to.'], ['3', 'Before every interview: rounds, real questions and salary.']].map(function (p) { return { n: p[0], t: p[1] }; }),
+      isStart: s.step === 'start', isCode: s.step === 'code', isDone: s.step === 'done',
+      busy: !!s.busy, googleBusy: s.busy === 'google', googleIdle: s.busy !== 'google',
+      googleLabel: s.busy === 'google' ? 'Opening Google…' : 'Continue with Google',
+      google: function () { self.setState({ busy: 'google' }); later(function () { self.setState({ busy: '', step: 'done', email: 'aarav.mehta@gmail.com' }); }, 1200); },
+      email: s.email, onEmail: function (e) { self.setState({ email: e.target.value, emailError: false }); },
+      emailError: s.emailError,
+      sendLabel: s.busy === 'send' ? 'Sending code…' : 'Email me a code',
+      sendCode: function () { var v = (self.state.email || '').trim(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { self.setState({ emailError: true }); return; } self.setState({ busy: 'send' }); later(function () { self.setState({ busy: '', step: 'code' }); }, 900); },
+      back: function () { self.setState({ step: 'start', code: '', codeError: false }); },
+      code: s.code, onCode: function (e) { self.setState({ code: e.target.value.replace(/\D/g, '').slice(0, 6), codeError: false }); },
+      codeError: s.codeError,
+      cantVerify: !!s.busy || s.code.length < 6,
+      verifyLabel: s.busy === 'verify' ? 'Checking…' : 'Verify and continue',
+      verify: function () { self.setState({ busy: 'verify' }); later(function () { if (self.state.code === '123456') self.setState({ busy: '', step: 'done' }); else self.setState({ busy: '', codeError: true }); }, 800); },
+      resendLabel: s.resent ? 'sent again ✓' : 'send a new code',
+      resend: function () { self.setState({ resent: true }); },
+      doneTitle: s.returning ? 'Welcome back, Aarav.' : 'You’re in. Let’s set things up.',
+      doneText: s.returning ? 'Your brief for today is ready: nine strong matches and two things that need you.' : 'Five short steps, about three minutes: your resume, what you’re looking for, where to look, your inbox and alerts.',
+      doneHref: s.returning ? 'Brief.dc.html' : 'Onboarding.dc.html',
+      doneCta: s.returning ? 'Open today’s brief →' : 'Start setup →',
+      returningToggle: s.returning ? 'Show the first-time view' : 'Show the returning-user view',
+      toggleReturning: function () { self.setState({ returning: !self.state.returning }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

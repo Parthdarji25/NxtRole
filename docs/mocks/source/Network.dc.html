@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Network</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.pick:hover{border-color:var(--ink) !important}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="network" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 64px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+        <header style="display: flex; flex-direction: column; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 22px">
+          <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">NETWORK · FROM YOUR LINKEDIN EXPORT · 412 PEOPLE</span>
+          <h1 class="serif" style="margin: 0; font-size: 48px; line-height: 1.05; letter-spacing: -0.035em">You know someone at 3 of your top matches.</h1>
+          <p style="margin: 0; font-size: 18px; color: var(--ink-2); max-width: 760px">A referral gets your resume read by a person. Ask one person this week, starting with the job that closes soonest.</p>
+        </header>
+
+        <section style="display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; padding: 16px 20px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule)">
+          <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-weight: 600">Connections.csv imported 12 Oct · 41 days old</span>
+            <span style="font-size: 14px; color: var(--ink-2)">Kept: name, company, title, date connected, profile link. Dropped: email addresses. Contacts are never sent to the AI.</span>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap">
+            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 14px">Import a new export</button>
+            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--red-ink); font-weight: 600; font-size: 14px">Delete all contacts</button>
+          </div>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+          <section aria-label="Matches with contacts" style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+            <sc-for list="{{cos}}" as="c" hint-placeholder-count="3">
+              <article style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--rule)">
+                <div style="display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap">
+                  <span style="display: flex; flex-direction: column"><span class="serif" style="font-size: 24px; line-height: 1.15">{{c.name}}</span><span style="font-size: 14px; color: var(--ink-2)">{{c.role}}</span></span>
+                  <span style="{{c.dueStyle}}">{{c.due}}</span>
+                </div>
+                <sc-for list="{{c.people}}" as="p" hint-placeholder-count="1">
+                  <button type="button" class="pick" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="{{p.style}}">
+                    <span style="{{p.avatar}}">{{p.initials}}</span>
+                    <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; text-align: left"><span style="font-weight: 600">{{p.name}}</span><span style="font-size: 13px; color: var(--ink-2)">{{p.title}} · connected {{p.since}}</span></span>
+                    <span style="{{p.statusStyle}}">{{p.status}}</span>
+                  </button>
+                </sc-for>
+              </article>
+            </sc-for>
+            <p style="margin: 0; font-size: 14px; color: var(--ink-3)">No one yet at Marigold Fintech, Quill Learning or Fernway Travel. Your export lists only first-degree connections.</p>
+          </section>
+
+          <aside aria-label="Referral message" style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 14px; padding: 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule-2); box-shadow: var(--shadow)">
+            <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">REFERRAL ASK · {{sel.company}}</span>
+            <span class="serif" style="font-size: 26px; line-height: 1.15">Message for {{sel.first}}</span>
+            <p style="margin: 0; padding: 14px 16px; border-radius: 10px; background: var(--paper); border: 1px solid var(--rule); white-space: pre-line">{{sel.msg}}</p>
+            <button type="button" onClick="{{sel.ask}}" style="{{sel.askStyle}}">{{sel.askLabel}}</button>
+            <a href="https://example.com" style="min-height: 40px; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Open {{sel.first}}’s LinkedIn profile ↗</a>
+            <span style="font-size: 13px; color: var(--ink-3)">The AI wrote this with a {name} placeholder. NxtRole added “{{sel.first}}” itself, so your contact’s details never reach the AI. You send the message.</span>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+var C = [
+  ['Northwind Labs', 'Frontend Developer · match 92', 'Closes in 2 days', true, [['riya', 'Riya Kulkarni', 'Senior Frontend Engineer', '2023', 'Frontend Developer']]],
+  ['Cobalt Commerce', 'Next.js Developer · match 84', 'Open 5 days', false, [['dev', 'Dev Shah', 'Engineering Manager', '2022', 'Next.js Developer'], ['neha', 'Neha Iyer', 'QA Lead', '2024', 'Next.js Developer']]],
+  ['Banyan Health', 'UI Engineer · match 83', 'Open 9 days', false, [['arjun', 'Arjun Rao', 'Product Designer', '2021', 'UI Engineer']]]
+];
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: 'riya', asked: { arjun: '15 Oct' } }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state, cur = null, curCo = null;
+    C.forEach(function (c) { c[4].forEach(function (p) { if (p[0] === s.sel) { cur = p; curCo = c; } }); });
+    var first = cur[1].split(' ')[0], asked = s.asked[cur[0]];
+    return {
+      theme: this._jpT,
+      cos: C.map(function (c) { return { name: c[0], role: c[1], due: c[2],
+        dueStyle: 'font-size: 13px; font-weight: 600; color: ' + (c[3] ? 'var(--red-ink)' : 'var(--ink-3)'),
+        people: c[4].map(function (p) { var on = p[0] === s.sel, a = s.asked[p[0]];
+          return { name: p[1], title: p[2], since: p[3], initials: p[1].split(' ').map(function (w) { return w[0]; }).join(''), pressed: on ? 'true' : 'false', status: a ? 'Asked ' + a : 'Not asked',
+            pick: function () { self.setState({ sel: p[0] }); },
+            avatar: 'flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; background: var(--paper-2); color: var(--ink)',
+            statusStyle: 'flex: 0 0 auto; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; ' + (a ? 'background: var(--green-soft); color: var(--green)' : 'border: 1px solid var(--rule-2); color: var(--ink-3)'),
+            style: 'display: flex; gap: 12px; align-items: center; width: 100%; min-height: 60px; padding: 10px 12px; border-radius: 10px; color: var(--ink); font-size: 15px; border: 1px solid ' + (on ? 'var(--ink)' : 'var(--rule)') + '; background: ' + (on ? 'var(--card)' : 'transparent') }; }) }; }),
+      sel: { first: first, company: curCo[0].toUpperCase(),
+        msg: 'Hi ' + first + ', hope you are well!\n\nI saw ' + curCo[0] + ' is hiring a ' + cur[4] + '. I have spent 3 years building React and TypeScript dashboards, and the role looks like a close fit.\n\nWould you be open to referring me? I can send my resume and a two-line summary to make it easy. Thanks either way!',
+        askLabel: asked ? '✓ Asked on ' + asked : 'Copy message and mark asked',
+        askStyle: 'min-height: 48px; border-radius: 8px; font-weight: 600; font-size: 15px; ' + (asked ? 'border: 1px solid var(--green); background: var(--green-soft); color: var(--green)' : 'border: none; background: var(--blue); color: var(--on-blue)'),
+        ask: function () { var x = Object.assign({}, self.state.asked); x[cur[0]] = x[cur[0]] ? undefined : '20 Oct'; if (!x[cur[0]]) delete x[cur[0]]; self.setState({ asked: x }); } }
+    };
+  }
+}
+</script>
+</body>
+</html>

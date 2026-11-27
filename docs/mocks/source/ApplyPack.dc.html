@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Application pack</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+.j2{--paper:#F4F1EA;--paper-2:#EBE6DB;--card:#FBF9F4;--ink:#18181C;--ink-2:#45443F;--ink-3:#625F57;--rule:#DAD4C6;--rule-2:#C4BCAA;--blue:#2443E0;--blue-ink:#1A33B8;--blue-soft:#E4E8FB;--red:#C23E2A;--red-ink:#A8321F;--red-soft:#F7E3DD;--green:#2F6B3A;--green-soft:#E2EDDF;--amber:#8A5B00;--amber-soft:#F4E9CF;--on-blue:#FFFFFF;--shadow:0 1px 0 rgba(24,24,28,.04),0 18px 40px -18px rgba(24,24,28,.22);color-scheme:light}
+.j2[data-theme="dark"]{--paper:#111214;--paper-2:#18191C;--card:#1B1C20;--ink:#ECE7DC;--ink-2:#BEB9AE;--ink-3:#8E8A80;--rule:#2B2C31;--rule-2:#3C3D44;--blue:#8EA2FF;--blue-ink:#B1BEFF;--blue-soft:#1C2342;--red:#FF8A73;--red-ink:#FF8A73;--red-soft:#3A1F19;--green:#8DCB96;--green-soft:#16281A;--amber:#E9C067;--amber-soft:#2F2612;--on-blue:#0D1022;--shadow:0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+body{margin:0}
+a{color:var(--blue)}a:hover{color:var(--blue-ink)}
+button{font-family:inherit;cursor:pointer}
+button:disabled{cursor:not-allowed}
+.serif{font-family:'Geist',system-ui,sans-serif;font-weight:600;letter-spacing:-.025em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+@keyframes breathe{0%,100%{opacity:.35}50%{opacity:1}}
+.breathe{animation:breathe 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="j2" data-theme="{{theme}}" style="min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: stretch">
+  <div style="flex: 1 1 220px; max-width: 260px; background: var(--paper-2); border-right: 1px solid var(--rule)"><div style="position: sticky; top: 0; height: 100vh; min-height: 720px"><dc-import name="Nav" active="studio" hint-size="100%,960px"></dc-import></div></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="TopBar" hint-size="100%,64px"></dc-import>
+    <main style="padding: 32px 40px 64px; box-sizing: border-box">
+      <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+        <a href="JobCheck.dc.html" style="align-self: flex-start; min-height: 32px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">‹ Frontend Developer, React · Marigold Fintech</a>
+
+        <header style="display: flex; flex-direction: column; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 22px">
+          <span class="mono" style="font-size: 12px; letter-spacing: .1em; color: var(--ink-3)">APPLICATION PACK · DRAFTED IN 41 SECONDS · WAITING FOR YOU</span>
+          <h1 class="serif" style="margin: 0; font-size: 48px; line-height: 1.05; letter-spacing: -0.035em">Your pack for Marigold Fintech</h1>
+          <p style="margin: 0; font-size: 18px; color: var(--ink-2); max-width: 760px">{{lead}}</p>
+        </header>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+          <aside aria-label="Agent run" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+            <h2 class="serif" style="margin: 0; font-size: 22px">How the agent built it</h2>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+              <sc-for list="{{steps}}" as="s" hint-placeholder-count="5">
+                <li style="display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--rule)">
+                  <span aria-hidden="true" style="{{s.dot}}">{{s.mark}}</span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 600">{{s.name}}</span><span style="font-size: 13px; color: var(--ink-2)">{{s.detail}}</span></span>
+                </li>
+              </sc-for>
+            </ol>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+              <span style="display: flex; flex-direction: column; padding: 10px; border-radius: 8px; background: var(--card); border: 1px solid var(--rule)"><span class="serif" style="font-size: 20px">5 / 6</span><span style="font-size: 12px; color: var(--ink-3)">tool calls</span></span>
+              <span style="display: flex; flex-direction: column; padding: 10px; border-radius: 8px; background: var(--card); border: 1px solid var(--rule)"><span class="serif" style="font-size: 20px">1</span><span style="font-size: 12px; color: var(--ink-3)">rewrite</span></span>
+              <span style="display: flex; flex-direction: column; padding: 10px; border-radius: 8px; background: var(--card); border: 1px solid var(--rule)"><span class="serif" style="font-size: 20px">₹0</span><span style="font-size: 12px; color: var(--ink-3)">free tier</span></span>
+            </div>
+            <p style="margin: 0; font-size: 13px; color: var(--ink-3)">Your name, email and phone were removed before any AI call. They are added back only in the copy you export.</p>
+          </aside>
+
+          <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+            <div role="status" style="{{checkStyle}}">
+              <span style="font-weight: 600">{{checkTitle}}</span>
+              <span style="font-size: 14px; color: var(--ink-2)">14 claims checked against your profile facts · 0 invented · judge model (Llama 3.3 70B): pass</span>
+            </div>
+
+            <section aria-labelledby="b-h" style="display: flex; flex-direction: column; gap: 10px">
+              <h2 id="b-h" class="serif" style="margin: 0; font-size: 26px">Resume bullets for this job</h2>
+              <sc-for list="{{bullets}}" as="b" hint-placeholder-count="3">
+                <div style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule)">
+                  <span>{{b.text}}</span>
+                  <span class="mono" style="font-size: 11px; color: var(--ink-3)">{{b.fact}}</span>
+                </div>
+              </sc-for>
+            </section>
+
+            <section aria-labelledby="n-h" style="display: flex; flex-direction: column; gap: 10px">
+              <h2 id="n-h" class="serif" style="margin: 0; font-size: 26px">Short note <span style="font-size: 14px; font-weight: 500; color: var(--ink-3)">· 96 words</span></h2>
+              <p style="margin: 0; padding: 16px 18px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule)">Hi Marigold team, I build React and TypeScript dashboards that people use every day. At Northwind Labs I rebuilt our expense dashboard in Next.js and cut its load time from 4.1 to 1.6 seconds. Your post says your finance teams live in the dashboard, so speed and clear tables matter to you. That is the work I enjoy most. I would like to talk about how I could help, and I am happy to walk through the Northwind rebuild. Thank you, [Your name]</p>
+            </section>
+
+            <section aria-labelledby="q-h" style="display: flex; flex-direction: column; gap: 10px">
+              <h2 id="q-h" class="serif" style="margin: 0; font-size: 26px">Screening answers</h2>
+              <div style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--rule)">
+                <span style="font-size: 13px; font-weight: 600; color: var(--ink-3)">Why do you want to work at Marigold?</span>
+                <span>Finance dashboards are where I do my best work, and your post describes the same problems I solved at Northwind: large tables, fast filters and people who check numbers all day.</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--rule)">
+                <span style="font-size: 13px; font-weight: 600; color: var(--ink-3)">What is your notice period?</span>
+                <span>30 days. <span style="font-size: 13px; color: var(--ink-3)">From your profile</span></span>
+              </div>
+              <div style="{{ctcBox}}">
+                <span style="font-size: 13px; font-weight: 600; color: var(--ink-3)">What is your expected CTC?</span>
+                <sc-if value="{{ctcMissing}}" hint-placeholder-val="{{ true }}">
+                  <span style="font-weight: 600; color: var(--red-ink)">[1] Needs your answer: this isn’t in your profile, so the agent left it blank instead of guessing.</span>
+                  <span style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+                    <button type="button" onClick="{{fillCtc}}" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px">Use ₹18–20 L from your settings</button>
+                    <span style="font-size: 13px; color: var(--ink-3)">or type your own</span>
+                  </span>
+                </sc-if>
+                <sc-if value="{{ctcFilled}}" hint-placeholder-val="{{ false }}"><span>₹18–20 L, open to discussion. <span style="font-size: 13px; color: var(--ink-3)">Added by you</span></span></sc-if>
+              </div>
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 12px; padding: 20px 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--rule-2); box-shadow: var(--shadow)">
+              <sc-if value="{{notApproved}}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center">
+                  <button type="button" onClick="{{approve}}" disabled="{{approveDisabled}}" style="{{approveStyle}}">Approve pack</button>
+                  <a href="Studio.dc.html" style="min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Edit in Studio</a>
+                  <button type="button" style="min-height: 44px; padding: 0 4px; border: none; background: none; color: var(--ink-2); font-weight: 600; font-size: 14px">Rewrite one part</button>
+                </div>
+                <span style="font-size: 13px; color: var(--ink-3)">{{approveHint}}</span>
+              </sc-if>
+              <sc-if value="{{approved}}" hint-placeholder-val="{{ false }}">
+                <span style="font-weight: 600; color: var(--green)">✓ Approved. Saved to Studio as version 1 for Marigold.</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center">
+                  <a href="https://example.com" style="min-height: 44px; padding: 0 18px; border-radius: 8px; background: var(--blue); color: var(--on-blue); display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Open Marigold’s application page ↗</a>
+                  <button type="button" style="min-height: 44px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--rule-2); background: transparent; color: var(--ink); font-weight: 600; font-size: 14px">Copy all answers</button>
+                  <button type="button" onClick="{{undo}}" style="min-height: 44px; border: none; background: none; color: var(--ink-3); font-size: 13px; text-decoration: underline">Undo</button>
+                </div>
+                <span style="font-size: 13px; color: var(--ink-3)">You submit it yourself. When you do, tap “I applied” and the card moves to Pipeline.</span>
+              </sc-if>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { ctc: false, ok: false }; }
+  jpRead() { try { var v = window.localStorage.getItem('morrow-theme'); if (v === 'light' || v === 'dark') return v; } catch (e) {} return 'light'; }
+  jpInit() { if (this._jpOn) return; var self = this; this._jpT = this.jpRead(); this._jpOn = function () { var t = self.jpRead(); if (t !== self._jpT) { self._jpT = t; self.forceUpdate(); } }; try { window.addEventListener('storage', this._jpOn); window.addEventListener('jp2-theme', this._jpOn); } catch (e) {} }
+  renderVals() {
+    this.jpInit();
+    var self = this, s = this.state;
+    var ST = [
+      ['done', 'Researched the company', 'Careers page and 6 of their job posts · 2 tool calls'],
+      ['done', 'Picked your facts', '9 of 31 facts in profile v4 match this job'],
+      ['done', 'Wrote the pack', 'Main model: gpt-oss-120b on Groq'],
+      ['done', 'Checked every claim', 'Code fact-check, then a judge from another model family · 1 bullet rewritten'],
+      [s.ok ? 'done' : 'wait', s.ok ? 'Approved by you' : 'Waiting for your approval', s.ok ? 'Saved to Studio' : 'Paused. Nothing is sent or saved until you approve']
+    ];
+    var dot = function (k) { return 'flex: 0 0 24px; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ' + (k === 'done' ? 'background: var(--green-soft); color: var(--green)' : 'background: var(--blue-soft); color: var(--blue)'); };
+    var ready = s.ctc;
+    return {
+      theme: this._jpT,
+      lead: s.ok ? 'Approved. Open Marigold’s page, paste the answers and submit it yourself.' : (ready ? 'Everything checks out. Read it once, then approve.' : 'Three parts are ready and checked. One answer needs you before you can approve.'),
+      steps: ST.map(function (r) { return { mark: r[0] === 'done' ? '✓' : '•', dot: dot(r[0]) + (r[0] === 'done' ? '' : '; animation: breathe 2.4s ease-in-out infinite'), name: r[1], detail: r[2] }; }),
+      checkTitle: ready ? 'Fact-check passed · nothing left to fill' : 'Fact-check passed · 1 blank to fill',
+      checkStyle: 'display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: 12px; border: 1px solid ' + (ready ? 'var(--green)' : 'var(--amber)') + '; background: ' + (ready ? 'var(--green-soft)' : 'var(--amber-soft)'),
+      bullets: [
+        { text: 'Rebuilt the expense dashboard in Next.js and TypeScript, cutting load time from 4.1 s to 1.6 s for 2,000 daily users.', fact: 'FROM FACT 7 · NORTHWIND EXPENSE DASHBOARD' },
+        { text: 'Built a virtualised table component that renders 50,000 rows smoothly, now used by 4 teams.', fact: 'FROM FACT 12 · SHARED TABLE COMPONENT' },
+        { text: 'Added accessibility checks to code review, bringing all finance screens to WCAG AA.', fact: 'FROM FACT 15 · ACCESSIBILITY WORK' }
+      ],
+      ctcMissing: !s.ctc, ctcFilled: s.ctc,
+      ctcBox: 'display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 10px; border: 1px ' + (s.ctc ? 'solid var(--rule)' : 'dashed var(--red)') + '; background: ' + (s.ctc ? 'transparent' : 'var(--red-soft)'),
+      fillCtc: function () { self.setState({ ctc: true }); },
+      notApproved: !s.ok, approved: s.ok,
+      approveDisabled: !ready,
+      approveStyle: 'min-height: 48px; padding: 0 22px; border-radius: 8px; border: none; font-weight: 600; font-size: 15px; ' + (ready ? 'background: var(--blue); color: var(--on-blue)' : 'background: var(--rule); color: var(--ink-3)'),
+      approveHint: ready ? 'Approving saves the pack. It does not apply for you.' : 'Fill blank [1] to approve. Export stays locked while any blank is empty.',
+      approve: function () { if (self.state.ctc) self.setState({ ok: true }); },
+      undo: function () { self.setState({ ok: false }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
