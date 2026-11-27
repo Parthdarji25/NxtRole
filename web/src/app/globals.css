@@ -1,7 +1,17 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
 
-/* Turn the design tokens into Tailwind classes (bg-paper, text-ink-2, font-mono, ...). */
+/* Overlay colours used by drawers in the mocks (TopBar and Jobs), not part of the token file. */
+:root {
+  --scrim: rgba(24, 24, 28, 0.28);
+  --shadow-overlay: 0 24px 60px -20px rgba(24, 24, 28, 0.35);
+}
+[data-theme="dark"] {
+  --scrim: rgba(0, 0, 0, 0.55);
+  --shadow-overlay: 0 24px 60px -20px rgba(0, 0, 0, 0.8);
+}
+
+/* Turn the design tokens into Tailwind classes (bg-paper, text-ink-2, border-rule, ...). */
 @theme inline {
   --color-paper: var(--paper);
   --color-paper-2: var(--paper-2);
@@ -22,13 +32,139 @@
   --color-amber: var(--amber);
   --color-amber-soft: var(--amber-soft);
   --color-on-blue: var(--on-blue);
+  --color-scrim: var(--scrim);
 
   /* Geist is served by the app itself (no request to a font service). */
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --shadow-panel: var(--shadow);
+  --shadow-overlay: var(--shadow-overlay);
+
+  /* Layout breakpoints (D-014): phone below 768, icon-only side menu until 1024. */
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+
+  --animate-breathe: breathe 2.4s ease-in-out infinite;
+  --animate-rise: rise 450ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-slide-in: slide-in 300ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade-in: fade-in 250ms ease both;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes shimmer {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
 }
 
-body {
-  background: var(--paper);
-  color: var(--ink);
+@layer base {
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a {
+    color: var(--blue);
+  }
+  a:hover {
+    color: var(--blue-ink);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
+  /* One visible focus ring everywhere (WCAG 2.4.7). */
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Headings: Geist 600 with tight spacing. */
+@utility heading {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+/* Mono labels such as "TUESDAY · YOUR BRIEF". */
+@utility kicker {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Gives a small control a 44px touch area without changing how it looks. */
+@utility hit-target {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
 }

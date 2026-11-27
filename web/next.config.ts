@@ -18,13 +18,9 @@ function apiUrl(): string {
   return value.replace(/\/+$/, "");
 }
 
-// Basic headers for every page. The stricter content security policy with a nonce
-// arrives in Phase 3 (D-043, docs/SECURITY.md).
+// Headers that are the same for every response. The content security policy needs a new
+// nonce per request, so it is set in src/proxy.ts (docs/SECURITY.md).
 const securityHeaders = [
-  {
-    key: "Content-Security-Policy",
-    value: "base-uri 'self'; frame-ancestors 'none'; object-src 'none'; form-action 'self'",
-  },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
@@ -35,6 +31,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Files named page.dev.tsx become routes only in development (the /design showroom),
+  // so they do not exist in a production build.
+  pageExtensions: process.env.NODE_ENV === "development" ? ["tsx", "ts", "dev.tsx"] : ["tsx", "ts"],
   // Do not announce which framework serves the pages.
   poweredByHeader: false,
   // The dev server is opened as 127.0.0.1 (scripts and tests) or localhost (browser).

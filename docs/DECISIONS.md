@@ -55,6 +55,9 @@ Status values: **Accepted** (agreed by the founder) · **Superseded by D-xxx**.
 | D-042 | pnpm for the web app (amends D-036) | Phase 2 |
 | D-043 | Foundation layout details | Phase 2 |
 | D-044 | Foundation versions and test location | Phase 2 |
+| D-045 | All commits go on `main` | Phase 3 |
+| D-046 | Mock viewer, truthful landing copy, "Check first" badge | Phase 3 |
+| D-047 | Screen states and wording approved | Phase 3 |
 
 All 13 questions in ROADMAP section I and all conflicts M1 to M22 are covered. Q1 = D-003, Q2 = D-010, Q3 = D-020,
 Q4 = D-011, Q5 = D-012, Q6 = D-014, Q7 = D-015, Q8 = D-009, Q9 = D-008, Q10 = D-016, Q11 and Q12 = D-002, Q13 = D-004.
@@ -573,6 +576,37 @@ Verification sources for these records are listed in `docs/TECH_STACK.md`.
   library from the web project. Recorded fixtures still go in the root `tests/fixtures/`. (5) Each is revisited when Dependabot offers a compatible upgrade.
 - **Why:** Newest is not useful if the tools around it do not work with it.
 - **Alternatives:** Upgrade Node now (the founder's choice, see the known issues); TypeScript 6.0 (works with the lint tooling, but the prompt asked for 5.x).
+
+## D-045 · All commits go on `main`
+- **Date:** 2026-11-27 · **Status:** Accepted · **From:** Founder instruction at the start of Phase 3
+- **Decision:** Work is committed to `main` only. No new branches are created or proposed. The founder still decides when to commit and does every push
+  (`CLAUDE.md` section 5). The Phase 2 commit made on `chore/phase-2-foundation` was brought into `main` by a fast-forward.
+- **Why:** The founder wants one simple line of history.
+- **Alternatives:** A branch per phase with a merge (more steps for a one-person project).
+
+## D-046 · Phase 3 approach: mock viewer, truthful landing copy, badge wording
+- **Date:** 2026-11-27 · **Status:** Accepted · **From:** Phase 3 plan
+- **Decision:**
+  1. The mocks cannot open in a browser (their runtime file `support.js` is not in the repository). A small viewer in `scripts/mock-viewer/` renders
+     them for screenshots and comparison. It is a development tool and never part of the app. Its screenshots are generated files, not committed.
+  2. The landing page keeps the mock layout with truthful copy: official job feeds, careers pages, the owner's job-alert emails and pasted links (never "searches
+     Naukri, Indeed and LinkedIn"); "before you wake, then hourly from 7 AM to 9 PM"; no invented numbers; "jobs you already applied to are hidden"; GitHub Actions and
+     rules in NxtRole's own code; Groq's free AI; "your top 5 strong matches"; one phone alert (no Telegram); a clear rejection or interview invite moves a card with
+     undo and anything else waits; a script in your own Google account reads job emails (read-only is verified in Phase 12); "A personal project" (no "Mock data").
+     The 3D tour shows unnamed job cards, not the mock's example companies. Sign in drops "New here? The same steps create your account".
+  3. The amber trust badge reads **"Check first"**, as the mock does (the PRD's "Check" is corrected).
+  4. Code goes in `web/src/`; screenshot tests in `web/e2e/visual/` and run on the founder's laptop only, because Windows and Linux draw text differently.
+  5. Phase 3 also builds the screens the phase prompt leaves out: the Prepare list, Terms, Privacy, About, 404, offline, Export and Delete (inside Settings),
+     the desktop "Fresh" block and the nine-section Settings menu. New states are approved on a sample sheet before use (D-015).
+- **Why:** Everything the page says must be true, and the screens need something to be compared against.
+- **Alternatives:** The founder exports mock images from the design tool; keep the mock copy (false claims).
+
+## D-047 · The screen states and their wording are approved (completes D-015)
+- **Date:** 2026-11-27 · **Status:** Accepted · **From:** Phase 3 checkpoint (sample sheet at `/design/states`)
+- **Decision:** The loading, empty, error, offline, waiting and not-found designs shown on the sample sheet, and the wording of the 18 empty screens in
+  `web/src/content/emptyStates.ts`, are approved and may be used on every screen. A change to their look or wording needs the founder's approval.
+- **Why:** One consistent set, approved once, as D-015 requires.
+- **Alternatives:** Changes requested to the look or wording (none).
 
 
 ---

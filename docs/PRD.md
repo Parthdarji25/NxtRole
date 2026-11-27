@@ -250,7 +250,7 @@ No row copies names, companies or numbers from the mocks.
 ### 5.5 Trust (Phase 6)
 | Feature | Priority | Mock | Data it needs |
 |---|---|---|---|
-| Trust level (High trust, Check, Risky) with evidence | MVP | JobCheck / MJobCheck; badges on Jobs, Brief, MFresh | trust check result: level, signals with quotes, rules version |
+| Trust level (High trust, Check first, Risky) with evidence | MVP | JobCheck / MJobCheck; badges on Jobs, Brief, MFresh | trust check result: level, signals with quotes, rules version |
 | Hide similar posts; keep a risky job | MVP | JobCheck / MJobCheck | shared contact keys, owner override |
 | Report a wrong call | MVP | JobCheck / MJobCheck | report with job and rule |
 | Safety rules switches | MVP | Settings / MSettings | per-rule action (hide or warn) |
@@ -591,7 +591,7 @@ requirements that need one. **Priority** is MVP (in the first release) or Later 
 
 | ID | Requirement | Priority | Screen / job |
 |---|---|---|---|
-| FR-052 | Every job gets a trust level: High trust, Check or Risky, with the reasons shown in plain words. The level is shown on Jobs, Today, Fresh jobs and Job detail. | MVP | S07, S06, S04, S05, J3 |
+| FR-052 | Every job gets a trust level: High trust, Check first or Risky, with the reasons shown in plain words. The level is shown on Jobs, Today, Fresh jobs and Job detail. | MVP | S07, S06, S04, S05, J3 |
 | FR-053 | Trust rules run in code. They cover: asks for any fee, deposit or bond; contact only on WhatsApp or a personal number; no company email, phone or careers page; recruiter writes from a free email address; pay far above normal for the role; an offer without an interview; not on the company's own careers page; reposted many times or open for a very long time.<br>**Test:** Given a post that asks for a "refundable registration fee", When checked, Then the level is Risky and the quoted sentence is shown. | MVP | J3, S07 |
 | FR-054 | Only the "specific description" signal may use AI, and only on posts that are not Risky. | MVP | J3 |
 | FR-055 | Each signal shows the evidence: a quote from the post or a fact such as "first seen 3 hours ago, never reposted". | MVP | S07 |
