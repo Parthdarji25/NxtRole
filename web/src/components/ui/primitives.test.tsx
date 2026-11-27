@@ -38,10 +38,10 @@ describe("Button", () => {
   it("can give a link the button look", () => {
     render(
       <Button asChild variant="outline">
-        <a href="/jobs">Browse jobs</a>
+        <a href="#jobs">Browse jobs</a>
       </Button>,
     );
-    expect(screen.getByRole("link", { name: "Browse jobs" })).toHaveAttribute("href", "/jobs");
+    expect(screen.getByRole("link", { name: "Browse jobs" })).toHaveAttribute("href", "#jobs");
   });
 });
 

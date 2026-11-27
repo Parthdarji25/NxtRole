@@ -1,6 +1,6 @@
 # Design system
 
-Status: **Phase 1 specification, 27 Nov 2026.** Source of truth: `docs/mocks/design-tokens.css`, `docs/mocks/source/Foundations.dc.html`, `Nav`, `TopBar`, `MTabs` and the repeated patterns across the 46 mock files.
+Status: **specified in Phase 1, shared parts built in Phase 3 (27 Nov 2026); see section 8.** Source of truth: `docs/mocks/design-tokens.css`, `docs/mocks/source/Foundations.dc.html`, `Nav`, `TopBar`, `MTabs` and the repeated patterns across the 46 mock files.
 Where a decision changes a mock (`docs/DECISIONS.md`, PRD Appendix D), the decision wins. Phase 3 builds this system; **no screen may invent a component that is not here** (CLAUDE.md section 4). New states are
 designed in this style and approved first (D-015).
 
@@ -17,7 +17,7 @@ designed in this style and approved first (D-015).
 
 ## 2. Tokens
 
-The file `web/src/styles/tokens.css` is a copy of `docs/mocks/design-tokens.css`. Light values are the default; dark values apply under `[data-theme="dark"]`. Tailwind v4 reads them with `@theme` so classes such as `bg-paper`, `text-ink-2`, `border-rule` exist.
+The file `web/src/styles/tokens.css` is a copy of `docs/mocks/design-tokens.css`. Light values are the default; dark values apply under `[data-theme="dark"]`. Tailwind v4 reads them with `@theme inline` (in `web/src/app/globals.css`) so classes such as `bg-paper`, `text-ink-2`, `border-rule` exist.
 
 ### 2.1 Colour (light / dark)
 
@@ -38,7 +38,7 @@ The file `web/src/styles/tokens.css` is a copy of `docs/mocks/design-tokens.css`
 | `--amber` / `--amber-soft` | `#8A5B00` / `#F4E9CF` | `#E9C067` / `#2F2612` | Caution, Check, "not found" notices |
 | `--shadow` | `0 1px 0 rgba(24,24,28,.04), 0 18px 40px -18px rgba(24,24,28,.22)` | `0 18px 40px -18px rgba(0,0,0,.7)` | Drawers and overlays only |
 
-Contrast: the Foundations board states every text colour passes 4.5:1 on its paper in both themes. Phase 3 verifies this with a script over every text/background pair and fails the build if one drops below 4.5:1 (NFR-A11Y-02). `--ink-3` on `--paper-2` and on `--card` is the pair to check first.
+Contrast: the Foundations board states every text colour passes 4.5:1 on its paper in both themes. `web/src/styles/tokens.test.ts` checks every text/background pair the app uses and fails if one drops below 4.5:1 (NFR-A11Y-02). `--ink-3` on `--paper-2` and on `--card` is the pair to check first.
 Colour is never the only signal: trust level and due dates always carry a word or icon too.
 
 ### 2.2 Typography
@@ -168,3 +168,26 @@ Light by default; the choice is stored on the device as `nxtrole-theme` (`light`
 | Screen-specific | Landing tour, stepper, A4 preview, CTC table, token box | 3.4 |
 
 Result: every pattern seen in the mocks has an entry; four patterns (skeleton, empty, error, offline) are new and need approval (D-015); the "Send" sample button is renamed and padded to a 44 px hit area (D-022).
+
+## 8. Built components (Phase 3)
+
+See them all, in every state and both themes, at `/design` and `/design/states` while `pnpm dev` runs. A **component** is a reusable piece of screen; its
+**props** are the settings you pass to it, for example `<Button variant="primary">`.
+
+| File in `web/src/` | Components | How to use |
+|---|---|---|
+| `components/ui/button.tsx` | `Button` | `variant`: `primary` (one per screen), `ink`, `outline` (default), `text`. `size`: `md`, `sm`, `lg`. `loading` blocks clicks and shows a spinner. `asChild` gives a link the button look |
+| `components/ui/field.tsx` | `Field`, `Label`, `Input`, `Textarea`, `Select` | `<Field label="Email" error={message}>{(control) => <Input {...control} />}</Field>` ties label, hint and error to the input |
+| `components/ui/switch.tsx`, `segmented.tsx`, `chip.tsx`, `tabs.tsx` | `Switch`, `Segmented`, `Chip`, `Tabs` | On/off, one-of-a-few, toggle, and keyboard tabs. Each needs a label |
+| `components/ui/badge.tsx` | `Badge`, `TrustBadge`, `CountBadge` | Trust reads High trust, Check first or Risky. A count of 0 is hidden |
+| `components/ui/sheet.tsx`, `dialog.tsx`, `menu.tsx` | `Sheet`, `Dialog`, `DropdownMenu`, `Tooltip` | Overlays: focus is kept inside, Escape closes, focus returns |
+| `components/ui/toast.tsx` | `showToast`, `showUndoToast`, `Toaster` | Short messages; the undo version has an Undo button |
+| `components/ui/layout.tsx` | `PageHeader`, `SectionHeading`, `Kicker`, `Panel`, `StatTile`, `ProgressBar` | `phoneTitle` and `phoneLead` are for screens whose phone mock differs |
+| `components/ui/icons.tsx` | `Icon` | The mocks' line icons; decoration only |
+| `components/states/` | `Loading`, `ListSkeleton`, `PageSkeleton`, `EmptyState`, `EmptyScreenState`, `ErrorState`, `Banner`, `OfflineNotice`, `PendingTag` | Wording of empty screens lives in `content/emptyStates.ts` (approved, D-047) |
+| `components/layout/` | `AppShell`, `SideNav`, `TopBar`, `TabBar`, `PhoneHeader`, `Screen`, `SettingsMenu`, `ProgressNav`, `Logo`, `ThemeSwitch`, `ThemeToggle`, `LegalPage` | Menus are defined once in `nav.ts` |
+| `features/landing/Tour.tsx`, `features/auth/LoginForm.tsx` | Landing tour, sign-in form | Screen parts |
+
+**A new screen** uses `Screen` (title, kicker, lead, way back) and an empty, loading and error state before any data.
+
+Not built yet (their phase builds them): the compound patterns of section 3.2 (list row, drawers with forms, approval card, stage board, charts, chat) and the 3D tour.

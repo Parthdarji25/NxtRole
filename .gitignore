@@ -43,4 +43,4 @@ Thumbs.db
 *.log
 
 # Generated mock screenshots (scripts/mock-viewer)
-docs/visual-review/mocks/
+docs/visual-review/

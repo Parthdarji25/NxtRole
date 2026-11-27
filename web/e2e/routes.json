@@ -1,0 +1,55 @@
+[
+  { "path": "/", "name": "landing", "desktopMock": "Landing", "phoneMock": "MLanding" },
+  { "path": "/login", "name": "login", "desktopMock": "Login", "phoneMock": "MLogin" },
+  {
+    "path": "/onboarding",
+    "name": "onboarding",
+    "desktopMock": "Onboarding",
+    "phoneMock": "MOnboarding"
+  },
+  { "path": "/today", "name": "today", "desktopMock": "Brief", "phoneMock": "MToday" },
+  { "path": "/today/fresh", "name": "fresh", "desktopMock": null, "phoneMock": "MFresh" },
+  { "path": "/jobs", "name": "jobs", "desktopMock": "Jobs", "phoneMock": "MJobs" },
+  { "path": "/jobs/x1", "name": "job", "desktopMock": "JobCheck", "phoneMock": "MJobCheck" },
+  { "path": "/ask", "name": "ask", "desktopMock": "Ask", "phoneMock": "MAsk" },
+  { "path": "/pipeline", "name": "pipeline", "desktopMock": "Pipeline", "phoneMock": "MPipeline" },
+  {
+    "path": "/pipeline/offers/x1",
+    "name": "offer",
+    "desktopMock": "OfferCheck",
+    "phoneMock": "MOfferCheck"
+  },
+  { "path": "/follow-ups", "name": "follow-ups", "desktopMock": "Nudges", "phoneMock": "MNudges" },
+  { "path": "/prepare", "name": "prepare-list", "desktopMock": null, "phoneMock": null },
+  { "path": "/prepare/x1", "name": "prepare", "desktopMock": "Prepare", "phoneMock": "MPrepare" },
+  {
+    "path": "/companies/x1",
+    "name": "company",
+    "desktopMock": "CompanyBrief",
+    "phoneMock": "MCompany"
+  },
+  { "path": "/studio", "name": "studio", "desktopMock": "Studio", "phoneMock": "MStudio" },
+  {
+    "path": "/studio/packs/x1",
+    "name": "pack",
+    "desktopMock": "ApplyPack",
+    "phoneMock": "MApplyPack"
+  },
+  { "path": "/resume", "name": "resume", "desktopMock": "ResumeBuilder", "phoneMock": "MResume" },
+  { "path": "/progress", "name": "progress", "desktopMock": "Progress", "phoneMock": "MProgress" },
+  { "path": "/progress/coach", "name": "coach", "desktopMock": "Coach", "phoneMock": "MCoach" },
+  { "path": "/network", "name": "network", "desktopMock": "Network", "phoneMock": "MNetwork" },
+  { "path": "/settings", "name": "settings", "desktopMock": "Settings", "phoneMock": "MSettings" },
+  {
+    "path": "/settings/sources",
+    "name": "sources",
+    "desktopMock": "Memory",
+    "phoneMock": "MMemory"
+  },
+  { "path": "/more", "name": "more", "desktopMock": null, "phoneMock": "MMore" },
+  { "path": "/about", "name": "about", "desktopMock": null, "phoneMock": null },
+  { "path": "/terms", "name": "terms", "desktopMock": null, "phoneMock": null },
+  { "path": "/privacy", "name": "privacy", "desktopMock": null, "phoneMock": null },
+  { "path": "/offline", "name": "offline", "desktopMock": null, "phoneMock": null },
+  { "path": "/no-such-page", "name": "not-found", "desktopMock": null, "phoneMock": null }
+]

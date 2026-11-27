@@ -172,8 +172,64 @@ how it was recorded so the trade-off stays visible.
 
 **What was built.** Ruff and mypy for Python; ESLint, Prettier and TypeScript checks for the web; pre-commit hooks with a secret scanner; a GitHub Actions workflow and Dependabot.
 
-**Key concepts.** A **linter** reads code without running it and flags likely mistakes; a **formatter** fixes layout; a **type checker** verifies that values are used as their declared types. A **pre-commit hook** runs checks before git saves a commit. **CI** (continuous integration) runs all checks on a clean machine after every push, so "works on my laptop" is not enough. Ours has not run yet because nothing is pushed.
+**Key concepts.** A **linter** reads code without running it and flags likely mistakes; a **formatter** fixes layout; a **type checker** verifies that values are used as their declared types. A **pre-commit hook** runs checks before git saves a commit. **CI** (continuous integration) runs all checks on a clean machine after every push, so "works on my laptop" is not enough. Its first results are still to be checked (KI-006).
 
 **Supply chain.** Dependencies are locked to exact versions, new releases wait 7 days, and CI actions are pinned to a commit hash.
 
 **Interview question.** "What do you put in a CI pipeline for a small project?" **Answer.** Install from the lockfile, lint, type check, tests against real services, build, a browser smoke test, a dependency audit and a secret scan, with least-privilege permissions.
+
+---
+
+## Entry 12 · Phase 3 · Design tokens and themes
+
+**What was built.** `tokens.css` mapped to Tailwind classes, light and dark themes, and a test for readable colours.
+
+**Key concept: a design token** is a named design value, such as `--ink` for the main text colour. Screens use the name, never the number. Dark mode changes the values behind the names in one place, and every screen follows.
+
+**How the theme avoids a "flash".** A tiny script runs before the page is drawn, reads your saved choice (or your system setting) and writes `data-theme` on the page. Without it, a dark-mode user would see white for a moment.
+
+**Interview question.** "How would you add dark mode to a web app?" **Answer.** Colours as CSS variables, a second set under an attribute or media query, a small early script to apply the saved choice before first paint, and contrast checks for both sets.
+
+---
+
+## Entry 13 · Phase 3 · Components and props
+
+**What was built.** Buttons, fields, switches, tabs, drawers, badges and states in `web/src/components/`, and a showroom at `/design`.
+
+**Key concepts.** A **component** is a function that returns a piece of screen. **Props** are its inputs: `<Button variant="primary" loading>`. We use **Radix** for the hard parts of dialogs and menus (keyboard, focus, screen readers) and write the looks ourselves.
+
+**Why it matters to a founder.** Change a button once and every screen changes. New screens become cheaper and look consistent.
+
+**Interview question.** "When do you use a library for UI parts?" **Answer.** When the behaviour is hard to get right (focus, keyboard, screen readers), such as dialogs and menus. Simple visual parts can be written directly.
+
+---
+
+## Entry 14 · Phase 3 · Responsive layout and routes
+
+**What was built.** A side menu for wide screens (icons only on mid-size ones), a bottom tab bar for phones, and one folder per screen.
+
+**Key concepts.** A **route** is an address such as `/jobs`; in Next.js the folder name makes it. A **layout** wraps many routes (the menus are written once). **Responsive** means the same page rearranges by width: our line is 768 px. **Server components** are drawn on the server; only parts that react to you (marked `"use client"`) send code to the browser.
+
+**Interview question.** "How do you support phones and desktops?" **Answer.** One code base with breakpoints: start from the phone layout, add rules for wider screens, and test the sizes in between, including 200% zoom.
+
+---
+
+## Entry 15 · Phase 3 · Empty, loading and error states
+
+**What was built.** Placeholders while loading, a "what to do next" message for every empty screen, an error with Retry, an offline notice and a 404 page.
+
+**Key concept: every screen has four states** (loading, empty, error, success). Designing only success is why apps show blank pages. NxtRole never fills an empty screen with sample data.
+
+**Interview question.** "What is a skeleton screen?" **Answer.** Grey shapes where content will appear. It shows that something is happening and stops the page jumping when data arrives.
+
+---
+
+## Entry 16 · Phase 3 · Accessibility and visual tests
+
+**What was built.** Automatic accessibility checks on every screen, keyboard and zoom tests, and 112 approved screen pictures.
+
+**Key concepts.** **Accessibility** means people can use the app with a keyboard, a screen reader, zoom or reduced motion. **Contrast ratio** measures how readable text is; 4.5:1 is the minimum for normal text. A **visual test** compares a new screenshot with an approved one and fails on a difference.
+
+**What the tests caught.** Links marked by colour alone on the sign-in page, and a landing header wider than a 320 px phone. Looking at the pictures beside the mocks caught more: the phone header, the setup screen and the safety numbers did not match.
+
+**Interview question.** "Are automated accessibility checks enough?" **Answer.** No. They find a part of the problems (labels, contrast, structure). Keyboard and screen-reader use still need a person.

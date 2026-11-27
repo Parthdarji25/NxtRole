@@ -89,14 +89,14 @@ Created in Phase 2: everything below marked with its phase already exists only i
 NxtRole/
 ├── web/                         Next.js app (TypeScript strict)                              (Phase 2)
 │   ├── src/app/                 Routes: (public) landing, login, legal; (app) today, jobs, ...
-│   ├── src/components/ui/       shadcn/Radix parts restyled to the mocks                     (Phase 3)
+│   ├── src/components/ui/       Radix-based parts styled to the mocks (D-048)               (Phase 3)
 │   ├── src/features/<domain>/   Screen parts, hooks and zod schemas per domain (health: Phase 2)
 │   ├── src/lib/                 api client, auth (token in memory), config, format (IST, LPA)
 │   ├── src/styles/tokens.css    Copy of docs/mocks/design-tokens.css                         (Phase 2)
 │   ├── public/                  Icons, manifest, service worker
 │   ├── e2e/                     Playwright journeys, visual and accessibility checks         (Phase 2, D-044)
 │   ├── next.config.ts           /api forwarding and basic security headers                   (Phase 2)
-│   └── proxy.ts                 Nonce-based content security policy                          (Phase 3, D-043)
+│   └── src/proxy.ts             Nonce-based content security policy                          (Phase 3, D-043)
 ├── api/
 │   ├── app/
 │   │   ├── main.py, serve.py    Creates the app; starts it locally                           (Phase 2)

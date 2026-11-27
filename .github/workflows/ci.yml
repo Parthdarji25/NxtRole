@@ -100,7 +100,7 @@ jobs:
         run: pnpm audit --audit-level high
 
   e2e:
-    name: Browser smoke test
+    name: Browser tests
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [api, web]
@@ -143,12 +143,11 @@ jobs:
         run: |
           uv sync --frozen
           uv run alembic upgrade head
-      - name: Build the web app and run the browser test
+      - name: Run the browser tests (they build the web app first)
         working-directory: web
         run: |
           pnpm install --frozen-lockfile
           pnpm exec playwright install --with-deps chromium
-          pnpm build
           pnpm e2e
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()

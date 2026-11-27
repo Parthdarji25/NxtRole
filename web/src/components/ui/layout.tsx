@@ -11,12 +11,17 @@ export function PageHeader({
   kicker,
   title,
   lead,
+  phoneTitle,
+  phoneLead,
   actions,
   className,
 }: {
   kicker?: string;
   title: string;
   lead?: ReactNode;
+  /** A shorter title or an extra sentence that only the phone mock shows. */
+  phoneTitle?: string;
+  phoneLead?: string;
   actions?: ReactNode;
   className?: string;
 }) {
@@ -30,9 +35,22 @@ export function PageHeader({
     >
       <div className="flex min-w-0 flex-col gap-2 md:gap-2.5">
         {kicker && <Kicker>{kicker}</Kicker>}
-        <h1 className="heading text-[40px] tracking-[-0.01em] md:text-[56px] md:leading-none">
-          {title}
+        <h1
+          className={cn(
+            "heading text-[40px] tracking-[-0.01em] md:text-[56px] md:leading-none",
+            phoneTitle && "max-md:text-[30px]",
+          )}
+        >
+          {phoneTitle ? (
+            <>
+              <span className="md:hidden">{phoneTitle}</span>
+              <span className="max-md:hidden">{title}</span>
+            </>
+          ) : (
+            title
+          )}
         </h1>
+        {phoneLead && <p className="text-sm text-ink-2 md:hidden">{phoneLead}</p>}
         {lead && <p className="max-w-[680px] text-base text-ink-2 md:text-lg">{lead}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}

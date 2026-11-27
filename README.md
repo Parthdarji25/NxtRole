@@ -3,7 +3,7 @@
 A personal AI job-search agent for India. It finds real jobs from official sources, checks them for scams, scores the fit against your real
 profile with quoted proof, and helps you apply and follow up, without ever acting behind your back.
 
-**Current state:** project foundation (Phase 2). There are no product screens yet; the home page is a temporary developer check.
+**Current state:** design system and app shell (Phase 3). Every screen exists with its layout and empty state; there is no sign-in and no data yet.
 The plan is in [docs/ROADMAP.md](docs/ROADMAP.md) and the requirements in [docs/PRD.md](docs/PRD.md).
 
 | Folder | What is in it |
@@ -96,7 +96,12 @@ cd web
 pnpm dev
 ```
 
-Open <http://127.0.0.1:3000>. It should show **database ok, redis ok**.
+Open <http://127.0.0.1:3000> for the landing page, or <http://127.0.0.1:3000/today> for the app screens.
+To check that the web app reaches the API, database and Redis, open <http://127.0.0.1:3000/api/health/ready>: it should show `{"database":"ok","redis":"ok"}`.
+
+While `pnpm dev` runs, <http://127.0.0.1:3000/design> shows every component, and `/design/states` the loading, empty and error designs. Neither exists in production.
+
+**See the design mocks:** `node scripts/mock-viewer/server.mjs`, then open <http://127.0.0.1:4173>.
 
 Stop the database and Redis with `wsl docker compose down`. Your data is kept. Adding `-v` **deletes the local data**.
 
@@ -115,7 +120,9 @@ Stop the database and Redis with `wsl docker compose down`. Your data is kept. A
 | `web/` | `pnpm typecheck` | Type check |
 | `web/` | `pnpm test` | Component tests |
 | `web/` | `pnpm build` | Production build |
-| `web/` | `pnpm e2e` | Browser test (needs the containers; starts the API and web itself) |
+| `web/` | `pnpm e2e` | Browser tests (needs the containers; builds the web app, port 3100) |
+| `web/` | `pnpm e2e:update-pictures` | Replace the approved screen pictures after an intended change |
+| root | `node scripts/mock-viewer/review.mjs` | Build the mock-against-app page in `docs/visual-review/` |
 | `web/` | `pnpm audit --audit-level high` | Known vulnerabilities in dependencies |
 
 ## 5. Settings

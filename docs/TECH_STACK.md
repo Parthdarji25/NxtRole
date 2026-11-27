@@ -136,8 +136,8 @@ The differences come from the 7-day rule (D-036) and from tool compatibility (D-
 | Containers | Docker 29.10.1, Compose 5.8.0, PostgreSQL 17.12 with pgvector 0.8.7 (`pgvector/pgvector:pg17`), `redis:7-alpine` |
 | API | FastAPI 0.165.0, uvicorn 0.54.0, Pydantic 2.14.4, pydantic-settings 2.16.3, SQLAlchemy 2.1.9, Alembic 1.20.1, psycopg 3.3.9, redis 8.1.0 (8.2.0 was younger than 7 days), structlog 26.1.0 |
 | API tools | pytest 9.2.0, pytest-asyncio 1.5.0, httpx 0.28.1, ruff 0.17.6, mypy 2.4.1, pip-audit 2.10.1, pre-commit 4.7.0 |
-| Web | Next.js 16.4.6, React 19.3.1, Tailwind CSS 4.3.5, geist 1.9.2 |
-| Web tools | TypeScript **5.9.3** (typescript-eslint supports below 6.1), ESLint **9.39.5** (React, import and accessibility plugins do not support 10), Prettier 3.10.1, Vitest 5.1.1, jsdom **29.1.1** (31 needs Node 22.22.2), Testing Library 16.3.3, Playwright 1.65.1 |
+| Web | Next.js 16.4.6, React 19.3.1, Tailwind CSS 4.3.5, geist 1.9.2, radix-ui 1.8.1, sonner, clsx, tailwind-merge, React Hook Form 7.92.0, zod 4.6.7, @hookform/resolvers 7.0.7 (Phase 3; D-048) |
+| Web tools | TypeScript **5.9.3** (typescript-eslint supports below 6.1), ESLint **9.39.5** (React, import and accessibility plugins do not support 10), Prettier 3.10.1, Vitest 5.1.1, jsdom **29.1.1** (31 needs Node 22.22.2), Testing Library 16.3.3, Playwright 1.65.1, @axe-core/playwright |
 | CI actions and hooks | Pinned by commit hash in `.github/workflows/ci.yml` and `.pre-commit-config.yaml` (gitleaks 8.30.1) |
 
 Libraries listed in sections 3 and 4 that are not here yet are added by the phase that first uses them.

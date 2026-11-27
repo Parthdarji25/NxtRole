@@ -58,6 +58,8 @@ Status values: **Accepted** (agreed by the founder) · **Superseded by D-xxx**.
 | D-045 | All commits go on `main` | Phase 3 |
 | D-046 | Mock viewer, truthful landing copy, "Check first" badge | Phase 3 |
 | D-047 | Screen states and wording approved | Phase 3 |
+| D-048 | Phase 3 build choices | Phase 3 |
+| D-049 | Phase 3 approved: wording, 3D tour later, two blue buttons on landing, screen pictures | Phase 3 |
 
 All 13 questions in ROADMAP section I and all conflicts M1 to M22 are covered. Q1 = D-003, Q2 = D-010, Q3 = D-020,
 Q4 = D-011, Q5 = D-012, Q6 = D-014, Q7 = D-015, Q8 = D-009, Q9 = D-008, Q10 = D-016, Q11 and Q12 = D-002, Q13 = D-004.
@@ -608,6 +610,30 @@ Verification sources for these records are listed in `docs/TECH_STACK.md`.
 - **Why:** One consistent set, approved once, as D-015 requires.
 - **Alternatives:** Changes requested to the look or wording (none).
 
+
+## D-048 · Phase 3 build choices
+- **Date:** 2026-11-27 · **Status:** Accepted (D-049) · **From:** Phase 3 build
+- **Decision:**
+  1. Dialogs, drawers, menus, tabs, switches and tooltips are written by us on the `radix-ui` package, without the shadcn command-line tool. Radix still provides the keyboard and screen-reader behaviour.
+  2. Icons are the mocks' own line drawings, kept in one file; `lucide-react` is not installed.
+  3. `TanStack Query` is not installed yet; Phase 4 adds it with the first data.
+  4. The security policy (proxy) lives at `web/src/proxy.ts` because the code is in `web/src/`.
+  5. Browser tests run against the production build on port 3100.
+  6. Phone landing page: the tour steps are pills, as the phone mock draws them (the design system otherwise uses underline tabs).
+- **Why:** Fewer dependencies, and the screens match the mocks.
+- **Alternatives:** The shadcn tool (more generated code to restyle); lucide icons (shapes differ from the mocks).
+
+## D-049 · Phase 3 is approved
+- **Date:** 2026-11-27 · **Status:** Accepted · **From:** Founder approval of the Phase 3 completion report
+- **Decision:**
+  1. The Terms, Privacy notice and About text, and the new wording listed in the report (landing, sign-in, setup steps, Settings, More, search, agent log, 404 and offline), are approved.
+     The agent button reads "Agent log".
+  2. The 3D landing tour is built later, before launch.
+  3. The landing page keeps two blue buttons, as its mock draws them. Every other screen keeps one.
+  4. D-048 is accepted.
+  5. The approved screen pictures in `web/e2e/visual/pictures/` are committed and are the reference for later changes.
+- **Why:** The screens match the mocks and say only true things.
+- **Alternatives:** Build the 3D tour now; make the tour button outlined.
 
 ---
 

@@ -20,32 +20,50 @@ Phase numbers refer to `docs/ROADMAP.md`. "UI" = the shell and states are built 
 
 ## Screens
 
-| # | Screen | Route | Desktop source | Phone source | Older PNG | UI | Data |
-|---|---|---|---|---|---|---|---|
-| 1 | Landing page (public) | `/` | Landing | MLanding | 01-Landing, 01-MLanding | 3 | 3 |
-| 2 | Sign in | `/login` | Login | MLogin | 02-Login, 02-MLogin | 3 | 4 |
-| 3 | Onboarding (5 steps + done screen) | `/onboarding` | Onboarding | MOnboarding | 03-Onboarding, 03-MOnboarding | 3 | 5, 6, 8, 12 |
-| 4 | Today brief | `/today` | Brief | MToday | 04-Brief, 04-MToday | 3 | 8 |
-| 5 | Fresh jobs (from an alert) | `/today/fresh` | none (desktop: a block on Today, D-016) | MFresh | none | 3 | 8 |
-| 6 | Jobs list + add a job | `/jobs` | Jobs | MJobs | 06-Jobs, 06-MJobs | 3 | 6, 7 |
-| 7 | Job detail: fit, trust, duplicates | `/jobs/[id]` | JobCheck | MJobCheck | none | 3 | 6, 7 |
-| 8 | Ask NxtRole | `/ask` | Ask | MAsk | 05-Ask, 05-MAsk | 3 | 11 |
-| 9 | Pipeline: rounds, offers, history | `/pipeline` | Pipeline | MPipeline | 07-Pipeline, 07-MPipeline | 3 | 9 |
-| 10 | Follow-ups | `/follow-ups` | Nudges | MNudges | none | 3 | 9 |
-| 11 | Offer check | `/pipeline/offers/[id]` | OfferCheck | MOfferCheck | none | 3 | 9 |
-| 12 | Prepare (interview prep, text mock interview) | `/prepare/[applicationId]` | Prepare | MPrepare | 08-Prepare, 08-MPrepare | 3 | 10 |
-| 13 | Company brief | `/companies/[id]` | CompanyBrief | MCompany | none | 3 | 10 |
-| 14 | Studio (drafts to review) | `/studio` | Studio | MStudio | 09-Studio, 09-MStudio | 3 | 10 |
-| 15 | Application pack | `/studio/packs/[id]` | ApplyPack | MApplyPack | none | 3 | 10 |
-| 16 | Resume builder: LaTeX, ATS, keywords | `/resume` | ResumeBuilder | MResume | 10-ResumeBuilder, 10-MResume | 3 | 10 |
-| 17 | Progress: overview, interview log, learn | `/progress` | Progress | MProgress | 11-Progress, 11-MProgress | 3 | 9, 10 |
-| 18 | Weekly coach | `/progress/coach` | Coach | MCoach | none | 3 | 9 |
-| 19 | Network (referral finder) | `/network` | Network | MNetwork | none | 3 | 11 |
-| 20 | Settings: nine sections (search, agents, AI models, sources and memory, privacy, safety rules, notifications, accounts, connections, D-017) | `/settings` | Settings | MSettings | 12-Settings, 13-MSettings | 3 | 4-8, 11, 12, 14 |
-| 21 | Settings: sources, alerts and memory | `/settings/sources` | Memory | MMemory | none | 3 | 6, 7, 8 |
-| 22 | More (phone menu) | `/more` | none | MMore | 12-MMore | 3 | 3 |
+| # | Screen | Route | Desktop source | Phone source | Older PNG | UI | Data | Phase 3 status |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Landing page (public) | `/` | Landing | MLanding | 01-Landing, 01-MLanding | 3 | 3 | Built; 3D view not built |
+| 2 | Sign in | `/login` | Login | MLogin | 02-Login, 02-MLogin | 3 | 4 | Built; form checks only |
+| 3 | Onboarding (5 steps + done screen) | `/onboarding` | Onboarding | MOnboarding | 03-Onboarding, 03-MOnboarding | 3 | 5, 6, 8, 12 | Step layout only |
+| 4 | Today brief | `/today` | Brief | MToday | 04-Brief, 04-MToday | 3 | 8 | Shell, header and empty state |
+| 5 | Fresh jobs (from an alert) | `/today/fresh` | none (desktop: a block on Today, D-016) | MFresh | none | 3 | 8 | Empty state |
+| 6 | Jobs list + add a job | `/jobs` | Jobs | MJobs | 06-Jobs, 06-MJobs | 3 | 6, 7 | Shell, header and empty state |
+| 7 | Job detail: fit, trust, duplicates | `/jobs/[id]` | JobCheck | MJobCheck | none | 3 | 6, 7 | Shell, header and empty state |
+| 8 | Ask NxtRole | `/ask` | Ask | MAsk | 05-Ask, 05-MAsk | 3 | 11 | Shell, header and empty state |
+| 9 | Pipeline: rounds, offers, history | `/pipeline` | Pipeline | MPipeline | 07-Pipeline, 07-MPipeline | 3 | 9 | Shell, header and empty state |
+| 10 | Follow-ups | `/follow-ups` | Nudges | MNudges | none | 3 | 9 | Shell, header and empty state |
+| 11 | Offer check | `/pipeline/offers/[id]` | OfferCheck | MOfferCheck | none | 3 | 9 | Shell, header and empty state |
+| 12 | Prepare (interview prep, text mock interview) | `/prepare/[applicationId]` | Prepare | MPrepare | 08-Prepare, 08-MPrepare | 3 | 10 | Shell, header and empty state |
+| 13 | Company brief | `/companies/[id]` | CompanyBrief | MCompany | none | 3 | 10 | Shell, header and empty state |
+| 14 | Studio (drafts to review) | `/studio` | Studio | MStudio | 09-Studio, 09-MStudio | 3 | 10 | Shell, header and empty state |
+| 15 | Application pack | `/studio/packs/[id]` | ApplyPack | MApplyPack | none | 3 | 10 | Shell, header and empty state |
+| 16 | Resume builder: LaTeX, ATS, keywords | `/resume` | ResumeBuilder | MResume | 10-ResumeBuilder, 10-MResume | 3 | 10 | Shell, header and empty state |
+| 17 | Progress: overview, interview log, learn | `/progress` | Progress | MProgress | 11-Progress, 11-MProgress | 3 | 9, 10 | Shell, header and empty state |
+| 18 | Weekly coach | `/progress/coach` | Coach | MCoach | none | 3 | 9 | Shell, header and empty state |
+| 19 | Network (referral finder) | `/network` | Network | MNetwork | none | 3 | 11 | Shell, header and empty state |
+| 20 | Settings: nine sections (search, agents, AI models, sources and memory, privacy, safety rules, notifications, accounts, connections, D-017) | `/settings` | Settings | MSettings | 12-Settings, 13-MSettings | 3 | 4-8, 11, 12, 14 | Menu and empty sections |
+| 21 | Settings: sources, alerts and memory | `/settings/sources` | Memory | MMemory | none | 3 | 6, 7, 8 | Empty state and source list |
+| 22 | More (phone menu) | `/more` | none | MMore | 12-MMore | 3 | 3 | Built |
 
 *The "Older PNG" names are from the pack. The PNG folders are not in the repository (see correction 2).*
+
+**Phase 3 status, 27 Nov 2026.** "Shell, header and empty state" means the screen has its route, layout, header and approved empty state, with loading
+and error states shared by the whole app. Its real content arrives in the "Data" phase. Compare mock and app side by side with
+`node scripts/mock-viewer/review.mjs`.
+
+## Differences from the mocks after Phase 3
+
+| Where | Difference | Why |
+|---|---|---|
+| All app screens | No avatar, no count badges, no "next run" time; the status line says agents are not set up; the phone button says "Agent log" | No account, data or agents exist yet (golden rule 1) |
+| Today | No name in the greeting; no week, matches or "Needs you" | Same |
+| Jobs, Progress | Jobs segments and most sub-tabs are not drawn yet | They arrive with their data |
+| Landing | The tour's picture area shows the step number instead of the 3D view; truthful wording; legal links in the footer | 3D not built (D-018); D-046; M21 |
+| Landing | The "7 AM" words in the closing band are lighter than the mock | The mock's colour is unreadable on that background (4.5:1) |
+| Sign in | Email and password; terms are links and underlined | D-010; accessibility |
+| Onboarding | Each step says it is not ready; no upload or choices | Built with Phases 5, 6, 8 and 12 |
+| Side menu | Rows have a 44 px touch area | Accessibility |
+| Job detail, Offer check, Company brief, Application pack (desktop) | No back link above the title; the empty state has the way back | The mocks name the job or company in that link; added with the data |
 
 ## New screens (decisions, no mock yet)
 

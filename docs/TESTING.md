@@ -14,7 +14,7 @@ Phase 2 builds the test tooling; every phase adds its tests; Phase 13 runs the f
 | Contract | pytest (checks real responses against `docs/API_DOCUMENTATION.md` shapes and the OpenAPI file) | The API still matches its documented contract | Yes | Every push |
 | Component (web) | Vitest + Testing Library | Each screen part: states (loading, empty, error, success), keyboard, labels | No | Every UI task |
 | End to end | Playwright (Chromium, Firefox, WebKit; desktop 1440 and phone 390 sizes) | Whole journeys as a user (UJ-1 to UJ-9) | Yes (app, API, database) | End of each feature phase; full suite in Phase 13 |
-| Visual | Playwright screenshots compared with approved baselines made from the mocks | Screens still match the design | Yes | From Phase 3 |
+| Visual | Playwright full-page screenshots compared with approved pictures of the app (checked against the mocks by eye) | Screens do not change by accident | Yes | From Phase 3, on the founder's laptop only (D-046) |
 | Accessibility | `@axe-core/playwright` + keyboard-only runs + contrast script | WCAG 2.2 AA basics (NFR-A11Y) | Yes | Every UI phase |
 | AI evaluation | pytest evaluation sets built from the owner's labelled jobs and recorded model answers | Scores agree with labels at least 85%, 0 invented facts, Ask answers at least 90%, tool choice at least 18 of 20 | Recorded answers by default; live model on demand | Phases 7, 10, 11; in CI from 13 |
 | Security | pytest + Playwright (cross-user, SSRF table, injection set, CSP, headers, webhook replay) | Controls in `docs/SECURITY.md` | Yes | From Phase 4; full in Phase 14 |
@@ -33,9 +33,23 @@ Start the containers first (`wsl docker compose up -d`) for anything marked "nee
 | `api/` | `uv run ruff check .` · `uv run ruff format --check .` · `uv run mypy app tests migrations` | Lint, format, types | no |
 | `web/` | `pnpm test` | Component tests | no |
 | `web/` | `pnpm lint` · `pnpm typecheck` · `pnpm build` | Lint, types, build | no |
-| `web/` | `pnpm e2e` | Browser tests; starts the API and web itself | yes |
+| `web/` | `pnpm e2e` | All browser tests; builds the web app and serves it on port 3100, so `pnpm dev` can keep running | yes |
+| `web/` | `pnpm e2e:update-pictures` | Replaces the approved screen pictures after an intended change; look at them before committing | yes |
+| root | `node scripts/mock-viewer/screenshots.mjs` then `node scripts/mock-viewer/review.mjs` | Builds `docs/visual-review/index.html`: every mock beside the app | no |
 
 Integration tests refuse to run unless the test database name ends in `_test`.
+
+## 1b. Screen tests added in Phase 3
+
+| File | What it checks |
+|---|---|
+| `web/e2e/smoke.spec.ts` | Landing leads to sign-in; the API answers through `/api`; security headers; no console errors |
+| `web/e2e/accessibility.spec.ts` | Every route, at 1440 and 390 px, light and dark: axe (WCAG 2.2 AA rules), one visible `h1`, correct theme, no sideways scrolling |
+| `web/e2e/shell.spec.ts` | 320 px and 200% zoom, long headings, icon-only side menu, phone tabs, keyboard reach, theme without a flash, reduced motion, slow network, one primary button, 404, no showroom in production |
+| `web/e2e/visual/routes.spec.ts` | 28 routes × 2 sizes × 2 themes = 112 pictures. Today's date is replaced with fixed words |
+| `web/src/styles/tokens.test.ts` | The tokens equal the mock file; every text colour pair reaches 4.5:1 in both themes |
+
+Automated checks do not replace a person: a screen-reader pass (NFR-A11Y-05) is still to be done in Phase 13.
 
 ## 2. Folder layout
 
@@ -48,7 +62,8 @@ api/tests/
   ai_evals/                            (evaluation sets, runner, reports)
 web/src/**/*.test.tsx                  (component tests next to the code)
 web/e2e/<journey>.spec.ts              (Playwright, D-044)
-web/e2e/visual/                        (baseline screenshots, one folder per screen and width)
+web/e2e/routes.json                    (every route with its mock names; used by tests and the review page)
+web/e2e/visual/                        (screenshot test; approved pictures in visual/pictures/)
 tests/
   fixtures/                            (recorded real responses; see section 4)
 ```
@@ -108,11 +123,11 @@ The test exists; it fails first when the behaviour is removed (checked once); it
 
 ## 9. Edge-case register
 
-Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70) and the Phase 2 checklist (E-71 to E-75). **Status:** `planned` until the owning phase writes the test; then `written`, then `passing`. The "Planned test" column is the intended name (the phase may refine it).
+Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70), the Phase 2 checklist (E-71 to E-75) and Phase 3 (E-76 to E-79). **Status:** `planned` until the owning phase writes the test; then `written`, then `passing`. The "Planned test" column is the intended name (the phase may refine it).
 
 | ID | Edge case | Phase | Expected behaviour | Planned test | Status |
 |---|---|---|---|---|---|
-| E-01 | First run with no data | 3, 8 | Every screen shows a "what to do next" empty state; no example data | `e2e: uj-1_first_run_empty_states` | planned |
+| E-01 | First run with no data | 3, 8 | Every screen shows a "what to do next" empty state; no example data | `@E-01 empty-state wording` (component); `e2e: uj-1_first_run_empty_states` (Phase 8) | wording passing; journey planned |
 | E-02 | No approved profile | 5 | Scoring, packs, drafts, tailoring blocked with "Approve your profile" | `test_profile_unapproved_blocks_scoring_and_packs` | planned |
 | E-03 | No sources and no watched companies | 6 | Today and Jobs say how to add one | `component: jobs_empty_no_sources` | planned |
 | E-04 | No rules yet | 7 | Nothing hidden; Memory invites a first rule | `component: rules_empty` | planned |
@@ -145,7 +160,7 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70) 
 | E-31 | Gmail: same email twice, unclear email, unknown company, burst, script stopped | 12 | Idempotent; proposals; status shows last run | `test_webhook_replay_is_noop`; `test_email_unclear_makes_proposal` | planned |
 | E-32 | Calendar: token expired or revoked, event deleted outside, round cancelled | 12 | "Reconnect" state; no crash; event removed on cancel | `test_calendar_needs_reconnect_state` | planned |
 | E-33 | Offline phone | 8 | Read-only last screens with an offline notice; nothing queued silently | `e2e: offline_readonly_shell` | planned |
-| E-34 | Slow network and repeated taps | 3, 4 | Loading states; retry; a repeated create makes one record | `test_idempotency_key_replays_response` | planned |
+| E-34 | Slow network and repeated taps | 3, 4 | Loading states; retry; a repeated create makes one record | `@E-34 a slow screen change shows placeholders` (Phase 3); `test_idempotency_key_replays_response` (Phase 4) | loading passing; repeated create planned |
 | E-35 | Data export | 14 | Contains every module's records and nobody else's | `test_export_contains_all_user_tables_only` | planned |
 | E-36 | Delete my account and data | 14 | Rows, files, tokens, subscriptions removed; confirmation; resumable; verified | `test_delete_account_leaves_no_rows_or_files` | planned |
 | E-37 | Delete all contacts; replace the resume | 5, 11 | Confirmation; old data removed or versioned as specified | `test_contacts_delete_all`; `test_resume_replace_makes_new_version` | planned |
@@ -162,11 +177,11 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70) 
 | E-48 | A chat older than 30 days | 11, 14 | Deleted by clean-up | `test_cleanup_deletes_old_chats` | planned |
 | E-49 | A revoked or leaked MCP token | 11 | Stops at once; calls limited and logged | `test_mcp_revoked_token_rejected` | planned |
 | E-50 | Quiet hours cross midnight; IST and UTC; the daily cap | 8 | Honoured across midnight; cap resets at midnight IST | `test_alert_quiet_hours_and_cap` | planned |
-| E-51 | Reduced motion, 200% zoom, dark theme, keyboard, screen reader | 3 to 13 | All journeys still work | `e2e: a11y_matrix` | planned |
+| E-51 | Reduced motion, 200% zoom, dark theme, keyboard, screen reader | 3 to 13 | All journeys still work | `accessibility.spec.ts` and `@E-51` tests in `shell.spec.ts` and `tokens.test.ts` | passing for Phase 3 screens; repeat each phase |
 | E-52 | Resume placeholders `[N]`, over one page, LaTeX special characters | 10 | Export blocked until filled; page warning; characters escaped | `test_resume_export_blocks_placeholders`; `test_tex_escaping` | planned |
 | E-53 | A small company with almost no public information | 10 | "Not found in any source"; nothing invented | `test_brief_not_found_fields` | planned |
 | E-54 | A company brief older than 7 days | 10 | Marked old; refreshed on request | `test_brief_expiry_flag` | planned |
-| E-55 | A browser without WebGL | 3 | Step cards and the tour message | `e2e: landing_no_webgl` | planned |
+| E-55 | A browser without WebGL | 3 | Step cards and the tour message | `e2e: landing_no_webgl` (when the 3D view is built) | planned (3D view not built) |
 | E-56 | **Access token expires in the middle of use** | 4 | One refresh, then the original request is retried once | `e2e: expired_token_mid_use_retries` | planned |
 | E-57 | **Scanned (image-only) or password-protected PDF** | 5 | Rejected with a clear reason; nothing stored | `test_upload_scanned_and_protected_pdf` | planned |
 | E-58 | **File over 5 MB** (and the 4.5 MB request limit) | 5 | Rejected before upload completes; direct-to-storage path works for 5 MB | `test_upload_size_limits` | planned |
@@ -187,6 +202,10 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70) 
 | E-73 | **Missing or invalid environment variable** | 2 | One readable error naming the variable, never its value | `test_config_missing_variables_are_all_named`, `test_config_invalid_value_names_variable_without_showing_it` | passing |
 | E-74 | **Database or Redis not ready when the API starts** | 2 | API starts; `/api/health/ready` returns 503 naming the part; recovers by itself | `test_ready_reports_503_and_which_parts_failed`; checked by stopping and restarting containers | passing |
 | E-75 | **Windows line endings, paths and event loop** | 2 | LF enforced by `.gitattributes`; commands work in PowerShell; psycopg gets the Selector loop | integration tests run on Windows; fresh-copy run | passing |
+| E-76 | **A 60-character heading with no spaces** | 3 | Wraps; no sideways scrolling at 320 px | `@E-76 a 60-character heading wraps` | passing |
+| E-77 | **First visit on a dark system** | 3 | Dark from the first paint; the owner's choice is kept | `@E-77 follows a dark system on the first visit` | passing |
+| E-78 | **Unknown address** | 3 | A 404 page in the same style with a way back | `@E-78 an unknown address shows the 404 page` | passing |
+| E-79 | **Development showroom in production** | 3 | `/design` does not exist | `@E-79 the showroom does not exist` | passing |
 
 ## 10. Threat tests (from `docs/SECURITY.md`)
 

@@ -41,7 +41,7 @@ describe("states", () => {
   });
 });
 
-describe("empty-state wording", () => {
+describe("@E-01 empty-state wording", () => {
   it("covers each screen once", () => {
     const routes = all.map((content) => content.route);
     expect(new Set(routes).size).toBe(routes.length);

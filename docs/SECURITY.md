@@ -215,7 +215,7 @@ If a key or token may have leaked: revoke or rotate it first (MCP token revoke, 
 | Phase | Controls delivered |
 |---|---|
 | 2 | `.gitignore`, secret scan, lockfiles, pinned actions, audit jobs, config module with clear missing-variable errors |
-| 3 | CSP and headers in the proxy, plain-text rendering rules, contrast script |
+| 3 | **Done:** content security policy with a per-request nonce (`web/src/proxy.ts`); other headers (`next.config.ts`); headers checked by a browser test (see the Phase 3 note below) |
 | 4 | Auth (Argon2id, tokens, cookie, CSRF header, lockout, recovery), RLS and the cross-user test harness, error shape, idempotency, log redaction |
 | 5 | Upload flow, file checks, gateway with redaction, provider checklist |
 | 6 | SSRF-safe fetcher, source parsers with caps, trust engine |
@@ -224,3 +224,12 @@ If a key or token may have leaked: revoke or rotate it first (MCP token revoke, 
 | 12 | Webhook signing, Gmail rules, OAuth with PKCE |
 | 13, 14 | Full security review, load test, dependency audit, export and delete verification |
 | 15 | Production configuration check, backup and restore drill, rotation runbook |
+
+## Phase 3 note: what the web app does today
+
+- Scripts run only with the nonce of the current request. Styles allow `unsafe-inline` (the animation and toast libraries set style attributes); no outside style host is allowed.
+- `upgrade-insecure-requests` is sent on HTTPS only; `unsafe-eval` in development only.
+- The only `dangerouslySetInnerHTML` is the theme script in the root layout. It is a constant written by us, with no input from anyone.
+- The sign-in form uses `method="post"`, so a password cannot appear in the address bar if the page script has not loaded. It sends nothing yet.
+- The development showroom (`/design`) is not part of production builds.
+- The search box and agent log hold nothing and call nothing.
