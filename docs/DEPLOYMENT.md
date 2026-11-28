@@ -26,7 +26,7 @@ The step-by-step guide is in [README.md](../README.md) sections 1 to 3. Summary:
 | Database and Redis | `wsl docker compose up -d`: `pgvector/pgvector:pg17` and `redis:7-alpine`, bound to `127.0.0.1` only, data in named volumes; a second database `nxtrole_test` is created on first start |
 | Settings | `scripts/new-local-env.ps1` writes `.env`, `api/.env`, `web/.env.local` with a random password; then `uv run python -m app.cli setup-local` adds the limited database user and the signing secret; never committed |
 | Structure | `uv run alembic upgrade head` |
-| Check | `uv run python -m app.cli check-config` |
+| Check | `uv run python -m app.cli check-config`; `uv run python -m app.cli check-ai` (asks Groq which models your key can use) |
 | API | `uv run python -m app.serve --reload` on `127.0.0.1:8000` |
 | Web | `pnpm dev` on `127.0.0.1:3000` (forwards `/api/*` to the API) |
 
@@ -38,7 +38,7 @@ The step-by-step guide is in [README.md](../README.md) sections 1 to 3. Summary:
 |---|---|---|---|---|---|---|
 | 1 | **Ubuntu on WSL 2 with Docker Engine** | Local Postgres and Redis | Free | 2 (done) | `.env` (created by the script) | Docker Desktop is not used (D-041) |
 | 2 | **GitHub** repository (private) | Code, CI, scheduled runs | Free (2,000 Actions minutes a month, `docs/ARCHITECTURE.md` 9) | 2 | none locally | Make the repository private first |
-| 3 | **Groq** | The only AI provider (D-024) | Free | 5 | `api/.env`: `GROQ_API_KEY`; later Vercel and GitHub secrets | In the Groq console switch on **zero data retention** (Data Controls) and note the model names and limits |
+| 3 | **Groq** | The only AI provider (D-024) | Free | 5 (**needed now**) | `api/.env`: `GROQ_API_KEY`, `GROQ_ZDR_CONFIRMED_ON`; later Vercel and GitHub secrets | console.groq.com: API Keys, create one; Settings, Data Controls, switch on **Zero Data Retention** and write that day's date (YYYY-MM-DD); read your numbers on the Limits page. Then `uv run python -m app.cli check-ai` |
 | 4 | **Adzuna** | Job search API for India | Free key | 6 | `api/.env`: `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` | Free tier is for evaluation; check the quota and terms |
 | 5 | **Cerebras** | Optional backup (off, D-024) | Trial credit needs a card | not planned | `api/.env`: `CEREBRAS_API_KEY` (leave empty) | Only if you decide to enable it later |
 | 6 | **VAPID keys** (web push) | Phone alerts | Free (generated on your laptop) | 8 | `api/.env`: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`; `web/.env.local`: `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | A command generates the pair; the private key never leaves secrets |
@@ -63,8 +63,8 @@ Every setting comes from environment variables through **one module** (`api/app/
 | Database | `DATABASE_URL` (the limited user `nxtrole_app`), `MIGRATION_DATABASE_URL` (the owner: migrations and account commands), `DB_POOL_SIZE` |
 | Redis | `REDIS_URL` |
 | Auth | `JWT_SECRET` (32 characters or more), `LOGIN_RATE_PER_MINUTE` (default 5), `TRUSTED_PROXY_COUNT` (default 0), `APP_ENCRYPTION_KEY` (Phase 12) |
-| Storage | `STORAGE_BACKEND` (`local`, `supabase`), `STORAGE_BUCKET`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `UPLOAD_MAX_BYTES` |
-| AI | `GROQ_API_KEY`, `AI_MODEL_CHAIN`, `AI_DAILY_TOKEN_BUDGET`, `AI_TOP_N`, `CEREBRAS_API_KEY` (empty) |
+| Storage | `STORAGE_DIR` (optional, default `api/var/uploads`). Phase 15 adds `STORAGE_BACKEND`, `STORAGE_BUCKET`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` |
+| AI | `GROQ_API_KEY`, `GROQ_ZDR_CONFIRMED_ON`; optional `AI_MAIN_MODEL`, `AI_SMALL_MODEL`, `AI_JUDGE_MODEL`, `AI_REQUESTS_PER_MINUTE`, `AI_REQUESTS_PER_DAY`, `AI_TOKENS_PER_MINUTE`, `AI_TOKENS_PER_DAY` |
 | Sources | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` |
 | Push | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` |
 | Google | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REDIRECT_URI` |

@@ -24,7 +24,8 @@ export function fakeApi(routes: Record<string, Reply[]>) {
       calls.push({
         route,
         headers: (init.headers ?? {}) as Record<string, string>,
-        body: init.body ? JSON.parse(init.body as string) : undefined,
+        // A file is kept as it is; everything else was sent as JSON.
+        body: typeof init.body === "string" ? JSON.parse(init.body) : (init.body ?? undefined),
       });
       const replies = routes[route];
       if (!replies) throw new Error(`unexpected request: ${route}`);

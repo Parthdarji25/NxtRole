@@ -3,11 +3,14 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import { EMPTY_STATES, type EmptyContent } from "@/content/emptyStates";
+import { PROFILE_STATES } from "@/content/profileStates";
 
 import { EmptyScreenState } from "./EmptyScreenState";
 import { Banner, ErrorState, ListSkeleton, OfflineNotice } from "./states";
 
-const all: EmptyContent[] = Object.values(EMPTY_STATES);
+const screens: EmptyContent[] = Object.values(EMPTY_STATES);
+// Resume has two messages of its own: before and after the profile is approved.
+const all: EmptyContent[] = [...screens, ...Object.values(PROFILE_STATES)];
 
 describe("states", () => {
   it("loading tells screen readers what is happening", () => {
@@ -43,7 +46,7 @@ describe("states", () => {
 
 describe("@E-01 empty-state wording", () => {
   it("covers each screen once", () => {
-    const routes = all.map((content) => content.route);
+    const routes = screens.map((content) => content.route);
     expect(new Set(routes).size).toBe(routes.length);
   });
 

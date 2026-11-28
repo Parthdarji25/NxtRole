@@ -201,3 +201,17 @@ Not built yet (their phase builds them): the compound patterns of section 3.2 (l
 | `features/auth/AuthLayout.tsx` | `AuthLayout` | The two halves of the sign-in mock |
 | `features/auth/PasswordInput.tsx`, `RecoveryCode.tsx`, `SignOutButton.tsx` | | Password with Show and Hide; the one-time code; the More page's sign-out |
 | `features/account/` | `AccountView`, `ChangePassword` | Setting rows, device list, drawer and confirmation |
+
+### Added in Phase 5 (screens approved by the founder, D-054)
+
+| File in `web/src/` | Component | How to use |
+|---|---|---|
+| `components/ui/chip.tsx` | `Chip look="ink"` | The filled chip of setup: squarer on desktop, ticked on phones |
+| `components/ui/tag-input.tsx` | `TagList`, `AddItem` | Words that can be removed, with a dashed box to add more |
+| `features/onboarding/` | `OnboardingFrame`, `ResumeHeading` | Step bars and buttons; a button can be `quiet` when the step holds the main action |
+| `features/profile/` | `ResumeStep` and its parts: `ResumeDropZone`, `ResumeCard`, `IdentityCheck`, `FactReview`, `FactForm`, `ProfileSummary`; `ProfileGate`, `RequireProfile` | One state at a time. Containers (`ResumeSetup`) connect them to the API |
+| `features/preferences/` | `PreferencesStep`, `SearchSettings` | Setup step 2 and Settings, Search |
+| `features/privacy/`, `features/rules/` | `PrivacySettings`, `RulesList` | Statements with no switches; "Your rules" |
+| `content/profileStates.ts` | `PROFILE_STATES` | What screens say before and after the profile is approved |
+
+**Pattern:** a screen part takes plain values and callbacks; a container reads the API with TanStack Query and passes them in. Every change that can be undone offers Undo through `lib/undo.ts`.

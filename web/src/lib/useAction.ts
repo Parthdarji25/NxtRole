@@ -6,6 +6,10 @@ import { ApiError } from "./http";
 
 export const UNEXPECTED = "Something went wrong. Please try again.";
 
+/** A failure in words that can be shown. */
+export const reasonFor = (error: unknown): string =>
+  error instanceof ApiError ? error.message : UNEXPECTED;
+
 /**
  * Runs something that talks to the API, one at a time: a second click while it runs is
  * ignored, and a failure is kept as a message to show.
@@ -25,7 +29,7 @@ export function useAction<Args extends unknown[]>(task: (...args: Args) => Promi
       await task(...args);
       return true;
     } catch (error) {
-      setProblem(error instanceof ApiError ? error.message : UNEXPECTED);
+      setProblem(reasonFor(error));
       return false;
     } finally {
       running.current = false;

@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
 import { SettingsLayout } from "@/components/layout/settings-layout";
-import { SETTINGS_SECTIONS } from "@/content/settings";
+import { SETTINGS_SECTIONS, type SettingsKey } from "@/content/settings";
 import { AccountSettings } from "@/features/account/AccountSettings";
+import { SearchSettingsContainer } from "@/features/preferences/SearchSettingsContainer";
+import { PrivacyContainer } from "@/features/privacy/PrivacyContainer";
 
 export const metadata: Metadata = { title: "Settings" };
+
+/** The sections that can be used. The others arrive with the features they set. */
+const SECTIONS: Partial<Record<SettingsKey, ReactNode>> = {
+  search: <SearchSettingsContainer />,
+  privacy: <PrivacyContainer />,
+  accounts: <AccountSettings />,
+};
 
 export default async function SettingsPage({
   searchParams,
@@ -20,9 +30,7 @@ export default async function SettingsPage({
 
   return (
     <SettingsLayout shown={shown} chosen={Boolean(chosen)}>
-      {shown.key === "accounts" ? (
-        <AccountSettings />
-      ) : (
+      {SECTIONS[shown.key] ?? (
         <p className="border-t border-rule pt-5 text-sm text-ink-3">Nothing to set here yet.</p>
       )}
     </SettingsLayout>

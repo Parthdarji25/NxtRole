@@ -65,6 +65,23 @@ Automated checks do not replace a person: a screen-reader pass (NFR-A11Y-05) is 
 
 The browser tests make new passwords for every run. `api/tests/e2e_server.py` builds their database.
 
+## 1d. Resume, profile and AI tests added in Phase 5
+
+| File | What it checks |
+|---|---|
+| `api/tests/unit/test_privacy.py` | Every phone format, emails, ID numbers, private lines, names; what is left alone |
+| `api/tests/unit/test_transport.py`, `test_check_ai.py` | The request to Groq, its errors, recordings, logs, `check-ai` |
+| `api/tests/unit/test_resume_text.py`, `test_profile_facts.py` | Reading PDF and Word; scanned, locked, huge, long files; the quote check; preference rules |
+| `api/tests/integration/test_gateway.py` | Fallback, retries, pacing, daily limits, privacy locks |
+| `api/tests/integration/test_files.py`, `test_profile.py`, `test_preferences.py` | Upload, duplicates, suggest, approve, versions, undo, rules, other users |
+| `api/tests/integration/test_recorded_ai.py` | The synthetic resume read with Groq's recorded answer. **Skipped until recorded** (KI-018) |
+| `web/src/features/**/*.test.ts(x)` | Comparing facts, typed values, every state of step 1, step 2, Search, Privacy, rules, the gate |
+| `web/e2e/profile.spec.ts` | Real browser: upload to version 2 with undo, rules, refused and large files, phone flow, accessibility of each state |
+
+**The stand-in AI.** Tests never call Groq. API tests use `tests/ai_helpers.FakeTransport` (it answers what the test says, and remembers what it was sent); the browser tests give it one fixed answer about the synthetic resume.
+
+**Recorded answers (cassettes).** `uv run python -m tests.record_ai` sends the **synthetic** resume (identity removed) to Groq once with the key in `api/.env` and saves each answer in `api/tests/fixtures/ai/` as `prompt__model__date__hash.json`. Tests replay a file only when the request is exactly the same, so changing a prompt means recording again. Never record from a real resume.
+
 ## 2. Folder layout
 
 ```
@@ -93,7 +110,7 @@ tests/
 
 ## 4. Fixtures policy (golden rule 1)
 
-- **No invented data in the app.** Test data lives only in `tests/fixtures/` (and inside test code for tiny inputs).
+- **No invented data in the app.** Test data lives only in `api/tests/fixtures/` (and inside test code for tiny inputs and stand-ins).
 - Fixtures are **recorded real responses** (a real job board JSON, a real Groq answer, a real email subject line with identifiers removed). The file name carries source and date:
   `greenhouse_2026-12-01_board-jobs.json`, `groq_2026-12-04_score-job.json`.
 - A fixture is recorded by a script (`scripts/record_fixture.py`) that strips identifiers and secrets, and the commit message says where and when it came from.
@@ -137,25 +154,25 @@ The test exists; it fails first when the behaviour is removed (checked once); it
 
 ## 9. Edge-case register
 
-Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70), the Phase 2 checklist (E-71 to E-75) and Phase 3 (E-76 to E-79) and Phase 4 (E-80 to E-83). **Status:** `planned` until the owning phase writes the test; then `written`, then `passing`. The "Planned test" column is the intended name (the phase may refine it).
+Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70), the Phase 2 checklist (E-71 to E-75) Phase 3 (E-76 to E-79), Phase 4 (E-80 to E-83) and Phase 5 (E-84 to E-92). **Status:** `planned` until the owning phase writes the test; then `written`, then `passing`. The "Planned test" column is the intended name (the phase may refine it).
 
 | ID | Edge case | Phase | Expected behaviour | Planned test | Status |
 |---|---|---|---|---|---|
 | E-01 | First run with no data | 3, 8 | Every screen shows a "what to do next" empty state; no example data | `@E-01 empty-state wording` (component); `e2e: uj-1_first_run_empty_states` (Phase 8) | wording passing; journey planned |
-| E-02 | No approved profile | 5 | Scoring, packs, drafts, tailoring blocked with "Approve your profile" | `test_profile_unapproved_blocks_scoring_and_packs` | planned |
+| E-02 | No approved profile | 5 | Scoring, packs, drafts, tailoring blocked with "Approve your profile" | `test_profile_unapproved_blocks_scoring_and_packs` | passing for Resume and Studio (`preferences.test.tsx`, `profile.spec.ts`); scoring and packs in Phases 7 and 10 |
 | E-03 | No sources and no watched companies | 6 | Today and Jobs say how to add one | `component: jobs_empty_no_sources` | planned |
 | E-04 | No rules yet | 7 | Nothing hidden; Memory invites a first rule | `component: rules_empty` | planned |
 | E-05 | Push not allowed or app not installed | 8 | Settings explain why and how; app still works | `e2e: alerts_permission_denied` | planned |
-| E-06 | All AI limits used | 5, 8 | Banner "All limits used"; non-AI work continues; drafts "pending", retried at discovery runs; one push | `test_ai_all_limits_queue_and_banner` | planned |
-| E-07 | One AI model in the chain fails or is slow | 5 | Next model answers; banner "Using backup" | `test_gateway_falls_back_down_chain` | planned |
-| E-08 | AI returns invalid or unparseable output | 5, 7 | Schema validation, 2 retries, then "unsure" or "pending" | `test_gateway_malformed_output_retries_then_pending` | planned |
+| E-06 | All AI limits used | 5, 8 | Banner "All limits used"; non-AI work continues; drafts "pending", retried at discovery runs; one push | `test_ai_all_limits_queue_and_banner` | passing for Phase 5: `test_ai_all_limits_queue_and_banner`, `test_when_all_limits_are_used_the_work_waits_and_nothing_is_lost`; banner and automatic retry in Phase 8 |
+| E-07 | One AI model in the chain fails or is slow | 5 | Next model answers; banner "Using backup" | `test_gateway_falls_back_down_chain` | passing: `test_gateway_falls_back_down_chain`; banner in Phase 8 |
+| E-08 | AI returns invalid or unparseable output | 5, 7 | Schema validation, 2 retries, then "unsure" or "pending" | `test_gateway_malformed_output_retries_then_pending` | passing: `test_gateway_malformed_output_retries_then_pending`; scoring in Phase 7 |
 | E-09 | AI quotes text not in the post | 7 | Reason dropped; with none left the job is "unsure" | `test_scoring_drops_unverified_quotes` | planned |
 | E-10 | The same job on several sites | 6 | One job with sightings and "also found on" | `test_ingest_dedupes_same_job_across_sources` | planned |
 | E-11 | Scam posts (fee, WhatsApp only, no company contact) | 6 | Risky; not scored; no pack; can be hidden with similar posts | `test_trust_fee_post_is_risky_and_unscored` | planned |
 | E-12 | Reposted jobs | 6 | Repost count; level at most Check | `test_trust_repost_count_and_level` | planned |
 | E-13 | Closed or removed jobs | 6 | Marked Closed; snapshot kept; link may say it closed | `test_ingest_marks_closed_and_keeps_snapshot` | planned |
 | E-14 | Salary in LPA, monthly, ranges, USD or missing | 6 | Normalised to rupees per year or "Not stated" | `test_salary_parser_formats` (table of recorded real strings) | planned |
-| E-15 | City aliases, hybrid, several locations | 6 | One normalised place; hybrid and remote flags kept | `test_city_normalisation_aliases` | planned |
+| E-15 | City aliases, hybrid, several locations | 6 | One normalised place; hybrid and remote flags kept | `test_city_normalisation_aliases` | passing for preferences: `test_city_normalisation_aliases`; job places in Phase 6 |
 | E-16 | Job text with markup, scripts or huge text | 6 | Plain text; long text cut with "show more" | `component: job_text_plain_text` + `test_ingest_text_caps` | planned |
 | E-17 | Prompt-injection text in a post, email or note | 7, 10, 11, 12 | Treated as data; no change in scores or behaviour | `ai_evals: injection_set` | planned |
 | E-18 | Pasted link: invalid, http, private, redirect, huge, timeout, login wall | 6 | Clear message; by-hand form opens with the link kept | `test_fetcher_ssrf_and_limits_table` | planned |
@@ -197,8 +214,8 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70),
 | E-54 | A company brief older than 7 days | 10 | Marked old; refreshed on request | `test_brief_expiry_flag` | planned |
 | E-55 | A browser without WebGL | 3 | Step cards and the tour message | `e2e: landing_no_webgl` (when the 3D view is built) | planned (3D view not built) |
 | E-56 | **Access token expires in the middle of use** | 4 | One refresh, then the original request is retried once | `@E-56` in `api.test.ts` and `auth.spec.ts` | passing |
-| E-57 | **Scanned (image-only) or password-protected PDF** | 5 | Rejected with a clear reason; nothing stored | `test_upload_scanned_and_protected_pdf` | planned |
-| E-58 | **File over 5 MB** (and the 4.5 MB request limit) | 5 | Rejected before upload completes; direct-to-storage path works for 5 MB | `test_upload_size_limits` | planned |
+| E-57 | **Scanned (image-only) or password-protected PDF** | 5 | Rejected with a clear reason; nothing stored | `test_upload_scanned_and_protected_pdf` | passing: `test_upload_scanned_and_protected_pdf` |
+| E-58 | **File over 5 MB** (and the 4.5 MB request limit) | 5 | Rejected before upload completes; direct-to-storage path works for 5 MB | `test_upload_size_limits` | passing locally: `test_upload_size_limits`, `profile.spec.ts`; direct-to-storage in Phase 15 |
 | E-59 | **Wrong or changed board token** for a company feed | 6 | Source marked paused with a plain message; finder asks again | `test_feed_wrong_board_token` | planned |
 | E-60 | **Missing posted date** | 6 | `posted_at` null; shown as "Posted date not stated"; excluded from "posted within" filters only when asked | `test_job_without_posted_date` | planned |
 | E-61 | **Agent tool loop or step overrun** | 10, 11 | Step limit stops the run; clear message; no repeated charges | `test_agent_step_limit` | planned |
@@ -224,6 +241,15 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70),
 | E-81 | **Very long sign-in input** | 4 | Refused before any hashing | `test_bad_input_is_refused_before_any_work_and_not_echoed` | passing |
 | E-82 | **Clocks of server and browser differ** | 4 | 30 seconds allowed | `test_a_small_clock_difference_is_allowed` | passing |
 | E-83 | **A link that tries to send the owner elsewhere after sign-in** | 4 | Today opens instead | `safeNext.test.ts`, `auth.spec.ts` | passing |
+| E-84 | An empty file, or another kind of file named `.pdf` | 5 | Refused with the reason; the bytes are deleted | `test_a_refused_file_is_deleted_and_marked`, `profile.spec.ts` | passing |
+| E-85 | The same resume uploaded twice | 5 | Noticed; the saved copy is used | `test_the_same_file_twice_is_noticed`, `profile.spec.ts` | passing |
+| E-86 | A very long resume, or one not in English | 5 | Cut or read, with a warning | `test_a_very_long_resume_is_cut_with_a_warning`, `test_a_resume_in_another_script_is_flagged_not_refused` | passing |
+| E-87 | AI states a fact the resume does not | 5 | Left out; the owner is told how many | `test_invented_facts_are_dropped`, `profile.spec.ts` | passing |
+| E-88 | Facts edited after approval | 5 | A new version; undo restores the previous one | `test_editing_after_approval_makes_a_version_that_can_be_undone` | passing |
+| E-89 | Reading cut off, or never started, because the API restarted | 5 | Shown as interrupted; can be started again | `test_a_job_cut_off_by_a_restart_can_be_started_again`, `test_a_job_that_never_started_can_be_started_again` | passing |
+| E-90 | A suggestion already decided in another tab | 5 | The stored profile is shown | `ResumeSetup.test.tsx` | passing |
+| E-91 | Preferences changed elsewhere before saving | 5 | Conflict; the stored values are shown | `test_an_old_version_is_a_conflict`, `preferences.test.tsx` | passing |
+| E-92 | No AI key, or Zero Data Retention not confirmed | 5 | Nothing is sent; the screen says why | `test_nothing_is_sent_before_zero_data_retention_is_confirmed`, `test_reading_is_refused_until_ai_is_ready`, `ResumeSetup.test.tsx` | passing |
 
 ## 10. Threat tests (from `docs/SECURITY.md`)
 
@@ -232,8 +258,8 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70),
 | T-AUTH-1 to T-AUTH-7 | `api/tests/security/test_auth_*.py` | 4 |
 | T-IDOR-1 to T-IDOR-4 | `api/tests/security/test_cross_user.py`, `test_ask_data_role.py` | 4, 11 |
 | T-XSS-1, T-INJ-1 to T-INJ-3 | `api/tests/security/test_output_and_input.py`; `web` component tests | 3, 4, 6, 10 |
-| T-FILE-1 to T-FILE-4 | `api/tests/security/test_uploads.py` | 5 |
-| T-LLM-1 to T-LLM-8 | `api/tests/ai_evals/` and `api/tests/security/test_gateway.py` | 5, 7, 10, 11 |
+| T-FILE-1 to T-FILE-4 | `api/tests/integration/test_files.py`, `api/tests/unit/test_resume_text.py` | 5, 14 |
+| T-LLM-1 to T-LLM-8 | `api/tests/integration/test_gateway.py`, `api/tests/unit/test_privacy.py` (Phase 5); evaluation sets later | 5, 7, 10, 11 |
 | T-HOOK-1 to T-HOOK-4, T-MCP-1 to T-MCP-3 | `api/tests/security/test_webhook.py`, `test_mcp.py` | 11, 12 |
 | T-OAUTH-1, T-OAUTH-2, T-PUSH-1, T-SRC-1 | `api/tests/security/test_integrations.py` | 6, 8, 12 |
 | T-OPS-1 to T-OPS-9 | CI jobs and `api/tests/security/test_logging.py` | 2 onward |

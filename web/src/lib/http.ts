@@ -28,11 +28,15 @@ export const UNREACHABLE = "NxtRole cannot be reached. Check your connection and
 
 /** A call that gets no answer is given up after this long. */
 export const TIMEOUT_MILLISECONDS = 15_000;
+/** Sending a file, or having it read, may take longer on a slow connection. */
+export const SLOW_TIMEOUT_MILLISECONDS = 60_000;
 
 export type SendOptions = {
-  method?: "GET" | "POST" | "PATCH" | "DELETE";
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  /** Sent as JSON; a file is sent as it is. */
   body?: unknown;
   headers?: Record<string, string>;
+  timeout?: number;
 };
 
 function isProblem(value: unknown): value is { detail: ApiProblem } {
@@ -42,17 +46,19 @@ function isProblem(value: unknown): value is { detail: ApiProblem } {
 
 /** Sends one request. Returns the answer's body, or `undefined` when there is none. */
 export async function send<Result>(path: string, options: SendOptions = {}): Promise<Result> {
-  const { method = "GET", body, headers = {} } = options;
+  const { method = "GET", body, headers = {}, timeout = TIMEOUT_MILLISECONDS } = options;
+  const isFile = body instanceof Blob;
+  const json = body !== undefined && !isFile;
   let response: Response;
   try {
     response = await fetch(path, {
       method,
-      headers: body === undefined ? headers : { "Content-Type": "application/json", ...headers },
-      body: body === undefined ? undefined : JSON.stringify(body),
+      headers: json ? { "Content-Type": "application/json", ...headers } : headers,
+      body: isFile ? body : json ? JSON.stringify(body) : undefined,
       // The refresh cookie belongs to this site only.
       credentials: "same-origin",
       cache: "no-store",
-      signal: AbortSignal.timeout(TIMEOUT_MILLISECONDS),
+      signal: AbortSignal.timeout(timeout),
     });
   } catch {
     throw new ApiError(0, { code: "unreachable", message: UNREACHABLE });

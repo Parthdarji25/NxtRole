@@ -26,5 +26,16 @@ A phase may not be marked done while a **critical** or **high** issue is open (s
 | KI-015 | 2026-11-28 | Sign-in | Password hashing settings were timed on the laptop only | low | open | 15 |
 | KI-016 | 2026-11-28 | Sign-in | While Redis is down, an email without an account never locks, so a patient attacker could tell which email exists during that outage | low | accepted | - |
 | KI-017 | 2026-11-28 | Database | Expired sign-in rows are removed only at the next sign-in; unused request keys only when reused. A clean-up job is planned | low | open | 8 |
+| KI-018 | 2026-11-28 | AI | The real Groq service has not been used yet: no key in `api/.env`, so `check-ai` and the recorded-answer tests have not run. Resume reading is proved only with stand-ins | high | open (founder: add the key and the Zero Data Retention date; then check, record and try) | 5 |
+| KI-019 | 2026-11-28 | AI | The free-plan limits are NxtRole's defaults, not read from the founder's account | low | open (founder: send the numbers from Groq's Limits page) | 5 |
+| KI-020 | 2026-11-28 | AI, terms | Groq's Services Agreement, section 2, says the services are not for consumer use. The founder has to read it and decide | medium | open | before launch |
+| KI-021 | 2026-11-28 | Profile | Saved answers (FR-024) are not built. Notice period and expected pay are stored in preferences; there is no `saved_answers` table | medium | open (founder decides the phase; recommended: 10, where packs use them) | 10 |
+| KI-022 | 2026-11-28 | Onboarding | Setup records how far it got but does not reopen there, and there is no finished screen or finishing rule (FR-020, FR-021): steps 3 to 5 do not exist yet | medium | open (founder decides; recommended: 8, with the last setup step it depends on) | 8 |
+| KI-023 | 2026-11-28 | Profile | No screen to delete a resume file or to see and restore older profile versions (the API can) | low | open | 14 |
+| KI-024 | 2026-11-28 | Profile | A resume is read inside the API process: a restart interrupts it and it must be started again | low | open | 8 |
+| KI-025 | 2026-11-28 | Files, production | Uploads go through the API to a local folder. The host allows requests of about 4.5 MB, so production needs the direct-to-storage upload of D-029 | medium | open | 15 |
+| KI-026 | 2026-11-28 | Files | A file reader that runs past 30 seconds is abandoned but keeps running, and has no memory limit | low | open | 8 |
+| KI-027 | 2026-11-28 | Onboarding | After a failed reading, the failure shows again on each visit to step 1 until a new upload (it can be put aside each time) | low | open | 8 |
+| KI-028 | 2026-11-28 | Preferences | A resume that says an old city name (for example Bangalore) is offered beside the saved name (Bengaluru) in setup step 2 | low | open | 8 |
 
 Mock conflicts are tracked in `docs/mocks/MOCK_INVENTORY.md` (M1 to M22) and their decisions in `docs/DECISIONS.md`, not here.

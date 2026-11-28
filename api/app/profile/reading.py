@@ -31,6 +31,9 @@ CHANGE = "profile_facts"
 AGENT = "agent:profile"
 # A job still "running" after this was cut off.
 STALE_AFTER = timedelta(minutes=10)
+# A job due to start that nothing has picked up after this was lost: the API restarted
+# between saving it and starting it.
+NEVER_STARTED_AFTER = timedelta(minutes=2)
 DEFAULT_WAIT_SECONDS = 60
 
 PROBLEMS = {
@@ -51,10 +54,14 @@ log = structlog.get_logger("nxtrole.profile")
 
 
 def is_stale(job: BackgroundJob) -> bool:
+    now = datetime.now(UTC)
+    if job.state == "running":
+        return job.locked_at is not None and job.locked_at < now - STALE_AFTER
+    # A queued job with an error is waiting on purpose, such as for the free limit.
     return (
-        job.state == "running"
-        and job.locked_at is not None
-        and job.locked_at < datetime.now(UTC) - STALE_AFTER
+        job.state == "queued"
+        and job.last_error is None
+        and job.run_after < now - NEVER_STARTED_AFTER
     )
 
 
@@ -92,7 +99,8 @@ async def start(
         if current.state == "running" and not is_stale(current):
             # A second tap while it is working: the same job (E-45).
             return current, False
-        _finish(current, "failed", "interrupted" if current.state == "running" else "replaced")
+        cut_off = current.state == "running" or is_stale(current)
+        _finish(current, "failed", "interrupted" if cut_off else "replaced")
         await db.flush()
     job = BackgroundJob(
         user_id=user_id,
@@ -124,6 +132,7 @@ async def retry(
     job.last_error = None
     job.finished_at = None
     job.locked_at = None
+    job.run_after = datetime.now(UTC)
     job.dedupe_key = f"{KIND}:{user_id}"
     await db.flush()
     return job, True

@@ -53,14 +53,14 @@ Everything else in ROADMAP C is kept.
 | Password hashing | argon2-cffi | 25.1.0 | 3.8+ | Argon2id, the current recommendation | bcrypt (older design) |
 | Tokens | PyJWT | 2.15.1 | 3.9+ | Signs and checks the 15-minute access token | |
 | AI client | Groq official client | 1.7.0 | 3.10+ | Official, small, no routing layer | LiteLLM (D-025) |
-| Typed AI answers | Instructor | 1.18.0 (26 Nov 2026) | 3.10+ | Validates model output against a Pydantic type and retries | Hand parsing |
+| Typed AI answers | Groq strict structured outputs checked with Pydantic (D-053) | part of the Groq client and Pydantic | - | The provider is made to answer in our shape; one library fewer | Instructor, hand parsing |
 | Agents | LangGraph + Postgres checkpointer | 1.2.24, langgraph-checkpoint-postgres 3.2.1 | 3.10+ | Agents that pause for approval and resume; state stored in our database | Hand-written loops |
 | MCP server | `mcp` (official Python SDK) | 2.3.0 | 3.10+ | Streamable HTTP, can run stateless (suits serverless) | |
 | Embeddings | fastembed (`BAAI/bge-small-en-v1.5`, 384 dimensions) | 0.9.1 | 3.10+ | Runs on the server, free, resume text stays private | Paid embedding APIs |
 | HTTP client | httpx | 0.29.0 | 3.10+ | Async, timeouts, used for every outgoing call | requests (sync) |
 | Redis client | redis-py | 8.2.0 | 3.11+ | Locks and rate limits | |
 | Web push | pywebpush | 2.5.0 | 3.10+ | VAPID web push | |
-| PDF text | pypdf, pdfplumber | 7.2.0, 0.11.11 | 3.10+, 3.8+ | Read resume text; "Parse my PDF" check; our own ATS rules | Resume-parser packages (mostly unmaintained) |
+| Resume text | pypdf, python-docx | 7.1.1, 1.2.0 | 3.10+ | Read PDF and Word resumes | pdfplumber (not needed), resume-parser packages |
 | PDF export from HTML | WeasyPrint | **to verify in Phase 10** | | Makes the PDF in the worker; no browser needed | A headless browser (heavy) |
 | Logging | structlog | 26.1.0 | 3.10+ | Structured logs, easy to redact | |
 | Errors | sentry-sdk | 3.0.1 | | Optional; off until a key exists | |
@@ -103,7 +103,7 @@ Notes:
 | Cache and locks | Redis (Upstash free) | 500K commands per month, one free database, about 250 MB | Design: locks and rate limits only (D-026); no polling loops |
 | Web and API hosting | Vercel Hobby | **4.5 MB body limit confirmed**; Python 3.13 supported; FastAPI supported; function time limit documents **conflict (10 to 300 s)**; Hobby is **non-commercial only**; cron once a day only | See D-029, D-030, D-038. Revisit before charging anyone |
 | Schedules and the worker | GitHub Actions | 2,000 free minutes a month for private repositories (Linux); scheduled runs can be **delayed under load** | Budget in `docs/ARCHITECTURE.md` section 9 |
-| AI | Groq free plan | gpt-oss-120b: 30 requests per minute, 1,000 a day, 8,000 tokens per minute, **200,000 tokens a day** (official table). Zero data retention can be enabled on any account | D-033. Exact models and limits re-read from the console in Phase 5. Whether the free plan trains on data: terms say no, **founder confirms in the console and Data Controls** |
+| AI | Groq free plan | gpt-oss-120b: 30 requests per minute, 1,000 a day, 8,000 tokens per minute, **200,000 tokens a day** (official table). Zero data retention can be enabled on any account | D-033. Models re-read in Phase 5 (D-053: gpt-oss-120b, gpt-oss-20b, qwen3.8-27b); limit numbers still to be read from the founder's console (KI-019). Whether the free plan trains on data: terms say no, **founder confirms in the console and Data Controls** |
 | Job sources | Greenhouse, Lever, Ashby feeds; Adzuna; Arbeitnow | Ashby: public, unauthenticated posting API (official docs). Adzuna: free key, "for evaluation", quota **to verify** on the portal. Greenhouse and Lever: public per-company endpoints, **to verify in Phase 6** against official docs. Arbeitnow: **to verify** | One adapter per source; recorded fixtures; terms re-read in Phase 6 |
 | Calendar | Google Calendar API, scope `calendar.events.owned` | Scope exists and is the narrowest that can write events (official docs) | D-031; testing-mode tokens may expire (E-32) |
 | Push | Web Push (VAPID) | Works on Android and iOS 16.4+ for installed web apps | Install help in the app (FR-088) |

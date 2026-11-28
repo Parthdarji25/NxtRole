@@ -104,7 +104,7 @@ NxtRole/
 │   │   ├── core/                errors, logging (redaction), middleware, redis, event loop   (Phase 2);
 │   │   │                        security (Argon2, JWT), idempotency, time (IST), rate limits
 │   │   ├── db/                  engine, sessions, base model (Phase 2); RLS setup, models/
-│   │   ├── ai/                  gateway.py, redaction.py, prompts/, schemas/, budget.py, evals/
+│   │   ├── ai/                  gateway, privacy, prompts/, budget, usage, transport, cassettes (Phase 5); evals later
 │   │   ├── <domain>/            router.py, service.py, repository.py, schemas.py (health: Phase 2)
 │   │   ├── worker/              loop.py, schedules.py, handlers/<kind>.py
 │   │   └── cli.py               check-config (Phase 2); create-owner, reset-password, run-job
@@ -290,28 +290,66 @@ Scheduled runs can start late (GitHub documents delay under load), so every run 
 
 **Keeping the free database awake.** The hourly run touches the database, so the 7-day pause rule never triggers while the schedule works (E-21).
 
-## 10. AI gateway (D-025, D-033)
+## 10. AI gateway (D-025, D-033, D-053; built in Phase 5)
+
+Every AI call goes through one function, `Gateway.run` in `api/app/ai/gateway.py`. Nothing else talks to a provider.
 
 ```mermaid
 flowchart TD
-  CALL["Caller: scoring, pack, research, ask ... passes a Pydantic output type and a 'purpose'"] --> RED["Redact: name, phone, email, links, known contact names (placeholders)"]
-  RED --> BUD{"Budget check: tokens per minute and per day for this model"}
-  BUD -- "over" --> NXT["Next model in the chain, or queue as 'pending'"]
-  BUD -- ok --> SND["Send with timeout through Groq's official client + Instructor"]
-  SND --> OK{"Valid typed answer?"}
-  OK -- no --> RET["Retry with backoff and a repair message (max 2)"]
-  RET --> OK
-  OK -- yes --> RES["Restore identity only if the caller needs exported text"]
-  RES --> USE["Count usage (ai_usage), trace (redacted) and return"]
-  SND -- "429 or error" --> NXT
+  CALL["Caller gives: a purpose, a prompt id@version, the data, a Pydantic answer type, the owner's identity"] --> LOCK{"Key set and Zero Data Retention confirmed?"}
+  LOCK -- no --> STOP["Refused: nothing is sent"]
+  LOCK -- yes --> RED["Privacy guard: replace identity with markers; fence outside text"]
+  RED --> LEAK{"Any personal value still there?"}
+  LEAK -- yes --> STOP
+  LEAK -- no --> BUD{"Free limits: room this minute and today?"}
+  BUD -- "no" --> NXT["Next model in the chain"]
+  BUD -- ok --> SND["Groq official client, strict JSON schema, timeout"]
+  SND -- "429 or server error" --> NXT
+  SND --> OK{"Answer fits the type?"}
+  OK -- no --> RET["Ask again, at most 2 more times"]
+  RET --> SND
+  OK -- yes --> USE["Count requests and tokens; return the answer"]
+  NXT -- "no model left" --> WAIT["Say when to try again; the job waits"]
 ```
 
-- **Model chain** is configuration: a primary large model, then other free Groq models (each has its own allowance), then "pending". Exact names are read from Groq's console in Phase 5.
-- **Pacing.** gpt-oss-120b allows about 8,000 tokens a minute and 200,000 a day. The gateway spaces calls and keeps a per-day token counter in Redis and in `ai_usage`; the morning run's 60 scoring calls (about 2,000 tokens each) take about 15 minutes on one model, which is why the morning run starts early and splits the two passes over two models.
-- **Purposes.** Each call states a purpose (`score`, `judge`, `pack_write`, `research`, `ask`, `coach_wording`, `trust_description`, …). Purposes decide the model, the schema and what may be sent. Personal data
-  (contacts, email text, offer-letter identity) is rejected by the redactor for purposes that must not carry it.
-- **Prompt-injection stance.** Untrusted text sits in a delimited data block, never in the instruction part; outputs are schema-validated; quotes are verified in code; tools are least-privilege.
-- **Tests.** The gateway is unit-tested with recorded Groq responses (real, dated fixtures) and a fake that returns 429s, malformed JSON and slow answers.
+| Part | File | What it does |
+|---|---|---|
+| Purposes and models | `ai/models.py` | Each purpose names a role (`main`, `small`, `judge`), whether it carries personal data, and its limits. The chain per role comes from configuration: `openai/gpt-oss-120b` → `openai/gpt-oss-20b`; judge `qwen/qwen3.8-27b` (preview) → `openai/gpt-oss-20b` (D-053) |
+| Provider | `ai/transport.py` | The only code that calls Groq. Provider errors become ours: rate limited, unavailable, bad answer, not set up, too large. Retries are the gateway's, not the client's |
+| Privacy guard | `ai/privacy.py` | Removes emails, Indian and international phones, government ID numbers and private lines (date of birth, parents' names) always; name, links, address and extra words as the owner confirmed. Checks again before sending |
+| Prompts | `ai/prompts/*.md` | One file per `name@vN`; outside text goes between `<untrusted_data>` tags with an instruction to ignore instructions inside |
+| Limits | `ai/budget.py` | Counts per model per minute and per IST day in Redis and paces calls. If Redis is down, calls go ahead and the provider's own limit still applies |
+| Usage | `ai/usage.py`, table `ai_usage` | Requests, tokens, errors and rate-limit hits per day and model. Status: normal, using backup, limits used, not set up, privacy not confirmed |
+| Recordings | `ai/cassettes.py` | Record real answers once; tests replay them without the network |
+
+**Not built yet:** agent traces, evaluation sets and the in-app "All limits used" banner (their phases).
+
+### 10.1 Reading a resume (Phase 5)
+
+```mermaid
+sequenceDiagram
+  participant W as Web app
+  participant A as API
+  participant S as Private storage
+  participant G as AI gateway
+  W->>A: POST /api/files/uploads
+  A-->>W: one-file upload address (10 minutes)
+  W->>S: PUT the file (through the API in local development)
+  W->>A: POST /api/files/{id}/complete
+  A->>A: check contents, read the text, find identity
+  A-->>W: what will be hidden
+  W->>A: POST /api/profile/parse (the confirmed list)
+  A->>A: save a background_jobs row, answer 202
+  A->>G: after the answer is sent
+  G-->>A: facts with quotes
+  A->>A: drop facts whose words are not in the resume; save a proposal
+  W->>A: GET /api/profile (every 2 seconds while reading)
+  W->>A: approve (possibly edited): a profile version and a history row
+```
+
+- The job runs **inside the API process** until the Phase 8 worker. A job cut off by a restart (running for 10 minutes, or never started for 2) shows as interrupted and can be started again.
+- Storage is a small interface (`files/storage.py`): a private local folder now, Supabase Storage in Phase 15 (D-029).
+- A long resume is cut at 30,000 characters and read in parts that fit the per-minute limit.
 
 ## 11. Local and production
 

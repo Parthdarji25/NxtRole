@@ -92,12 +92,6 @@ export const EMPTY_STATES = {
     body: "Make an application pack from a job. It waits here until you approve it.",
     secondary: { label: "Browse jobs", href: "/jobs" },
   },
-  resume: {
-    route: "/resume",
-    title: "Add your resume first",
-    body: "Upload a PDF and approve what NxtRole finds. The resume builder uses only those facts.",
-    primary: { label: "Set up your profile", href: "/onboarding" },
-  },
   progress: {
     route: "/progress",
     title: "Not enough to show yet",

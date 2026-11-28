@@ -120,6 +120,23 @@ There is no sign-up page. These commands run in `api/` and ask in the terminal; 
 
 Forgot your password but have the recovery code? Open <http://127.0.0.1:3000/login/recover>.
 
+### AI (Groq), needed to read a resume
+
+1. Create a free key at <https://console.groq.com> under **API Keys**.
+2. Under **Settings → Data Controls**, switch on **Zero Data Retention**.
+3. Open `api/.env` yourself and fill in two lines (never share the key):
+
+   ```
+   GROQ_API_KEY=your key
+   GROQ_ZDR_CONFIRMED_ON=the day you did step 2, as YYYY-MM-DD
+   ```
+
+4. In `api/`, run `uv run python -m app.cli check-ai`, then restart the API.
+
+Without step 3 you can still upload a resume, but nothing is sent to AI. Uploaded files are kept in `api/var/uploads`, which is never committed.
+
+After downloading a newer version of NxtRole, run `uv run alembic upgrade head` in `api/` before starting the API.
+
 ## 4. Scripts
 
 | Where | Command | What it does |
@@ -130,6 +147,8 @@ Forgot your password but have the recovery code? Open <http://127.0.0.1:3000/log
 | `api/` | `uv run pytest` | All tests (needs the containers) |
 | `api/` | `uv run pytest tests/unit` | Tests that need no containers |
 | `api/` | `uv run pip-audit` | Known vulnerabilities in dependencies |
+| `api/` | `uv run python -m app.cli check-ai` | Checks the Groq key, models and the privacy confirmation |
+| `api/` | `uv run python -m tests.record_ai` | Records Groq's answer to the synthetic test resume |
 | `web/` | `pnpm lint` | ESLint and Prettier |
 | `web/` | `pnpm format` | Format |
 | `web/` | `pnpm typecheck` | Type check |
@@ -160,6 +179,8 @@ Every setting comes from an environment variable. The real files are never commi
 | Containers stop on their own after a short while | Check that `.wslconfig` has `instanceIdleTimeout=-1`, run `wsl --shutdown`. If it still happens, keep one Ubuntu window open while you work |
 | Port 5432 or 6379 is already in use | Set another number in `.env` (`POSTGRES_PORT` or `REDIS_PORT`) **and** in the matching addresses in `api/.env`, then `wsl docker compose up -d` |
 | Port 8000 or 3000 is already in use | API: `uv run python -m app.serve --port 8001` and set `API_URL` in `web/.env.local` to match. Web: `pnpm exec next dev --port 3001` |
+| "AI is not set up" when reading a resume | Follow "AI (Groq)" in section 3, then restart the API |
+| `The database tables are missing` or an error right after updating | In `api/`: `uv run alembic upgrade head` |
 | `JWT_SECRET is missing` or `MIGRATION_DATABASE_URL is missing` | In `api/`: `uv run python -m app.cli setup-local`, then `uv run alembic upgrade head` |
 | `check-config` says the database user is unlimited | Same as above |
 | Locked out after wrong passwords | Wait 15 minutes, or `uv run python -m app.cli reset-password` |

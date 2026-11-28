@@ -291,3 +291,93 @@ how it was recorded so the trade-off stays visible.
 **Key concepts.** **Single-flight**: many callers share one request. **BroadcastChannel** lets tabs of one site talk. A screen guard in the browser is for comfort; the **API is the real lock**. To trust a test, break the code on purpose once and watch it fail: we did that for four safety rules.
 
 **Interview question.** "How do you handle an expired access token?" **Answer.** The API answers with a specific code; the client refreshes once, shared by all waiting requests, then retries each once.
+
+---
+
+## Entry 23 · Phase 5 · One gateway for every AI call
+
+**What was built.** A single function that every AI call goes through: it checks the privacy locks, hides identity, watches the free limits, calls Groq, checks the answer and counts usage.
+
+**Key concepts.** An **LLM** (large language model) predicts text; it does not look things up. A **token** is a piece of a word, and limits and prices are counted in tokens. **Temperature** is how much the model varies: we use 0.2, nearly the same answer each time. A **gateway** is one doorway, so each safety rule is written once.
+
+**Interview question.** "Why not call the AI provider directly where you need it?" **Answer.** Limits, privacy, retries and logging would be repeated and one would be forgotten; one gateway enforces them all and can be tested.
+
+---
+
+## Entry 24 · Phase 5 · Hiding identity before AI reads anything
+
+**What was built.** Code that replaces your name, email, phone, links and address with markers such as `[EMAIL_1]`, shows you the list first, and refuses the call if anything is left.
+
+**Key concepts.** **Data minimisation**: send only what the task needs. A **regular expression** finds shapes such as phone numbers; it cannot know your name, so you confirm it. **Fail closed**: when unsure, stop.
+
+**Interview question.** "How do you protect personal data when using a third-party model?" **Answer.** Redact before sending, verify nothing is left, choose a provider that does not train on inputs, turn off retention, and never log prompts.
+
+---
+
+## Entry 25 · Phase 5 · Typed answers, and checking them against the source
+
+**What was built.** The model must answer in a fixed shape. Each fact comes with the words it came from, and code drops any fact whose words are not in your resume.
+
+**Key concepts.** **Structured output**: the provider is made to produce JSON that matches a schema; Pydantic checks it again. A **hallucination** is a confident invention. A shape check proves the form, not the truth: the **quote check** is what tests the truth.
+
+**Interview question.** "How do you stop an AI from inventing resume facts?" **Answer.** Ask for an exact quote per fact, verify it in code (including numbers and names), drop what fails, and let the person approve the rest.
+
+---
+
+## Entry 26 · Phase 5 · Prompt injection
+
+**What was built.** Your resume is placed between tags with an instruction to treat it as data, and the answer can only become a suggestion.
+
+**Key concepts.** **Prompt injection**: text inside a document says "ignore your instructions". No wording stops it for certain, so the real protection is that the model **cannot act**: no tools that write, a strict answer shape, checked quotes and your approval.
+
+**Interview question.** "Can you prevent prompt injection completely?" **Answer.** No. Reduce it with clear separation, and limit the damage: least privilege, validation and human approval.
+
+---
+
+## Entry 27 · Phase 5 · Free limits, pacing and backup models
+
+**What was built.** A counter per model per minute and per day, a short wait when the minute is full, a backup model when a model is limited, and a job that waits when all are.
+
+**Key concepts.** **Rate limit**: how much you may ask in a time window; going over answers `429`. A **fallback chain** tries the next model. **Idempotent retry**: trying again does not create a second result.
+
+**Interview question.** "What happens when your AI provider is rate limited?" **Answer.** Pace requests in advance, fall back to another model, and if none is available keep the work queued and say when to try again.
+
+---
+
+## Entry 28 · Phase 5 · Recorded answers (cassettes)
+
+**What was built.** A way to record a real AI answer once and replay it in tests, plus stand-ins that simulate failures.
+
+**Key concepts.** A **cassette** is a saved request and answer. It makes tests fast, free and repeatable, and needs no network or key. A **test double** is any stand-in for a real service. Recordings prove how we handle that answer, not that the model will answer well today: that is what evaluation sets are for.
+
+**Interview question.** "How do you test code that calls an AI model?" **Answer.** Keep the call behind one interface, replay recorded answers and simulate errors in tests, and measure quality separately with an evaluation set.
+
+---
+
+## Entry 29 · Phase 5 · Accepting a file safely
+
+**What was built.** Upload through a one-file pass, a check of the real contents, text from PDF and Word, and clear messages for scanned or locked files.
+
+**Key concepts.** **Magic bytes**: the first bytes show a file's real kind; the name can lie. A **signed URL** (a pass) gives permission for one action for a short time. A **hash** such as SHA-256 is a fingerprint that finds the same file twice.
+
+**Interview question.** "How would you accept file uploads from users?" **Answer.** Limit size, check contents not names, store privately under server-made paths, parse with limits, and never serve the file from a public address.
+
+---
+
+## Entry 30 · Phase 5 · Work that takes a while
+
+**What was built.** Reading a resume is saved as a job, runs after the answer is sent, and the screen asks every 2 seconds how it is going.
+
+**Key concepts.** A **background job** is work recorded in the database and done outside the request. `202 Accepted` means "I will do it". **Polling** is asking repeatedly. Ask what happens if the process dies between saving and starting: while connecting the screens we found a job that would have waited forever, and fixed it.
+
+**Interview question.** "Your server restarts during a long task. What happens?" **Answer.** The job is a stored record with a state and a time; a stale one is detected and can be retried, so nothing is lost or done twice.
+
+---
+
+## Entry 31 · Phase 5 · Connecting screens
+
+**What was built.** Screen parts that only show what they are given, containers that talk to the API, Undo for each change, and browser tests that upload a file and approve facts.
+
+**Key concepts.** **Server state** (what the database holds, cached by TanStack Query) and **local state** (what you are in the middle of) are kept apart. After a change, the cache is **invalidated** so the screen reads the truth.
+
+**Interview question.** "Where does state belong in a web app?" **Answer.** Keep server data in a cache that can be refreshed, keep only unfinished input locally, and derive what you can instead of storing it twice.

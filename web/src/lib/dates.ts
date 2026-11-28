@@ -24,3 +24,13 @@ export function shortDateTime(date: Date): string {
     timeZone: TIME_ZONE,
   }).format(date);
 }
+
+/** For example "28 Nov 2026". */
+export function mediumDate(date: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: TIME_ZONE,
+  }).format(date);
+}

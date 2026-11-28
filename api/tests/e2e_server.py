@@ -1,7 +1,9 @@
 """Starts the API for the browser tests:  uv run python -m tests.e2e_server
 
 It builds a new, empty database of its own (never the development one), creates the test
-accounts named in the E2E_* variables, and serves the API on port 8100. Test code only.
+accounts named in the E2E_* variables, and serves the API on port 8100. AI is a stand-in with
+one scripted answer, so no request leaves this computer, and uploads go to a temporary
+folder. Test code only.
 """
 
 import asyncio
@@ -9,6 +11,8 @@ import json
 import os
 import secrets
 import sys
+import tempfile
+from datetime import date
 from pathlib import Path
 
 import uvicorn
@@ -27,6 +31,7 @@ from app.db.roles import APP_ROLE
 from app.db.session import create_engine, create_session_factory
 from app.main import create_app
 from app.setup_local import connect, ensure_login_role
+from tests.ai_helpers import SYNTHETIC_ANSWER, FakeTransport
 
 API_DIR = Path(__file__).resolve().parents[1]
 PORT = 8100
@@ -35,7 +40,7 @@ ROLE = "nxtrole_app_e2e"
 REDIS_NUMBER = 2
 
 
-def prepare() -> Settings:
+def prepare(storage: Path) -> Settings:
     base = load_settings()
     if base.test_database_url is None or base.test_redis_url is None:
         raise ConfigError("The browser tests need TEST_DATABASE_URL and TEST_REDIS_URL.")
@@ -74,6 +79,14 @@ def prepare() -> Settings:
         jwt_secret=SecretStr(secrets.token_urlsafe(48)),
         # Every browser test signs in, all from this computer.
         login_rate_per_minute=10_000,
+        storage_dir=storage,
+        # The stand-in AI needs no real key; these switch the AI features on.
+        groq_api_key=SecretStr("browser-tests-only"),
+        groq_zdr_confirmed_on=date(2026, 11, 1),
+        ai_requests_per_minute=10_000,
+        ai_requests_per_day=100_000,
+        ai_tokens_per_minute=10_000_000,
+        ai_tokens_per_day=100_000_000,
     )
 
 
@@ -98,20 +111,21 @@ async def seed(settings: Settings) -> None:
 
 
 def main() -> int:
-    try:
-        settings = prepare()
-    except ConfigError as error:
-        print(error, file=sys.stderr)
-        return 1
-    asyncio.run(seed(settings), loop_factory=new_event_loop)
-    uvicorn.run(
-        create_app(settings),
-        host="127.0.0.1",
-        port=PORT,
-        loop="app.core.loop:new_event_loop",
-        log_config=None,
-        access_log=False,
-    )
+    with tempfile.TemporaryDirectory(prefix="nxtrole-e2e-") as storage:
+        try:
+            settings = prepare(Path(storage))
+        except ConfigError as error:
+            print(error, file=sys.stderr)
+            return 1
+        asyncio.run(seed(settings), loop_factory=new_event_loop)
+        uvicorn.run(
+            create_app(settings, ai_transport=FakeTransport(SYNTHETIC_ANSWER)),
+            host="127.0.0.1",
+            port=PORT,
+            loop="app.core.loop:new_event_loop",
+            log_config=None,
+            access_log=False,
+        )
     return 0
 
 

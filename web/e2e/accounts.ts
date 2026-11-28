@@ -9,6 +9,10 @@ export const EMAILS = {
   editor: "editor@example.com",
   /** Signed out everywhere, given a new password and recovered. */
   careful: "careful@example.com",
+  /** Each uploads a resume and changes a profile, so each test has its own. */
+  "resume-desktop": "resume-desktop@example.com",
+  "resume-phone": "resume-phone@example.com",
+  "resume-files": "resume-files@example.com",
   /** One each for the account screen's pictures, so that each shows one device. */
   "desktop-light": "desktop-light@example.com",
   "desktop-dark": "desktop-dark@example.com",

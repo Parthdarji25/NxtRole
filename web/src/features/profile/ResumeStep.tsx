@@ -16,7 +16,13 @@ type Shown = Pick<ResumeFile, "name" | "content_type">;
 export type ResumeState =
   | { status: "loading" }
   | { status: "error"; message: string; retry: () => void }
-  | { status: "choose"; problem?: string | null; onFile: (file: File) => void }
+  | {
+      status: "choose";
+      problem?: string | null;
+      onFile: (file: File) => void;
+      /** Back to what was there, without uploading. */
+      onBack?: () => void;
+    }
   | { status: "sending"; file: Shown; stage: "uploading" | "checking" }
   | {
       status: "identity";
@@ -37,6 +43,7 @@ export type ResumeState =
       message: string;
       onRetry: () => void;
       onReplace: () => void;
+      onKeep?: () => void;
     }
   | {
       status: "review";
@@ -69,6 +76,14 @@ const WARNINGS: Record<FileWarning, string> = {
   not_english: "This resume does not look like English, so some facts may be missed.",
 };
 
+function WayBack({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <Button variant="text" className="self-start underline" onClick={onClick}>
+      {label}
+    </Button>
+  );
+}
+
 export function ResumeStep({
   state,
   aiNotReady = null,
@@ -89,7 +104,10 @@ export function ResumeStep({
       )}
 
       {state.status === "choose" && (
-        <ResumeDropZone onFile={state.onFile} problem={state.problem} />
+        <>
+          <ResumeDropZone onFile={state.onFile} problem={state.problem} />
+          {state.onBack && <WayBack label="Go back" onClick={state.onBack} />}
+        </>
       )}
 
       {state.status === "sending" && (
@@ -152,6 +170,7 @@ export function ResumeStep({
           >
             {state.message}
           </Banner>
+          {state.onKeep && <WayBack label="Keep my current profile" onClick={state.onKeep} />}
         </ResumeCard>
       )}
 

@@ -177,37 +177,43 @@ Everything under Settings > Accounts, Notifications and Privacy.
 | ACCT-9 | `POST /api/account/delete` | user (re-enter password) | `{password, confirm: "DELETE"}` | 202; account deleted by a job, then signed out | `invalid_credentials` 401, `confirm_required` 422 | users, background_jobs | Phase 14 |
 | ACCT-10 | `GET /api/settings` | user | none | Settings: brief time, quiet hours, alert score and cap, agent switches, safety rules, template, top-N | - | user_settings | With the first setting (Phase 5 or 8, D-050) |
 | ACCT-11 | `PATCH /api/settings` | user | `{fields…}` + `If-Match` version | Updated settings | `validation_error` 422, `conflict` 409 | user_settings | With the first setting (Phase 5 or 8, D-050) |
-| ACCT-12 | `GET /api/settings/ai` | user | none | Provider status, model chain, allowance and reset time, 7-day usage, test-set status, "what keeps working" text data | - | ai_usage | Phase 5 |
-| ACCT-13 | `GET /api/settings/privacy` | user | none | What is stored and for how long; zero-data-retention status (only if verified) | - | user_settings | Phase 14 |
+| ACCT-12 | `GET /api/settings/ai` | user | none | `{status, provider, models:[{role,name}], requests_per_day, tokens_per_day, usage:[last 7 days per model]}`. `status`: `normal`, `using_backup`, `limits_used`, `not_set_up`, `privacy_not_confirmed`. Its screen comes in Phase 8 | `unauthorized` 401 | ai_usage | Phase 5 (built) |
+| ACCT-13 | `GET /api/settings/privacy` | user | none | `{identity_hidden: true, zero_data_retention_confirmed_on: date or null, status}`. Retention list and export arrive in Phase 14 | `unauthorized` 401 | none | Phase 5 (built) |
 
-### Files (Phase 5)
+### Files (Phase 5, built)
 
-Uploads go straight to storage (D-029); the API issues the URL and verifies the result.
-
-| ID | Method and path | Auth | Request | Response | Errors | Tables | Phase |
-|---|---|---|---|---|---|---|---|
-| FILES-1 | `POST /api/files/uploads` | user (Idempotency-Key) | `{kind, content_type, size}` (resume up to 5 MB; csv/offer up to 4 MB) | `{file_id, upload_url, expires_at, headers}` | `file_too_large` 413, `unsupported_type` 415 | files | Phase 5 |
-| FILES-2 | `POST /api/files/{id}/complete` | user | none | `{status: "ready"}` or `{status: "rejected", reason}` | `not_pdf` 422, `no_text` 422, `protected_pdf` 422, `too_many_pages` 422, `not_found` 404 | files | Phase 5 |
-| FILES-3 | `GET /api/files/{id}/download` | user | none | `{url, expires_at}` (signed, 5 minutes) | `not_found` 404 | files | Phase 5 |
-| FILES-4 | `DELETE /api/files/{id}` | user | none | 204; storage object removed | `not_found` 404 | files | Phase 5 |
-
-### Profile and preferences (Phase 5)
-
-Facts are proposed by AI and used only after the owner approves them.
+A file is uploaded in three steps (D-029): ask for an address, send the bytes to it, then have it checked. In local development the address is on the API itself and carries a **pass**: a signed token for that one file, valid 10 minutes, usable once. It is the one address besides sign-in that needs no access token. Production storage arrives in Phase 15.
 
 | ID | Method and path | Auth | Request | Response | Errors | Tables | Phase |
 |---|---|---|---|---|---|---|---|
-| PROF-1 | `POST /api/profile/parse` | user (Idempotency-Key) | `{file_id}` | 202 `{run_id}`; a proposed profile version is created | `profile_not_ready` 409, `file_not_ready` 409 | files, profile_versions, background_jobs | Phase 5 |
-| PROF-2 | `GET /api/profile` | user | none | `{approved, proposed, diff?}` | - | profile_versions | Phase 5 |
-| PROF-3 | `PATCH /api/profile/proposed` | user | `{facts: add/edit/remove}` + version | Updated proposed version | `conflict` 409, `validation_error` 422 | profile_versions, events | Phase 5 |
-| PROF-4 | `POST /api/profile/approve` | user | `{version_id}` | New approved version; older one superseded; history row | `nothing_to_approve` 409 | profile_versions, events | Phase 5 |
-| PROF-5 | `GET /api/profile/versions` | user | none | List of versions | - | profile_versions | Phase 5 |
-| PROF-6 | `POST /api/profile/versions/{id}/restore` | user | none | New proposed version copied from an old one | `not_found` 404 | profile_versions, events | Phase 5 |
-| PROF-7 | `GET /api/preferences` | user | none | Titles, places, minimum salary (rupees per year), remote preference, notice, onboarding step | - | search_preferences | Phase 5 |
-| PROF-8 | `PUT /api/preferences` | user | Same fields, validated | Saved preferences | `validation_error` 422 | search_preferences, events | Phase 5 |
-| PROF-9 | `GET /api/saved-answers` | user | none | List of saved answers | - | saved_answers | Phase 5 |
-| PROF-10 | `PUT /api/saved-answers/{key}` | user | `{value}` | Saved answer | `validation_error` 422 | saved_answers | Phase 5 |
-| PROF-11 | `POST /api/onboarding/finish` | user | none | Onboarding marked done; first brief time stated | `profile_not_approved` 409, `no_titles` 422, `no_places` 422 | search_preferences, profile_versions | Phase 5 |
+| FILES-1 | `POST /api/files/uploads` | user | `{filename, content_type, size}`; PDF or DOCX up to 5 MB | 201 `{file_id, upload_url, expires_at}` | `file_too_large` 413, `unsupported_type` 415 | files | Phase 5 (built) |
+| FILES-5 | `PUT /api/files/{id}/content?token=` | the pass | The file's bytes | 204 | `upload_expired` 403, `already_uploaded` 409, `file_too_large` 413 | files | Phase 5 (built) |
+| FILES-2 | `POST /api/files/{id}/complete` | user | none | `{file, detected:{name, emails, phones, links, addresses}, warnings:["truncated","not_english"], duplicate}`. A refused file is deleted and marked rejected. The same file twice returns the saved one with `duplicate: true` | `empty_file`, `protected_pdf`, `protected_file`, `too_many_pages`, `no_text`, `unreadable` 422; `unsupported_type` 415; `file_too_large` 413; `file_not_ready` 409; `not_found` 404 | files | Phase 5 (built) |
+| FILES-6 | `GET /api/files/{id}` | user | none | `{id, name, content_type, size_bytes, status, truncated, hidden_identity}` | `not_found` 404 | files | Phase 5 (built) |
+| FILES-3 | `GET /api/files/{id}/download` | user | none | `{url, expires_at}` (signed, 5 minutes) | `not_found` 404 | files | Phase 14 (not built) |
+| FILES-4 | `DELETE /api/files/{id}` | user | none | 204; the stored file, its text and its hidden list are removed | `not_found` 404 | files | Phase 5 (built; no screen yet) |
+
+### Profile and preferences (Phase 5, built)
+
+Facts are suggested by AI and used only after the owner approves them. A suggestion is a **proposal** of the Phase 4 engine (D-053): approve or reject it with `POST /api/proposals/{id}/approve` (optionally with `{edited_payload: {facts, source_file_id}}`) or `/reject`, and undo with `POST /api/events/{id}/undo`.
+
+A fact is `{fact_id, kind, value, company, dates, quote, source}`. `kind`: experience_years, role, achievement, skill, project, education, certification, location, notice_period. `source`: `resume` (has a quote) or `you`.
+
+| ID | Method and path | Auth | Request | Response | Errors | Tables | Phase |
+|---|---|---|---|---|---|---|---|
+| PROF-1 | `POST /api/profile/parse` | user | `{file_id, hide:{name, emails, phones, links, addresses, other}}` | 202 `{job_id, file_id, state, problem, code}`. A second request while one runs returns the same job | `ai_not_set_up` 503, `privacy_not_confirmed` 409, `file_not_ready` 409, `not_found` 404 | files, background_jobs | Phase 5 (built) |
+| PROF-12 | `POST /api/profile/parse/{job_id}/retry` | user | none | 202, the job | as PROF-1 | background_jobs | Phase 5 (built) |
+| PROF-2 | `GET /api/profile` | user | none | `{version, approved, summary:{experience_years, latest_role, skills}, suggestion:{proposal_id, facts, source_file_id, dropped, created_at}, reading:{job_id, file_id, state, problem, code}}`; each part may be null | - | profile_versions, proposals, background_jobs | Phase 5 (built) |
+| PROF-3 | `PUT /api/profile` | user | `{facts, source_file_id, version}` (the owner's edit) | `{profile, event_id}`; a new version | `conflict` 409, `validation_error` 422 | profile_versions, events | Phase 5 (built) |
+| PROF-4 | `POST /api/proposals/{id}/approve` | user | `{edited_payload?}` | `{proposal, event_id}`; a new approved version | `conflict` 409, `stale_proposal` 409 | proposals, profile_versions, events | Phase 5 (built) |
+| PROF-5 | `GET /api/profile/versions` | user | none | `{items}` newest first | - | profile_versions | Phase 5 (built; no screen yet) |
+| PROF-6 | `POST /api/profile/versions/{id}/restore` | user | none | `{profile, event_id}`; an old version used again as a new one | `not_found` 404 | profile_versions, events | Phase 5 (built; no screen yet) |
+| PROF-7 | `GET /api/preferences` | user | none | `{titles, places, experience_min, experience_max, notice_days, expected_ctc_lpa, min_salary_lpa, work_modes, avoid_company_types, version, onboarding_step}`. Pay is in lakhs a year, written as text; stored as rupees | - | search_preferences, rules | Phase 5 (built) |
+| PROF-8 | `PUT /api/preferences` | user | All value fields and `version` | `{preferences, event_id}`; undo restores preferences and rules together | `conflict` 409, `validation_error` 422 | search_preferences, rules, events | Phase 5 (built) |
+| PROF-13 | `PUT /api/preferences/setup-step` | user | `{step: 1..5}` | 204 (how far setup got; no history) | `validation_error` 422 | search_preferences | Phase 5 (built) |
+| PROF-9 | `GET /api/saved-answers` | user | none | List of saved answers | - | saved_answers | Not built (KI-021) |
+| PROF-10 | `PUT /api/saved-answers/{key}` | user | `{value}` | Saved answer | `validation_error` 422 | saved_answers | Not built (KI-021) |
+| PROF-11 | `POST /api/onboarding/finish` | user | none | Onboarding marked done; first brief time stated | `profile_not_approved` 409, `no_titles` 422, `no_places` 422 | search_preferences, profile_versions | Not built: needs steps 3 to 5 (KI-022) |
 
 ### Sources and watched companies (Phase 6)
 
@@ -247,7 +253,7 @@ Rules run before any AI. Suggested rules wait for the owner.
 
 | ID | Method and path | Auth | Request | Response | Errors | Tables | Phase |
 |---|---|---|---|---|---|---|---|
-| RULES-1 | `GET /api/rules` | user | `status` (active, suggested, dismissed) | Rules with source and effect counts | - | rules | Phase 7 |
+| RULES-1 | `GET /api/rules` | user | none yet | `{items:[{id, kind, text, origin, status, hid_count}]}`. Phase 5 lists the owner's rules made from preferences; filtering by status and editing arrive in Phase 7 | - | rules | Phase 5 (built), 7 |
 | RULES-2 | `POST /api/rules` | user | `{kind, value}` | Created rule; history row | `validation_error` 422 | rules, events | Phase 7 |
 | RULES-3 | `PATCH /api/rules/{id}` | user | `{value?, status?}` (confirm, dismiss, edit) + version | Updated rule; a dismissed suggestion sets `dismissed_until` (30 days) | `conflict` 409, `not_found` 404 | rules, events | Phase 7 |
 | RULES-4 | `DELETE /api/rules/{id}` | user | none | 204; history row (undoable) | `not_found` 404 | rules, events | Phase 7 |

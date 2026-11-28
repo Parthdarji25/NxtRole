@@ -351,6 +351,35 @@ async def test_a_job_cut_off_by_a_restart_can_be_started_again(owner: Owner) -> 
 
 
 @pytest.mark.parametrize(
+    ("minutes_ago", "waiting_for", "state"),
+    [(3, None, "failed"), (1, None, "queued"), (3, "ai_limits_reached", "queued")],
+    ids=["lost", "just-saved", "waiting-for-the-limit"],
+)
+async def test_a_job_that_never_started_can_be_started_again(
+    owner: Owner, minutes_ago: int, waiting_for: str | None, state: str
+) -> None:
+    """The API restarted between saving the job and starting it."""
+    job = (await owner.read(await owner.upload())).json()
+    async with owner_session(owner.settings) as db:
+        await db.execute(
+            update(BackgroundJob).values(
+                state="queued",
+                last_error=waiting_for,
+                run_after=datetime.now(UTC) - timedelta(minutes=minutes_ago),
+                dedupe_key="profile_extract:test",
+            )
+        )
+
+    shown = (await owner.profile())["reading"]
+    retried = await owner.call("POST", f"/api/profile/parse/{job['job_id']}/retry")
+
+    assert shown["state"] == state
+    assert shown["code"] == ("interrupted" if state == "failed" else waiting_for)
+    assert retried.status_code == 202
+    assert (await owner.profile())["reading"]["state"] == "done"
+
+
+@pytest.mark.parametrize(
     ("changes", "code"),
     [
         ({"groq_api_key": None}, "ai_not_set_up"),

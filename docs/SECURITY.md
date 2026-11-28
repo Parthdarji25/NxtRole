@@ -85,9 +85,9 @@ Each row: **threat → control → test and phase**. IDs are used in `docs/TESTI
 
 | ID | Threat | Controls | Test, phase |
 |---|---|---|---|
-| T-FILE-1 | A disguised or malicious file | Check the **content** (PDF signature, structure, page count), not the name; declared and real size compared; parsers run with timeouts and memory limits in the worker; no macro or embedded-file execution; file stored privately | Bad-file tests (E-scanned, protected, huge), 5 |
-| T-FILE-2 | A signed upload URL reused or used for another kind | One-use URL tied to file id, content type and max size, expiring in 10 minutes | Replay test, 5 |
-| T-FILE-3 | PDF parser denial of service ("zip bomb" text) | Page and text limits, time limit, fail closed with a clear message | Fixtures, 5 |
+| T-FILE-1 | A disguised or malicious file | Check the **content** (PDF signature, structure, page count), not the name; declared and real size compared; parsers run with timeouts and memory limits in the worker; no macro or embedded-file execution; file stored privately | `test_resume_text.py`, `test_files.py` (Phase 5). Memory limits arrive with the worker (KI-026) |
+| T-FILE-2 | A signed upload URL reused or used for another kind | One-use URL tied to file id, content type and max size, expiring in 10 minutes | `test_an_upload_address_works_once_and_only_for_its_file` (Phase 5) |
+| T-FILE-3 | PDF parser denial of service ("zip bomb" text) | Page and text limits, time limit, fail closed with a clear message | `test_resume_text.py` (Phase 5; KI-026) |
 | T-FILE-4 | Leftover files after deletion | `delete_account` removes storage objects; expired exports are cleaned | Delete test, 14 |
 
 ### 4.5 AI and prompt injection (OWASP LLM Top 10)
@@ -167,9 +167,9 @@ Test: a table of hostile URLs (`http://169.254.169.254/`, `https://localhost`, a
 
 | Item | Status |
 |---|---|
-| Groq: zero data retention switched on in the console (Data Controls) and the screen shown to the founder | To do in Phase 5 |
-| Groq: confirm in the current Services Agreement and DPA that inputs and outputs are not used for training | To verify; sources checked 27 Nov 2026 are secondary |
-| Groq: free limits and model names re-read from the console | To do in Phase 5 |
+| Groq: zero data retention switched on in the console (Data Controls) | **Founder to do.** Until `GROQ_ZDR_CONFIRMED_ON` is set, NxtRole sends no personal data (KI-018) |
+| Groq: inputs and outputs not used for training | Read 28 Nov 2026: Services Agreement of June 2026, section 4.2, no training without permission; temporary logs up to 30 days unless zero data retention is on; processed in the United States. Section 2 says the services are not for consumer use: **founder to read** (KI-020). The data processing addendum has not been reviewed |
+| Groq: free limits and model names | Models re-read from Groq's documents (D-053). The free-plan limit numbers were not visible there: defaults are used until the founder reads the Limits page (KI-019) |
 | Cerebras: not used (D-024). If switched on later, terms verified first | n/a |
 | Langfuse and Sentry: off until keys exist; scrubbing rules in place before enabling | Phase 12 |
 | Supabase: Data API off, row-level security on, private bucket, region noted | Phase 15 |
@@ -217,7 +217,7 @@ If a key or token may have leaked: revoke or rotate it first (MCP token revoke, 
 | 2 | `.gitignore`, secret scan, lockfiles, pinned actions, audit jobs, config module with clear missing-variable errors |
 | 3 | **Done:** content security policy with a per-request nonce (`web/src/proxy.ts`); other headers (`next.config.ts`); headers checked by a browser test (see the Phase 3 note below) |
 | 4 | Auth (Argon2id, tokens, cookie, CSRF header, lockout, recovery), RLS and the cross-user test harness, error shape, idempotency, log redaction |
-| 5 | Upload flow, file checks, gateway with redaction, provider checklist |
+| 5 | **Done:** upload flow, file checks, gateway with redaction, provider checklist (founder items open: KI-018, KI-019, KI-020). See the Phase 5 note |
 | 6 | SSRF-safe fetcher, source parsers with caps, trust engine |
 | 7, 10, 11 | Prompt-injection test set, claim checking, proposal-only tools, Ask data role, MCP scopes |
 | 8 | Push handling, notification dedupe |
@@ -250,3 +250,20 @@ If a key or token may have leaked: revoke or rotate it first (MCP token revoke, 
 | Request size | 1 MB | `test_api_rules.py` |
 
 **Open for production (KI-014):** the local web server forwards a visitor's `X-Forwarded-For` header unchanged and adds nothing, so `TRUSTED_PROXY_COUNT` must stay 0 locally. On the hosting platform, measure what the API receives and set the value so that it is the platform's record of the visitor, never the visitor's own words.
+
+## Phase 5 note: resumes and AI as built
+
+| Control | How it works | Test |
+|---|---|---|
+| Locks before any AI call | No call without a key; no personal text without the recorded Zero Data Retention date; a personal call without an identity is a programming error | `test_gateway.py`, `test_profile.py` |
+| What is hidden | Emails, phone numbers, government ID numbers and lines such as date of birth are always removed. Name, links, address and extra words as the owner confirmed on screen. A final check stops the call if anything is left | `test_privacy.py`, `test_no_ai_request_contains_name_email_or_phone`, `test_nothing_personal_is_in_any_ai_request` |
+| Owner sees it first | Nothing is sent until the owner presses "Hide these and read my resume" | `ResumeSetup.test.tsx` |
+| Prompt injection | Resume text sits between data tags (it cannot close them), with an instruction to ignore instructions inside; the answer must fit a strict type; a fact is kept only if its words are in the resume; the answer only becomes a suggestion | `test_gateway.py`, `test_profile_facts.py` |
+| Upload address | A signed pass for one file, 10 minutes, one use; it carries no sign-in | `test_files.py`, `test_every_route_is_protected.py` |
+| Files | Contents checked, not names; 5 MB, 20 pages, zip limits, 30 seconds; private folder; paths made from ids | `test_files.py`, `test_resume_text.py` |
+| Logs | No resume text, prompts, answers or upload passes. The `httpx`, `groq` and `pypdf` libraries are kept at warning level because they print requests at debug level | `test_no_resume_text_reaches_the_logs`, `test_nothing_sent_or_received_reaches_the_logs_even_in_debug` |
+| Stored personal data | Resume file, its text, the hidden list and the facts, each under row-level security | `test_row_level_security.py` |
+| In the browser | Facts and the hidden list are kept in memory only; all text is shown as text, never as HTML | component and browser tests |
+| Browser tests | A stand-in answers for Groq; uploads go to a temporary folder; no request leaves the computer | `api/tests/e2e_server.py` |
+
+**Remember for production (Phase 15):** the upload address carries its pass in the query. NxtRole does not log queries, but a hosting platform may. The pass is useless after the upload.

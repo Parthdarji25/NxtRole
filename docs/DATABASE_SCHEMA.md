@@ -264,40 +264,45 @@ Indexes: `(user_id, family_id)`, `(expires_at)`.
 | status_code, response | int, jsonb | Stored answer, replayed on a repeat |
 | expires_at | timestamptz | 24 hours |
 
-**files** (private storage index)
+**files** (private storage index; built in Phase 5)
 | Column | Type | Null / default | Notes |
 |---|---|---|---|
-| kind | text | not null | `resume`, `linkedin_csv`, `offer_letter`, `export`, `resume_export` |
-| storage_path | text | not null | Path in the private bucket, never a public URL |
+| kind | text | not null | `resume` now; later `linkedin_csv`, `offer_letter`, `export`, `resume_export` |
+| storage_path | text | not null | Made by the server from ids, never from the typed name; never a public URL |
+| original_name | text | not null | Shown to the owner only (Personal) |
 | content_type | text | not null | |
 | size_bytes | bigint | not null | Verified by the server after upload (D-029) |
-| sha256 | text | null | |
-| status | text | not null default `pending` | `pending` (signed URL issued), `ready`, `rejected`, `deleted` |
-| expires_at | timestamptz | null | For exports and unused uploads |
-Index: `(user_id, kind)`.
+| sha256 | text | null | Finds the same file uploaded twice |
+| status | text | not null default `pending` | `pending`, `ready`, `rejected`, `deleted` |
+| text_content | text | null | The words read from the resume (Personal) |
+| truncated | boolean | not null default false | The text was cut because it is very long |
+| hidden_identity | jsonb | null | What the owner confirmed to hide from AI (Personal) |
+| expires_at | timestamptz | null | For unused uploads and later exports |
+Index: `(user_id, kind)`. Deleting a file clears its text, hash and hidden list.
 
 ### 4.2 Profile, preferences and rules
 
-**profile_versions** (V)
+**profile_versions** (V; built in Phase 5)
 | Column | Type | Null / default | Notes |
 |---|---|---|---|
 | version_no | int | not null | `unique(user_id, version_no)` |
-| status | text | not null | `proposed`, `approved`, `superseded` |
-| facts | jsonb | not null | List of `{fact_id, kind, value, quote, status}`; kinds: experience_years, role, skill, project, education, certification |
+| status | text | not null | `approved`, `superseded`. Suggestions wait in `proposals`, not here (D-053) |
+| facts | jsonb | not null | List of `{fact_id, kind, value, company, dates, quote, source}`; kinds: experience_years, role, achievement, skill, project, education, certification, location, notice_period |
 | source_file_id | uuid | null → files | The resume the facts came from |
-| approved_at | timestamptz | null | |
-Only one `approved` row per user: `unique(user_id) where status = 'approved'`. Scoring uses the approved version (FR-016). Restoring an old version creates a new one.
+| approved_at | timestamptz | null | Empty on a version that records "no profile" after undoing the first approval |
+Only one `approved` row per user: `unique(user_id) where status = 'approved'`. Restoring or undoing creates a new version; nothing is rewritten.
 
-**search_preferences** (PK = `user_id`) (U)
+**search_preferences** (PK = `user_id`; built in Phase 5) (U)
 | Column | Type | Notes |
 |---|---|---|
 | titles | text[] | Job titles |
 | places | text[] | City names, normalised, plus `Remote (India)` |
-| min_salary_inr | bigint | Rupees per year (FR-019) |
-| remote_pref | text | `any`, `remote_only`, `hybrid_ok` |
+| experience_min, experience_max | smallint | Years asked by the jobs wanted |
 | notice_days | smallint | |
-| onboarding_step | smallint | Where the owner stopped (FR-020) |
-| onboarding_done_at | timestamptz | |
+| expected_ctc_inr | bigint | Rupees per year |
+| onboarding_step | smallint | How far setup got (FR-020) |
+| version, updated_at | int, timestamptz | For safe saving and history |
+Minimum fixed pay, work modes and company types to avoid are **not** columns: they hide jobs, so each is a row in `rules` with origin `you` (D-053). The planned `min_salary_inr` and `remote_pref` columns were not created.
 
 **saved_answers** (FR-024)
 | Column | Type | Notes |
@@ -306,7 +311,7 @@ Only one `approved` row per user: `unique(user_id) where status = 'approved'`. S
 | value | text | |
 | source | text | `you` or `profile` |
 
-**rules** (V) (FR-071 to FR-075)
+**rules** (V; built in Phase 5, used from Phase 7) (FR-071 to FR-075)
 | Column | Type | Null / default | Notes |
 |---|---|---|---|
 | kind | text | not null | `min_fixed_pay`, `exclude_company`, `exclude_company_type`, `exclude_notice`, `require_remote`, `exclude_title_word`, … |
@@ -315,8 +320,9 @@ Only one `approved` row per user: `unique(user_id) where status = 'approved'`. S
 | status | text | not null | `active`, `suggested`, `dismissed` |
 | evidence | jsonb | null | The skipped jobs that led to a suggestion |
 | dismissed_until | timestamptz | null | 30 days after a dismissal (FR-073) |
-| hid_count | int | not null default 0 | Shown as "Hid 41 jobs this month" |
-Index: `(user_id, status)`.
+| hid_count | int | not null default 0 | Shown as how many jobs the rule hid |
+| version | int | not null default 1 | |
+Index: `(user_id, status)`; at most one rule of each kind with origin `you`. Phase 5 kinds: `min_fixed_pay` `{amount_inr}`, `work_modes` `{modes}`, `exclude_company_type` `{types}`.
 
 **company_watches** (FR-028, FR-029, FR-034)
 | Column | Type | Notes |
@@ -595,11 +601,11 @@ There is **no email column** (FR-171). Index: `(user_id, company_id)`.
 | calendar_id | text | The primary calendar |
 | status | text | `connected`, `needs_reconnect`, `disconnected` |
 
-**ai_usage** (PK = `(user_id, day, provider, model)`) (FR-198, D-033)
+**ai_usage** (PK = `(user_id, day, provider, model)`; built in Phase 5) (FR-198, D-033)
 | Column | Type | Notes |
 |---|---|---|
 | day | date | IST day |
-| requests, tokens_in, tokens_out, errors, rate_limited | int | |
+| requests, tokens_in, tokens_out, errors, rate_limited | int | Counts only, never text |
 
 ### 4.7 Preparation and learning
 
@@ -653,6 +659,7 @@ There is **no email column** (FR-171). Index: `(user_id, company_id)`.
 |---|---|---|---|
 | kind | text | not null | `score_batch`, `build_pack`, `research`, `ai_retry`, `export_data`, `delete_account`, `send_push`, `calendar_sync`, `cleanup`, `backup`, … |
 | payload | jsonb | not null default `{}` | Ids only, never personal text |
+| result | jsonb | null | Ids and counts only |
 | state | text | not null default `queued` | `queued`, `running`, `done`, `failed`, `dead` |
 | run_after | timestamptz | not null default now() | Backoff and the 15-minute AI retry |
 | attempts, max_attempts | smallint | 0, 5 | |
@@ -691,6 +698,15 @@ timeout and a row limit. Scheduled system work runs with a role allowed to set t
 | Before sign-in | Two functions run with the owner's rights and return only an id: `auth_user_id_for_email(text)` and `auth_user_id_for_token(text)` |
 | Owner connection | `MIGRATION_DATABASE_URL`: migrations and the account commands only |
 
+### Built in Phase 5 (migration `0004`)
+
+| Table | The app user may |
+|---|---|
+| `files`, `background_jobs`, `rules` | read, add, change, remove |
+| `profile_versions`, `search_preferences`, `ai_usage` | read, add, change |
+
+Each has row-level security on `user_id`. `background_jobs` rows with no user (system work, Phase 8) are invisible to the app user.
+
 ## 7. Migrations (Alembic)
 
 | Rule | Detail |
@@ -708,10 +724,10 @@ timeout and a row limit. Scheduled system work runs with a role allowed to set t
 | Phase | Tables added |
 |---|---|
 | 4 | users, refresh_tokens, idempotency_keys, proposals, events (built; D-050) |
-| 5 | profile_versions, search_preferences, saved_answers, ai_usage, files, and user_settings when the first setting is saved |
+| 5 | files, background_jobs, profile_versions, search_preferences, rules, ai_usage (built, D-053). `saved_answers` not built (KI-021); `user_settings` with the first setting that needs it |
 | 6 | sources, companies, jobs, job_sightings, job_contact_keys, trust_checks, trust_reports, user_job_states, company_watches |
-| 7 | rules, job_scores, eval_labels |
-| 8 | briefs, notifications, push_subscriptions, background_jobs, run_logs (earlier if a phase needs them first) |
+| 7 | job_scores, eval_labels (`rules` was created in Phase 5) |
+| 8 | briefs, notifications, push_subscriptions, run_logs (`background_jobs` was created in Phase 5) |
 | 9 | applications, rounds, notes, offers, tax_tables, follow_ups, coach_reports, interview_logs |
 | 10 | documents, document_versions, agent_runs, research_briefs, mock_interviews, learning_items |
 | 11 | chats, chat_messages, contacts, mcp_tokens, mcp_calls |

@@ -2,31 +2,20 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { showToast, showUndoToast } from "@/components/ui/toast";
+import { showToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/api";
 import { endSession, signOut, updateUser, type User } from "@/lib/session";
-import { UNEXPECTED } from "@/lib/useAction";
+import { offerUndo } from "@/lib/undo";
+import { reasonFor } from "@/lib/useAction";
 import { useSession } from "@/lib/useSession";
 
 import { AccountView, type AccountActions, type Device, type DeviceList } from "./AccountView";
 
 const DEVICES = ["account", "sessions"];
 
-const reason = (error: unknown) => (error instanceof ApiError ? error.message : UNEXPECTED);
-
 /** Reads the profile again, so the screen shows what is stored now. */
 async function reloadUser(): Promise<void> {
   updateUser(await api<User>("/api/me"));
-}
-
-async function undoRename(eventId: string): Promise<void> {
-  try {
-    await api(`/api/events/${eventId}/undo`, { method: "POST" });
-    await reloadUser();
-    showToast("Name put back");
-  } catch (error) {
-    showToast(reason(error));
-  }
 }
 
 /** Settings > Accounts, connected to the API. */
@@ -44,7 +33,11 @@ export function AccountSettings() {
   const devices: DeviceList = sessions.data
     ? { status: "ready", items: sessions.data.items }
     : sessions.isError
-      ? { status: "error", message: reason(sessions.error), retry: () => void sessions.refetch() }
+      ? {
+          status: "error",
+          message: reasonFor(sessions.error),
+          retry: () => void sessions.refetch(),
+        }
       : { status: "loading" };
 
   const actions: AccountActions = {
@@ -55,8 +48,12 @@ export function AccountSettings() {
           body: { display_name: name, version: user.version },
         });
         updateUser(saved.user);
-        const eventId = saved.event_id;
-        if (eventId) showUndoToast("Name saved", () => void undoRename(eventId));
+        offerUndo({
+          eventId: saved.event_id,
+          saved: "Name saved",
+          undone: "Name put back",
+          refresh: reloadUser,
+        });
       } catch (error) {
         // Someone else changed it: show theirs, so that trying again can work.
         if (error instanceof ApiError && error.code === "conflict") await reloadUser();

@@ -61,12 +61,17 @@ and error states shared by the whole app. Its real content arrives in the "Data"
 | Landing | The tour's picture area shows the step number instead of the 3D view; truthful wording; legal links in the footer | 3D not built (D-018); D-046; M21 |
 | Landing | The "7 AM" words in the closing band are lighter than the mock | The mock's colour is unreadable on that background (4.5:1) |
 | Sign in | Email and password; terms are links and underlined | D-010; accessibility |
-| Onboarding | Each step says it is not ready; no upload or choices | Built with Phases 5, 6, 8 and 12 |
+| Onboarding | Steps 3 to 5 say they are not ready | Built with Phases 6, 8 and 12 |
 | Side menu | Rows have a 44 px touch area | Accessibility |
 | Job detail, Offer check, Company brief, Application pack (desktop) | No back link above the title; the empty state has the way back | The mocks name the job or company in that link; added with the data |
 
 **Phase 4 (D-051):** Sign in is connected. Settings > Accounts shows name, email, password, signed-in devices and sign out (the Accounts mock shows connections and export,
 which arrive in Phases 12 and 14). "Sign out" on More follows its mock. Today greets by name once one is saved. No avatar yet.
+
+**Phase 5 (D-054):** setup steps 1 and 2, Settings > Search and Privacy, the rules on Sources and memory, and "Approve your profile first" on Resume and Studio are
+connected. The founder approved these differences from the mocks: the "what will be hidden" check and the fact review (not drawn in the mocks); "Choose a PDF or Word file";
+a file card on phones in place of the green dashed box; the phone's roles and pay views both counted as step 2; a typed salary between − and +; no "most matches pay" line;
+extra Search fields with one Save; Privacy without switches; "Change" on a rule in place of Edit and Delete (Phase 7).
 
 ## New screens (decisions, no mock yet)
 

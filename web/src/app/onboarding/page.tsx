@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
 
 import { OnboardingFrame, STEP_LABELS } from "@/features/onboarding/OnboardingFrame";
+import { PreferencesSetup } from "@/features/preferences/PreferencesSetup";
+import { ResumeSetup } from "@/features/profile/ResumeSetup";
 
 export const metadata: Metadata = { title: "Set up NxtRole" };
 
-// The headings of the Onboarding mock. The forms arrive with the features they set up.
-const HEADINGS = [
-  {
-    title: "Start with your resume.",
-    lead: "It’s how NxtRole scores jobs and tailors applications. Your name, phone and email are removed before any AI reads it.",
-  },
-  {
-    title: "What are you looking for?",
-    lead: "Job titles, places and your minimum salary.",
-  },
+// The headings of steps 3 to 5 of the Onboarding mock. Their forms arrive with the features
+// they set up.
+const LATER_STEPS = [
   {
     title: "Where should we look?",
     lead: "Official job feeds and company careers pages. NxtRole never logs in to job sites.",
@@ -40,11 +35,13 @@ export default async function OnboardingPage({
     Number.isInteger(requested) && requested >= 1 && requested <= STEP_LABELS.length
       ? requested
       : 1;
-  const current = HEADINGS[number - 1] ?? HEADINGS[0];
-  const isFirst = number === 1;
+  if (number === 1) return <ResumeSetup />;
+  if (number === 2) return <PreferencesSetup />;
+
+  const current = LATER_STEPS[number - 3]!;
   const isLast = number === STEP_LABELS.length;
   const nextHref = isLast ? "/today" : `/onboarding?step=${number + 1}`;
-  const back = isFirst ? undefined : { label: "Back", href: `/onboarding?step=${number - 1}` };
+  const back = { label: "Back", href: `/onboarding?step=${number - 1}` };
 
   return (
     <OnboardingFrame
@@ -53,10 +50,7 @@ export default async function OnboardingPage({
       // The last two steps are optional in the mock.
       skip={number >= 4 ? { label: "Skip for now", href: nextHref } : undefined}
       next={{ label: isLast ? "Finish setup" : "Continue", href: nextHref }}
-      phoneNext={{
-        label: isLast ? "Finish" : isFirst ? "I’ll add it later" : "Continue",
-        href: nextHref,
-      }}
+      phoneNext={{ label: isLast ? "Finish" : "Continue", href: nextHref }}
     >
       <div className="flex flex-col gap-4 md:gap-[22px]">
         <h1 className="heading text-[36px] leading-[1.05] md:text-[52px] md:leading-none">
