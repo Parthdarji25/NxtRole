@@ -33,7 +33,7 @@ Start the containers first (`wsl docker compose up -d`) for anything marked "nee
 | `api/` | `uv run ruff check .` · `uv run ruff format --check .` · `uv run mypy app tests migrations` | Lint, format, types | no |
 | `web/` | `pnpm test` | Component tests | no |
 | `web/` | `pnpm lint` · `pnpm typecheck` · `pnpm build` | Lint, types, build | no |
-| `web/` | `pnpm e2e` | All browser tests; builds the web app and serves it on port 3100, so `pnpm dev` can keep running | yes |
+| `web/` | `pnpm e2e` | All browser tests. Builds the web app (port 3100) and starts an API (port 8100) on a **throw-away database** named `…_e2e_test`, so your account is never touched; `pnpm dev` can keep running | yes |
 | `web/` | `pnpm e2e:update-pictures` | Replaces the approved screen pictures after an intended change; look at them before committing | yes |
 | root | `node scripts/mock-viewer/screenshots.mjs` then `node scripts/mock-viewer/review.mjs` | Builds `docs/visual-review/index.html`: every mock beside the app | no |
 
@@ -50,6 +50,20 @@ Integration tests refuse to run unless the test database name ends in `_test`.
 | `web/src/styles/tokens.test.ts` | The tokens equal the mock file; every text colour pair reaches 4.5:1 in both themes |
 
 Automated checks do not replace a person: a screen-reader pass (NFR-A11Y-05) is still to be done in Phase 13.
+
+## 1c. Sign-in and history tests added in Phase 4
+
+| File | What it checks |
+|---|---|
+| `api/tests/unit/test_passwords_and_tokens.py`, `test_api_rules.py`, `test_setup_local.py` | Hashing, token forgery, password rules, pages, rate limits, body size, settings |
+| `api/tests/integration/test_login.py`, `test_sessions.py`, `test_account.py` | Sign-in, lockout, refresh rotation and reuse, sign-out, recovery, password change, devices |
+| `api/tests/integration/test_history.py`, `test_idempotency.py` | History, undo, proposals, repeated requests |
+| `api/tests/integration/test_row_level_security.py`, `test_every_route_is_protected.py` | Users cannot see each other's rows; no address works without sign-in |
+| `api/tests/integration/test_account_commands.py` | `create-owner`, `reset-password`, sessions commands |
+| `web/src/lib/api.test.ts`, `safeNext.test.ts`, `features/auth/*.test.tsx`, `features/account/*.test.tsx` | One shared refresh, tabs, the sign-in guard, forms, Undo |
+| `web/e2e/auth.spec.ts`, `account.spec.ts` | Sign in, reload, two tabs, sign out, lockout, expired token, passwords, devices, recovery, name and Undo |
+
+The browser tests make new passwords for every run. `api/tests/e2e_server.py` builds their database.
 
 ## 2. Folder layout
 
@@ -123,7 +137,7 @@ The test exists; it fails first when the behaviour is removed (checked once); it
 
 ## 9. Edge-case register
 
-Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70), the Phase 2 checklist (E-71 to E-75) and Phase 3 (E-76 to E-79). **Status:** `planned` until the owning phase writes the test; then `written`, then `passing`. The "Planned test" column is the intended name (the phase may refine it).
+Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70), the Phase 2 checklist (E-71 to E-75) and Phase 3 (E-76 to E-79) and Phase 4 (E-80 to E-83). **Status:** `planned` until the owning phase writes the test; then `written`, then `passing`. The "Planned test" column is the intended name (the phase may refine it).
 
 | ID | Edge case | Phase | Expected behaviour | Planned test | Status |
 |---|---|---|---|---|---|
@@ -149,18 +163,18 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70),
 | E-20 | A source changes format or hits a rate limit (429) | 6 | That source "paused"; others continue; error logged | `test_discovery_source_429_does_not_stop_run` | planned |
 | E-21 | Two runs overlap, or the free database is paused | 8, 15 | Lock stops overlap; health alert says what failed | `test_run_lock_prevents_overlap`; `test_health_reports_paused_db` | planned |
 | E-22 | The morning run fails | 8 | Today shows the last brief with "stale" and one push | `e2e: today_stale_after_failed_run` | planned |
-| E-23 | Two tabs refresh the session together | 4 | One refresh succeeds; both tabs continue | `e2e: two_tabs_single_flight_refresh` | planned |
-| E-24 | A used refresh token is presented again | 4 | Whole family revoked; sign-in needed | `test_auth_reused_refresh_token_revokes_family` | planned |
-| E-25 | Forgotten password | 4 | Recovery code works; no email needed; new code issued | `test_recover_with_code_rotates_code` | planned |
-| E-26 | Too many failed sign-ins (lockout) | 4 | Rate-limit message; same wording for every failure | `test_auth_lockout_after_five_failures` | planned |
-| E-27 | Two tabs edit the same card | 9 | Second save rejected with 409 and "this card changed, reload" | `test_pipeline_stale_version_returns_409` | planned |
-| E-28 | Undo after later changes | 4, 9 | Safe revert, or explains what blocks it | `test_undo_blocked_explains_dependency` | planned |
+| E-23 | Two tabs refresh the session together | 4 | One refresh succeeds; both tabs continue | `test_two_tabs_racing_both_continue`, `test_simultaneous_refreshes_create_one_new_token`, `@E-23 two tabs` (browser) | passing |
+| E-24 | A used refresh token is presented again | 4 | Whole family revoked; sign-in needed | `test_auth_reused_refresh_token_revokes_family` | passing |
+| E-25 | Forgotten password | 4 | Recovery code works; no email needed; new code issued | `test_recover_with_code_rotates_code`, `@E-25` (browser) | passing |
+| E-26 | Too many failed sign-ins (lockout) | 4 | Rate-limit message; same wording for every failure | `test_auth_lockout_after_five_failures`, `wrong details … five tries lock` (browser) | passing |
+| E-27 | Two tabs edit the same card | 9 | Second save rejected with 409 and "this card changed, reload" | `test_a_change_based_on_an_old_version_is_a_conflict` (profile, Phase 4); `test_pipeline_stale_version_returns_409` (Phase 9) | profile passing; cards planned |
+| E-28 | Undo after later changes | 4, 9 | Safe revert, or explains what blocks it | `test_undo_blocked_explains_dependency` (profile); pipeline cases in Phase 9 | engine passing; pipeline planned |
 | E-29 | A move out of order, or Interview without a round | 9 | Refused with a plain message | `test_pipeline_invalid_moves_refused` | planned |
 | E-30 | Interview times in other time zones or unclear | 9, 12 | Zone shown; unclear times become proposals | `test_round_timezone_and_unclear_time_proposal` | planned |
 | E-31 | Gmail: same email twice, unclear email, unknown company, burst, script stopped | 12 | Idempotent; proposals; status shows last run | `test_webhook_replay_is_noop`; `test_email_unclear_makes_proposal` | planned |
 | E-32 | Calendar: token expired or revoked, event deleted outside, round cancelled | 12 | "Reconnect" state; no crash; event removed on cancel | `test_calendar_needs_reconnect_state` | planned |
 | E-33 | Offline phone | 8 | Read-only last screens with an offline notice; nothing queued silently | `e2e: offline_readonly_shell` | planned |
-| E-34 | Slow network and repeated taps | 3, 4 | Loading states; retry; a repeated create makes one record | `@E-34 a slow screen change shows placeholders` (Phase 3); `test_idempotency_key_replays_response` (Phase 4) | loading passing; repeated create planned |
+| E-34 | Slow network and repeated taps | 3, 4 | Loading states; retry; a repeated create makes one record | `@E-34` slow screen and double click (browser), `test_idempotency_key_replays_response` | passing; used by create actions from Phase 9 |
 | E-35 | Data export | 14 | Contains every module's records and nobody else's | `test_export_contains_all_user_tables_only` | planned |
 | E-36 | Delete my account and data | 14 | Rows, files, tokens, subscriptions removed; confirmation; resumable; verified | `test_delete_account_leaves_no_rows_or_files` | planned |
 | E-37 | Delete all contacts; replace the resume | 5, 11 | Confirmation; old data removed or versioned as specified | `test_contacts_delete_all`; `test_resume_replace_makes_new_version` | planned |
@@ -182,13 +196,13 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70),
 | E-53 | A small company with almost no public information | 10 | "Not found in any source"; nothing invented | `test_brief_not_found_fields` | planned |
 | E-54 | A company brief older than 7 days | 10 | Marked old; refreshed on request | `test_brief_expiry_flag` | planned |
 | E-55 | A browser without WebGL | 3 | Step cards and the tour message | `e2e: landing_no_webgl` (when the 3D view is built) | planned (3D view not built) |
-| E-56 | **Access token expires in the middle of use** | 4 | One refresh, then the original request is retried once | `e2e: expired_token_mid_use_retries` | planned |
+| E-56 | **Access token expires in the middle of use** | 4 | One refresh, then the original request is retried once | `@E-56` in `api.test.ts` and `auth.spec.ts` | passing |
 | E-57 | **Scanned (image-only) or password-protected PDF** | 5 | Rejected with a clear reason; nothing stored | `test_upload_scanned_and_protected_pdf` | planned |
 | E-58 | **File over 5 MB** (and the 4.5 MB request limit) | 5 | Rejected before upload completes; direct-to-storage path works for 5 MB | `test_upload_size_limits` | planned |
 | E-59 | **Wrong or changed board token** for a company feed | 6 | Source marked paused with a plain message; finder asks again | `test_feed_wrong_board_token` | planned |
 | E-60 | **Missing posted date** | 6 | `posted_at` null; shown as "Posted date not stated"; excluded from "posted within" filters only when asked | `test_job_without_posted_date` | planned |
 | E-61 | **Agent tool loop or step overrun** | 10, 11 | Step limit stops the run; clear message; no repeated charges | `test_agent_step_limit` | planned |
-| E-62 | **Redis down** | 4, 8 | Sign-in falls back to database-based limits; scheduled work refuses to start; health shows it | `test_redis_down_behaviour` | planned |
+| E-62 | **Redis down** | 4, 8 | Sign-in falls back to database-based limits; scheduled work refuses to start; health shows it | `test_redis_down_behaviour_still_signs_in_and_still_locks` (sign-in); scheduled work in Phase 8 | sign-in passing; schedules planned |
 | E-63 | **Cron in UTC** (07:00 IST = 01:30 UTC; morning run 00:00 UTC) | 8 | Times shown in IST; push after 07:00 IST; no run on the wrong day near midnight | `test_schedule_utc_to_ist` | planned |
 | E-64 | **Hosting time limit hit mid-request** | 4, 10 | Request ends cleanly; slow work already a job; no half-written data | `test_long_work_is_a_job` | planned |
 | E-65 | **Push subscription expired** | 8 | Marked expired and pruned; no repeated failures | `test_push_expired_subscription_pruned` | planned |
@@ -196,7 +210,7 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70),
 | E-67 | **Webhook replay with a changed body** | 12 | Signature fails; same id with the same body is a no-op | `test_webhook_tamper_and_replay` | planned |
 | E-68 | **SSRF hostile URL table** | 6, 14 | All refused (private, loopback, metadata, rebinding, redirects, huge) | `test_fetcher_ssrf_and_limits_table` (shared with E-18) | planned |
 | E-69 | **Groq daily token budget crossed mid-run** (D-033) | 5, 7 | Gateway moves down the chain or queues; scores marked pending; no 429 storms | `test_gateway_token_budget_pacing` | planned |
-| E-70 | **Cross-user access on every endpoint and table** | 4 onward | Always `not_found`; row-level security returns no rows with the wrong user | `test_cross_user_matrix`; `test_rls_wrong_user_sees_nothing` | planned |
+| E-70 | **Cross-user access on every endpoint and table** | 4 onward | Always `not_found`; row-level security returns no rows with the wrong user | `test_rls_wrong_user_sees_nothing`, `test_cross_user_ids_are_not_found`, `test_every_route_refuses_a_visitor_without_a_valid_token` | passing for Phase 4 tables; repeat each phase |
 | E-71 | **Docker or the containers not running** | 2 | README and `check-config` say how to start them; non-zero exit; no crash | `test_check_config_explains_unreachable_services`; checked by stopping the containers | passing |
 | E-72 | **Port 5432, 6379, 8000 or 3000 already in use** | 2 | Documented fix: another port in `.env` | README Troubleshooting; compose renders the override (manual check, not an automated test) | checked by hand |
 | E-73 | **Missing or invalid environment variable** | 2 | One readable error naming the variable, never its value | `test_config_missing_variables_are_all_named`, `test_config_invalid_value_names_variable_without_showing_it` | passing |
@@ -206,6 +220,10 @@ Seeded from PRD Appendix A (E-01 to E-55), the Phase 1 checklist (E-56 to E-70),
 | E-77 | **First visit on a dark system** | 3 | Dark from the first paint; the owner's choice is kept | `@E-77 follows a dark system on the first visit` | passing |
 | E-78 | **Unknown address** | 3 | A 404 page in the same style with a way back | `@E-78 an unknown address shows the 404 page` | passing |
 | E-79 | **Development showroom in production** | 3 | `/design` does not exist | `@E-79 the showroom does not exist` | passing |
+| E-80 | **Password with spaces or other alphabets; email with capitals** | 4 | Works; the same password typed differently matches; capitals ignored | `test_spaces_unicode_and_composed_characters_work`, `test_email_capitals_do_not_matter` | passing |
+| E-81 | **Very long sign-in input** | 4 | Refused before any hashing | `test_bad_input_is_refused_before_any_work_and_not_echoed` | passing |
+| E-82 | **Clocks of server and browser differ** | 4 | 30 seconds allowed | `test_a_small_clock_difference_is_allowed` | passing |
+| E-83 | **A link that tries to send the owner elsewhere after sign-in** | 4 | Today opens instead | `safeNext.test.ts`, `auth.spec.ts` | passing |
 
 ## 10. Threat tests (from `docs/SECURITY.md`)
 

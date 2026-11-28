@@ -28,7 +28,7 @@ or "move this card to Interview", and the API checks who is asking, applies the 
 | Idempotency | Create endpoints marked "Idempotency-Key" accept the `Idempotency-Key` header. The same key and body within 24 hours returns the first answer; the same key with a different body returns `idempotency_conflict` 409 (FR-218). |
 | Concurrency | Updatable records carry `version`. Send it in the body or as `If-Match: "<version>"`. A mismatch returns `conflict` 409 with the current record (E-27). |
 | Undo | Changes that the owner may reverse return an `event_id`; `POST /api/events/{id}/undo` reverses it or explains what blocks it. |
-| Rate limits | Responses carry `RateLimit-Limit`, `RateLimit-Remaining` and `RateLimit-Reset`. Over the limit returns `rate_limited` 429 with `Retry-After`. |
+| Rate limits | Over the limit returns `rate_limited` 429 with `Retry-After`, `RateLimit-Limit`, `RateLimit-Remaining` and `RateLimit-Reset`. |
 | Validation | Pydantic models reject unknown fields and wrong types with `validation_error` 422 and a `fields` list. |
 | Content | Text from outside (jobs, emails, AI) is returned as plain text. Clients never render it as HTML (NFR-SEC-04). |
 | Versioning | There is no `/v1` prefix while the only client is our own web app. A breaking change ships web and API together. |
@@ -49,7 +49,7 @@ One shape for every error (NFR-SEC-01):
 | HTTP | Meaning | Typical codes |
 |---|---|---|
 | 400 | The request cannot be understood | `invalid_state` (OAuth), `scope_denied` |
-| 401 | Not signed in, or a bad token or signature | `unauthorized`, `invalid_credentials`, `invalid_refresh`, `invalid_recovery`, `invalid_signature`, `stale_timestamp` |
+| 401 | Not signed in, or a bad token or signature | `unauthorized`, `token_expired` (refresh and retry), `invalid_credentials`, `invalid_refresh`, `session_reused`, `invalid_recovery`, `invalid_signature`, `stale_timestamp` |
 | 403 | Signed in but not allowed | `csrf_missing`, `forbidden_scope` |
 | 404 | Not found **or belongs to someone else** (never reveals which) | `not_found` |
 | 409 | The request conflicts with the current state | `conflict`, `invalid_move`, `undo_blocked`, `already_undone`, `stale_proposal`, `duplicate_found`, `profile_not_approved`, `risky_job`, `blocked_placeholders`, `claims_unchecked`, `idempotency_conflict`, `file_not_ready` |
@@ -84,6 +84,54 @@ POST /api/proposals/{id}/approve
 `status` is one of `queued`, `running`, `waiting_approval`, `done`, `failed`, `cancelled`. Steps carry names and results only, never personal text. For chat and long runs the browser may use
 Server-Sent Events where the host allows it; polling every 1 to 2 seconds is the supported default.
 
+## 4b. Sign-in examples (built in Phase 4)
+
+Sign in. The refresh token arrives only as a cookie (`__Secure-nr_refresh`; `HttpOnly; Secure; SameSite=Strict; Path=/api/auth; Max-Age=604800`).
+
+```
+POST /api/auth/login
+{"email": "you@example.com", "password": "…"}
+
+200 {"access_token": "<JWT>", "expires_in": 900,
+     "user": {"id": "…", "email": "you@example.com", "display_name": null, "version": 1}}
+```
+
+Wrong details, and the fifth wrong attempt:
+
+```
+401 {"detail": {"code": "invalid_credentials", "message": "That email or password is not right."}}
+
+429 Retry-After: 900
+{"detail": {"code": "account_locked", "message": "Too many wrong attempts. Try again in 15 minutes.",
+            "retry_after_seconds": 900}}
+```
+
+Renew the access token (the browser sends the cookie by itself):
+
+```
+POST /api/auth/refresh
+X-NxtRole-CSRF: 1
+
+200 {"access_token": "<JWT>", "expires_in": 900}
+```
+
+Change the name, then undo it:
+
+```
+PATCH /api/account/profile        Authorization: Bearer <JWT>
+{"display_name": "Asha", "version": 1}
+
+200 {"user": {…, "display_name": "Asha", "version": 2}, "event_id": "<event>"}
+
+POST /api/events/<event>/undo
+200 {"event_id": "<the reversing event>"}
+
+409 {"detail": {"code": "undo_blocked", "message": "It was changed again after this, …",
+                "blocked_by": ["display_name"]}}
+```
+
+Every request body is limited to 1 MB (`too_large` 413). There is no address that creates an account or a proposal.
+
 ## 5. Endpoint catalogue
 
 Auth levels: **public** (no sign-in; rate limited where noted), **user** (`Authorization: Bearer` access token), **refresh** (httpOnly cookie plus the `X-NxtRole-CSRF` header), **webhook** (HMAC signature and timestamp), **mcp** (MCP token with a scope). Every **user** endpoint is also bound by row-level security (D-039).
@@ -105,10 +153,11 @@ No sign-up route exists (D-027). Login answers are identical for every kind of f
 
 | ID | Method and path | Auth | Request | Response | Errors | Tables | Phase |
 |---|---|---|---|---|---|---|---|
-| AUTH-1 | `POST /api/auth/login` | public (rate limited) | `{email, password}` | `{access_token, expires_in, user}` + refresh cookie | `invalid_credentials` 401, `rate_limited` 429, `account_locked` 429 | users, refresh_tokens | Phase 4 |
-| AUTH-2 | `POST /api/auth/refresh` | refresh (cookie + `X-NxtRole-CSRF`) | none | New access token + new cookie | `invalid_refresh` 401, `csrf_missing` 403 | refresh_tokens | Phase 4 |
-| AUTH-3 | `POST /api/auth/logout` | refresh | none | 204; cookie cleared; family revoked | `invalid_refresh` 401 | refresh_tokens | Phase 4 |
-| AUTH-4 | `POST /api/auth/recover` | public (rate limited) | `{email, recovery_code, new_password}` | `{recovery_code}` (the new one, shown once) | `invalid_recovery` 401 (same for every wrong input), `rate_limited` 429, `weak_password` 422 | users, refresh_tokens | Phase 4 |
+| AUTH-1 | `POST /api/auth/login` | public (rate limited) | `{email, password}` | `{access_token, expires_in, user}` + refresh cookie | `invalid_credentials` 401, `rate_limited` 429, `account_locked` 429, `validation_error` 422 | users, refresh_tokens | Phase 4 (built) |
+| AUTH-2 | `POST /api/auth/refresh` | refresh (cookie + `X-NxtRole-CSRF`) | none | `{access_token, expires_in}` + new cookie (no new cookie within 10 seconds of the last use) | `invalid_refresh` 401, `session_reused` 401, `csrf_missing` 403 | refresh_tokens | Phase 4 (built) |
+| AUTH-3 | `POST /api/auth/logout` | refresh | none | 204; cookie cleared; this sign-in ended | `invalid_refresh` 401, `csrf_missing` 403 | refresh_tokens | Phase 4 (built) |
+| AUTH-4 | `POST /api/auth/recover` | public (rate limited) | `{email, recovery_code, new_password}` | `{recovery_code}` (the next one, shown once); every device signed out | `invalid_recovery` 401 (same for every wrong input), `rate_limited` 429, `account_locked` 429, `weak_password` 422 | users, refresh_tokens | Phase 4 (built) |
+| AUTH-5 | `POST /api/auth/logout-all` | user | none | 204; every device signed out, this one included | `unauthorized` 401 | refresh_tokens | Phase 4 (built) |
 
 ### Account and settings (Phase 4 (settings grow in later phases))
 
@@ -116,17 +165,18 @@ Everything under Settings > Accounts, Notifications and Privacy.
 
 | ID | Method and path | Auth | Request | Response | Errors | Tables | Phase |
 |---|---|---|---|---|---|---|---|
-| ACCT-1 | `GET /api/me` | user | none | User, settings summary, onboarding state | `unauthorized` 401 | users, user_settings, search_preferences | Phase 4 (settings grow in later phases) |
+| ACCT-1 | `GET /api/me` | user | none | `{id, email, display_name, version}` (settings summary and onboarding state join in Phase 5) | `unauthorized` 401, `token_expired` 401 | users | Phase 4 (built) |
 | ACCT-2 | `GET /api/me/counts` | user | none | Badge counts for navigation (Today, Jobs, Follow-ups, Prepare, Studio, Network) | `unauthorized` | briefs, follow_ups, documents, rounds, contacts, user_job_states | Phase 8 |
-| ACCT-3 | `POST /api/account/password` | user | `{current_password, new_password}` | 204; other sessions revoked | `invalid_credentials` 401, `weak_password` 422 | users, refresh_tokens | Phase 4 (settings grow in later phases) |
-| ACCT-4 | `GET /api/account/sessions` | user | none | List of `{family_id, user_agent, created_at, current}` | - | refresh_tokens | Phase 4 (settings grow in later phases) |
-| ACCT-5 | `DELETE /api/account/sessions/{family_id}` | user | none | 204 | `not_found` 404 | refresh_tokens | Phase 4 (settings grow in later phases) |
-| ACCT-6 | `DELETE /api/account/sessions` | user | none | 204 (all other sessions) | - | refresh_tokens | Phase 4 (settings grow in later phases) |
+| ACCT-3 | `POST /api/account/password` | user (rate limited) | `{current_password, new_password}` | 204; other devices signed out | `invalid_credentials` 401, `weak_password` 422, `rate_limited` 429 | users, refresh_tokens | Phase 4 (built) |
+| ACCT-4 | `GET /api/account/sessions` | user | none | `{items: [{family_id, signed_in_at, last_used_at, user_agent, ip_hint, current}]}` | `unauthorized` 401 | refresh_tokens | Phase 4 (built) |
+| ACCT-5 | `DELETE /api/account/sessions/{family_id}` | user | none | 204 | `not_found` 404 | refresh_tokens | Phase 4 (built) |
+| ACCT-6 | `DELETE /api/account/sessions` | user | none | 204 (all other devices) | `unauthorized` 401 | refresh_tokens | Phase 4 (built) |
+| ACCT-14 | `PATCH /api/account/profile` | user | `{display_name, version}` (name 1 to 80 characters, or null) | `{user, event_id}`; `event_id` is null when nothing changed | `conflict` 409, `validation_error` 422 | users, events | Phase 4 (built) |
 | ACCT-7 | `POST /api/account/export` | user (Idempotency-Key) | none | 202 `{job_id}` | `rate_limited` 429 | background_jobs, files | Phase 14 |
 | ACCT-8 | `GET /api/account/exports/{id}` | user | none | `{status, download_url?, expires_at}` (signed, private) | `not_found` 404 | files | Phase 14 |
 | ACCT-9 | `POST /api/account/delete` | user (re-enter password) | `{password, confirm: "DELETE"}` | 202; account deleted by a job, then signed out | `invalid_credentials` 401, `confirm_required` 422 | users, background_jobs | Phase 14 |
-| ACCT-10 | `GET /api/settings` | user | none | Settings: brief time, quiet hours, alert score and cap, agent switches, safety rules, template, top-N | - | user_settings | Phase 4 (settings grow in later phases) |
-| ACCT-11 | `PATCH /api/settings` | user | `{fields…}` + `If-Match` version | Updated settings | `validation_error` 422, `conflict` 409 | user_settings | Phase 4 (settings grow in later phases) |
+| ACCT-10 | `GET /api/settings` | user | none | Settings: brief time, quiet hours, alert score and cap, agent switches, safety rules, template, top-N | - | user_settings | With the first setting (Phase 5 or 8, D-050) |
+| ACCT-11 | `PATCH /api/settings` | user | `{fields…}` + `If-Match` version | Updated settings | `validation_error` 422, `conflict` 409 | user_settings | With the first setting (Phase 5 or 8, D-050) |
 | ACCT-12 | `GET /api/settings/ai` | user | none | Provider status, model chain, allowance and reset time, 7-day usage, test-set status, "what keeps working" text data | - | ai_usage | Phase 5 |
 | ACCT-13 | `GET /api/settings/privacy` | user | none | What is stored and for how long; zero-data-retention status (only if verified) | - | user_settings | Phase 14 |
 
@@ -236,11 +286,11 @@ Updates send `version`; a mismatch returns `conflict` 409 (E-27).
 | PIPE-10 | `POST /api/applications/{id}/notes` | user | `{body}` (max 10,000 characters) | Created note; embedding job queued | `validation_error` 422 | notes, events, background_jobs | Phase 11 |
 | PIPE-11 | `PATCH /api/notes/{id}` | user | `{body}` + version | Updated note | `conflict` 409 | notes, events | Phase 11 |
 | PIPE-12 | `DELETE /api/notes/{id}` | user | none | 204; history row | `not_found` 404 | notes, events | Phase 11 |
-| PIPE-13 | `GET /api/history` | user | `target_type?`, `target_id?`, `cursor` | Events newest first, with actor and note | - | events | Phase 9 |
-| PIPE-14 | `POST /api/events/{id}/undo` | user | none | Inverse event applied, or `{blocked_by: [...]}` explaining what prevents it | `undo_blocked` 409, `already_undone` 409 | events, applications | Phase 9 |
-| PIPE-15 | `GET /api/proposals` | user | `status` | Pending proposals with payload preview | - | proposals | Phase 9 |
-| PIPE-16 | `POST /api/proposals/{id}/approve` | user | `{edited_payload?}` | Applied in one transaction with a history row | `stale_proposal` 409 (base version changed), `not_found` 404 | proposals, events, applications, rounds | Phase 9 |
-| PIPE-17 | `POST /api/proposals/{id}/reject` | user | none | Rejected; nothing changed | `not_found` 404 | proposals | Phase 9 |
+| PIPE-13 | `GET /api/history` | user | `target_type?`, `target_id?`, `limit?`, `cursor?` | `{items, next_cursor}`, newest first, with actor, before, after and undo links | `validation_error` 422 | events | Phase 4 (built); cards use it in Phase 9 |
+| PIPE-14 | `POST /api/events/{id}/undo` | user | none | `{event_id}` of the reversing entry | `undo_blocked` 409 (with `blocked_by`), `already_undone` 409, `not_found` 404 | events, users | Phase 4 (built); pipeline records join in Phase 9 |
+| PIPE-15 | `GET /api/proposals` | user | `status?` (default pending), `limit?`, `cursor?` | `{items, next_cursor}` | `validation_error` 422 | proposals | Phase 4 (built) |
+| PIPE-16 | `POST /api/proposals/{id}/approve` | user | `{edited_payload?}` | `{proposal, event_id}`; applied in one transaction with a history row | `stale_proposal` 409, `conflict` 409 (already decided), `validation_error` 422, `not_found` 404 | proposals, events, users | Phase 4 (built); new kinds join with their features |
+| PIPE-17 | `POST /api/proposals/{id}/reject` | user | none | The proposal, rejected; nothing changed | `conflict` 409, `not_found` 404 | proposals | Phase 4 (built) |
 
 ### Follow-ups (Phase 9)
 

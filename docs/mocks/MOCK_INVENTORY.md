@@ -23,7 +23,7 @@ Phase numbers refer to `docs/ROADMAP.md`. "UI" = the shell and states are built 
 | # | Screen | Route | Desktop source | Phone source | Older PNG | UI | Data | Phase 3 status |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Landing page (public) | `/` | Landing | MLanding | 01-Landing, 01-MLanding | 3 | 3 | Built; 3D view not built |
-| 2 | Sign in | `/login` | Login | MLogin | 02-Login, 02-MLogin | 3 | 4 | Built; form checks only |
+| 2 | Sign in | `/login` | Login | MLogin | 02-Login, 02-MLogin | 3 | 4 | Built and connected (Phase 4) |
 | 3 | Onboarding (5 steps + done screen) | `/onboarding` | Onboarding | MOnboarding | 03-Onboarding, 03-MOnboarding | 3 | 5, 6, 8, 12 | Step layout only |
 | 4 | Today brief | `/today` | Brief | MToday | 04-Brief, 04-MToday | 3 | 8 | Shell, header and empty state |
 | 5 | Fresh jobs (from an alert) | `/today/fresh` | none (desktop: a block on Today, D-016) | MFresh | none | 3 | 8 | Empty state |
@@ -65,6 +65,9 @@ and error states shared by the whole app. Its real content arrives in the "Data"
 | Side menu | Rows have a 44 px touch area | Accessibility |
 | Job detail, Offer check, Company brief, Application pack (desktop) | No back link above the title; the empty state has the way back | The mocks name the job or company in that link; added with the data |
 
+**Phase 4 (D-051):** Sign in is connected. Settings > Accounts shows name, email, password, signed-in devices and sign out (the Accounts mock shows connections and export,
+which arrive in Phases 12 and 14). "Sign out" on More follows its mock. Today greets by name once one is saved. No avatar yet.
+
 ## New screens (decisions, no mock yet)
 
 Designed in the mock style in the stated phase and **shown to the founder before they are built** (D-015).
@@ -77,6 +80,7 @@ Designed in the mock style in the stated phase and **shown to the founder before
 | N4 | Export my data and Delete my account and data (inside Settings > Accounts) | `/settings` (Accounts) | D-018 | 3 | 14 |
 | N5 | Desktop "Fresh" block at the top of Today (part of screen 4) | `/today` | D-016 | 3 | 8 |
 | N6 | Loading, empty, error and offline states for every screen | all | D-015 | 3 | each phase |
+| N7 | Recovery page (not linked) | `/login/recover` | D-027, D-051 | 4 | 4 |
 
 ## Shared parts
 

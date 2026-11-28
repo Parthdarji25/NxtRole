@@ -191,3 +191,13 @@ See them all, in every state and both themes, at `/design` and `/design/states` 
 **A new screen** uses `Screen` (title, kicker, lead, way back) and an empty, loading and error state before any data.
 
 Not built yet (their phase builds them): the compound patterns of section 3.2 (list row, drawers with forms, approval card, stage board, charts, chat) and the 3D tour.
+
+### Added in Phase 4 (screens approved by the founder, D-051)
+
+| File in `web/src/` | Component | How to use |
+|---|---|---|
+| `components/ui/form-problem.tsx` | `FormProblem` | Why a form could not be sent: a red band, announced to screen readers |
+| `components/layout/settings-layout.tsx` | `SettingsLayout` | The Settings menu and one section |
+| `features/auth/AuthLayout.tsx` | `AuthLayout` | The two halves of the sign-in mock |
+| `features/auth/PasswordInput.tsx`, `RecoveryCode.tsx`, `SignOutButton.tsx` | | Password with Show and Hide; the one-time code; the More page's sign-out |
+| `features/account/` | `AccountView`, `ChangePassword` | Setting rows, device list, drawer and confirmation |

@@ -1,9 +1,11 @@
 """Shared test setup."""
 
 import asyncio
+import secrets
 import socket
 from collections.abc import AsyncIterator, Callable, Mapping
 from contextlib import asynccontextmanager
+from typing import Any
 
 import httpx
 import pytest
@@ -20,6 +22,10 @@ SETTING_NAMES = (
     "REDIS_URL",
     "TEST_DATABASE_URL",
     "TEST_REDIS_URL",
+    "MIGRATION_DATABASE_URL",
+    "JWT_SECRET",
+    "LOGIN_RATE_PER_MINUTE",
+    "TRUSTED_PROXY_COUNT",
 )
 
 
@@ -52,19 +58,26 @@ def unreachable_redis_url() -> str:
     return f"redis://127.0.0.1:{unused_port()}/0"
 
 
-def make_settings(database_url: str, redis_url: str) -> Settings:
-    return Settings(
-        _env_file=None,
-        app_env="test",
-        database_url=SecretStr(database_url),
-        redis_url=SecretStr(redis_url),
-    )
+# A new signing secret for every test run.
+TEST_JWT_SECRET = secrets.token_urlsafe(48)
+
+
+def make_settings(database_url: str, redis_url: str, **overrides: Any) -> Settings:
+    values: dict[str, Any] = {
+        "app_env": "test",
+        "database_url": SecretStr(database_url),
+        "redis_url": SecretStr(redis_url),
+        "jwt_secret": SecretStr(TEST_JWT_SECRET),
+    }
+    return Settings(_env_file=None, **(values | overrides))
 
 
 @asynccontextmanager
-async def running_client(app: FastAPI) -> AsyncIterator[httpx.AsyncClient]:
+async def running_client(
+    app: FastAPI, base_url: str = "http://test"
+) -> AsyncIterator[httpx.AsyncClient]:
     """The app with its start-up and shutdown run, called without opening a network port."""
     async with app.router.lifespan_context(app):
         transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        async with httpx.AsyncClient(transport=transport, base_url=base_url) as client:
             yield client

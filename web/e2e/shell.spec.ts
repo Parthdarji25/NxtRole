@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { DESKTOP, open, PHONE, ROUTES, sideScroll } from "./helpers";
+import { DESKTOP, open, PHONE, ROUTES, sideScroll, signIn, visit } from "./helpers";
 
 test("@E-51 narrow phones and 200% zoom have no sideways scrolling", async ({ page }) => {
   test.slow();
@@ -8,7 +8,7 @@ test("@E-51 narrow phones and 200% zoom have no sideways scrolling", async ({ pa
   for (const width of [320, 720]) {
     await page.setViewportSize({ width, height: 700 });
     for (const route of ROUTES) {
-      await open(page, route.path);
+      await visit(page, route);
       expect(await sideScroll(page), `${route.path} at ${width}px`).toBe(0);
     }
   }
@@ -16,6 +16,7 @@ test("@E-51 narrow phones and 200% zoom have no sideways scrolling", async ({ pa
 
 test("@E-76 a 60-character heading wraps without breaking the layout", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 700 });
+  await signIn(page);
   await open(page, "/today");
   await page.locator("h1").evaluate((heading) => {
     heading.textContent = "Averylongcompanynamewithoutanyspacesthatmuststillwrapnicely1";
@@ -25,6 +26,7 @@ test("@E-76 a 60-character heading wraps without breaking the layout", async ({ 
 });
 
 test("the side menu shows icons only between 768px and 1023px (D-014)", async ({ page }) => {
+  await signIn(page);
   await open(page, "/jobs");
   const jobs = page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Jobs" });
 
@@ -37,6 +39,7 @@ test("the side menu shows icons only between 768px and 1023px (D-014)", async ({
 
 test("phones get the tab bar, and More reaches the other screens", async ({ page }) => {
   await page.setViewportSize(PHONE);
+  await signIn(page);
   await open(page, "/today");
   const tabs = page.getByRole("navigation", { name: "Main" });
   await expect(tabs.getByRole("link")).toHaveText(["Today", "Jobs", "Pipeline", "Prepare", "More"]);
@@ -50,7 +53,10 @@ test("phones get the tab bar, and More reaches the other screens", async ({ page
 test("every control on a screen can be reached with the keyboard", async ({ page }) => {
   await page.setViewportSize(DESKTOP);
   for (const path of ["/today", "/settings?section=accounts", "/login", "/"]) {
-    await open(page, path);
+    await visit(
+      page,
+      ROUTES.find((route) => route.path === path)!,
+    );
     // Tag every control that should be reachable.
     const expected = await page.evaluate(() => {
       const controls = [
@@ -91,6 +97,7 @@ test.describe("theme", () => {
         observer.disconnect();
       }).observe(document, { childList: true, subtree: true });
     });
+    await signIn(page);
     await open(page, "/today");
     expect(
       await page.evaluate(() => (window as unknown as { firstTheme: string }).firstTheme),
@@ -114,6 +121,7 @@ test("@E-51 reduced motion switches animations off", async ({ page }) => {
 
 test("@E-34 a slow screen change shows placeholders, not a blank page", async ({ page }) => {
   await page.setViewportSize(DESKTOP);
+  await signIn(page);
   await open(page, "/today");
   // Hold back the data for the next screen.
   await page.route("**/jobs**", async (route) => {
@@ -133,7 +141,7 @@ test("each screen shows at most one blue primary button", async ({ page }) => {
   for (const viewport of [DESKTOP, PHONE]) {
     await page.setViewportSize(viewport);
     for (const route of ROUTES) {
-      await open(page, route.path);
+      await visit(page, route);
       const shown = await page.locator('[data-variant="primary"]:visible').count();
       // The Landing mocks draw two: "Open the app" in the header and "Next" in the tour.
       expect(shown, `${route.path} at ${viewport.width}px`).toBeLessThanOrEqual(
@@ -144,6 +152,7 @@ test("each screen shows at most one blue primary button", async ({ page }) => {
 });
 
 test("@E-78 an unknown address shows the 404 page with a way back", async ({ page }) => {
+  await signIn(page);
   const response = await page.goto("/no-such-page");
 
   expect(response!.status()).toBe(404);

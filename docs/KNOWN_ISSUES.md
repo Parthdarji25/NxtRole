@@ -22,5 +22,9 @@ A phase may not be marked done while a **critical** or **high** issue is open (s
 | KI-011 | 2026-11-27 | Visual tests | The approved screen pictures are for Windows only and are not compared in CI (D-046) | low | accepted (D-046) | - |
 | KI-012 | 2026-11-27 | Legal pages | The founder approved the Terms, Privacy notice and About text (D-049); they have had no legal review, and must be checked against the finished features | medium | open | before launch |
 | KI-013 | 2026-11-27 | Rendering | Every page is rendered on each request, because the security policy needs a new nonce each time. Check speed when pages have data | low | open, watching | 13 |
+| KI-014 | 2026-11-28 | Sign-in, production | The visitor's address as the API sees it is not yet reliable behind a forwarding server: the local web server passes a visitor-written `X-Forwarded-For` through unchanged. Locally all visitors look like one address, which is harmless. On the host this must be measured and `TRUSTED_PROXY_COUNT` set, or a stranger could lock the owner out | medium | open | 15 |
+| KI-015 | 2026-11-28 | Sign-in | Password hashing settings were timed on the laptop only | low | open | 15 |
+| KI-016 | 2026-11-28 | Sign-in | While Redis is down, an email without an account never locks, so a patient attacker could tell which email exists during that outage | low | accepted | - |
+| KI-017 | 2026-11-28 | Database | Expired sign-in rows are removed only at the next sign-in; unused request keys only when reused. A clean-up job is planned | low | open | 8 |
 
 Mock conflicts are tracked in `docs/mocks/MOCK_INVENTORY.md` (M1 to M22) and their decisions in `docs/DECISIONS.md`, not here.

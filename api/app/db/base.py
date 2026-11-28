@@ -1,7 +1,11 @@
-"""The base class every database model will inherit from (feature tables start in Phase 4)."""
+"""The base class every database model inherits from, and the columns they share."""
 
-from sqlalchemy import MetaData
-from sqlalchemy.orm import DeclarativeBase
+import uuid
+from datetime import datetime
+from typing import ClassVar
+
+from sqlalchemy import DateTime, MetaData, func, text
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 # Predictable names for indexes and constraints, so migrations can refer to them.
 NAMING_CONVENTION = {
@@ -15,3 +19,14 @@ NAMING_CONVENTION = {
 
 class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
+    # Every time is stored with its time zone (UTC).
+    type_annotation_map: ClassVar = {datetime: DateTime(timezone=True)}
+
+
+class Record:
+    """An id and the time the row was created."""
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        primary_key=True, server_default=text("gen_random_uuid()")
+    )
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())

@@ -60,6 +60,9 @@ Status values: **Accepted** (agreed by the founder) · **Superseded by D-xxx**.
 | D-047 | Screen states and wording approved | Phase 3 |
 | D-048 | Phase 3 build choices | Phase 3 |
 | D-049 | Phase 3 approved: wording, 3D tour later, two blue buttons on landing, screen pictures | Phase 3 |
+| D-050 | Phase 4: sign-in rules, recovery, lockout, two tabs, first undo, tables | Phase 4 |
+| D-051 | Phase 4 screens approved; build choices | Phase 4 |
+| D-052 | Phase 4 approved | Phase 4 |
 
 All 13 questions in ROADMAP section I and all conflicts M1 to M22 are covered. Q1 = D-003, Q2 = D-010, Q3 = D-020,
 Q4 = D-011, Q5 = D-012, Q6 = D-014, Q7 = D-015, Q8 = D-009, Q9 = D-008, Q10 = D-016, Q11 and Q12 = D-002, Q13 = D-004.
@@ -634,6 +637,42 @@ Verification sources for these records are listed in `docs/TECH_STACK.md`.
   5. The approved screen pictures in `web/e2e/visual/pictures/` are committed and are the reference for later changes.
 - **Why:** The screens match the mocks and say only true things.
 - **Alternatives:** Build the 3D tour now; make the tour button outlined.
+
+## D-050 · Phase 4: where the prompt and the earlier design differ
+- **Date:** 2026-11-27 · **Status:** Accepted · **From:** Phase 4 plan
+- **Decision:**
+  1. **Names follow the earlier documents:** command `create-owner`; header `X-NxtRole-CSRF`; cookie `__Secure-nr_refresh`; a locked account answers 429
+     `account_locked`; `GET /api/me`; `POST /api/events/{id}/undo`; version clash `conflict`; password hashing with `argon2-cffi`; repeated-request keys in the
+     database table `idempotency_keys` (D-026: Redis is only for locks and limits). The codes `token_expired` and `session_reused` and the address
+     `POST /api/auth/logout-all` are added.
+  2. **Recovery is in this phase** (D-027): a one-time code at account creation and the unlinked page `/login/recover`.
+  3. **Lockout:** 5 wrong attempts for one email from one network address lock that pair for 15 minutes; 20 for one email lock the email. Unknown emails get the
+     same answers. If Redis is down, the account locks at 5 (counted in the database). Amends D-032.
+  4. **Two tabs:** the browser lets one tab refresh at a time, and the server also accepts a just-used refresh token for 10 seconds, giving a new access token
+     without a new refresh token. Any later reuse revokes the sign-in. Amends D-032.
+  5. **First real undo:** the owner's name, set in Settings > Accounts, is saved with history and an Undo message; Today greets by name. Proposal approve and reject
+     are tested through the API until Phase 9 creates real proposals.
+  6. **Tables:** Phase 4 creates only `users`, `refresh_tokens`, `idempotency_keys`, `proposals` and `events`. `user_settings`, `files`, `background_jobs` and
+     `run_logs` are created by the phase that first uses them.
+- **Why:** The earlier documents were approved; the lockout change stops strangers locking the owner out; no sample data is needed to prove undo.
+- **Alternatives:** The prompt's names; lock the whole account at 5; browser lock only; test undo only in code; create all nine tables now.
+
+## D-051 · Phase 4 screens are approved; choices made while building
+- **Date:** 2026-11-28 · **Status:** Accepted (screens and the listed choices were shown before approval) · **From:** Phase 4 checkpoint
+- **Decision:**
+  1. The sign-in messages, the recovery page, Settings > Accounts, "Sign out" on More, the greeting by name and their wording are approved.
+  2. Password hashing: Argon2id with 64 MiB, 3 passes, 1 lane. Common passwords are refused using the NCSC list from SecLists (MIT), 12 characters and longer.
+  3. Signing out a device takes effect on its next request (the sign-in is checked on every request).
+  4. Local set-up is the command `setup-local`. The API connects as the limited user `nxtrole_app`; migrations and account commands use `MIGRATION_DATABASE_URL`.
+  5. `python-dotenv` is added to read `api/.env` in `setup-local`.
+- **Why:** The screens were approved; the rest follows the security design.
+- **Alternatives:** Access tokens that stay valid until they expire (cheaper, but signing out would lag 15 minutes).
+
+## D-052 · Phase 4 is approved
+- **Date:** 2026-11-28 · **Status:** Accepted · **From:** Founder approval of the Phase 4 completion report
+- **Decision:** Phase 4 is accepted and committed. The open items stay in `docs/KNOWN_ISSUES.md` (KI-006 and KI-014 to KI-017).
+- **Why:** The acceptance criteria are covered by tests, and the founder approved the report.
+- **Alternatives:** Hold the commit until the GitHub checks have run.
 
 ---
 

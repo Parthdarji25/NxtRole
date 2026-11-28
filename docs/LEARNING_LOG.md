@@ -233,3 +233,61 @@ how it was recorded so the trade-off stays visible.
 **What the tests caught.** Links marked by colour alone on the sign-in page, and a landing header wider than a 320 px phone. Looking at the pictures beside the mocks caught more: the phone header, the setup screen and the safety numbers did not match.
 
 **Interview question.** "Are automated accessibility checks enough?" **Answer.** No. They find a part of the problems (labels, contrast, structure). Keyboard and screen-reader use still need a person.
+
+---
+
+## Entry 17 · Phase 4 · A limited database user and row-level security
+
+**What was built.** The API now connects to the database as a user that owns nothing, and the database itself hides other people's rows. `setup-local` prepares this on your laptop.
+
+**Key concepts.** **Least privilege** means each program gets only the rights it needs. **Row-level security** is a rule inside the database: "show a row only if it belongs to the current user". Your code also filters by user; the database rule catches the day someone forgets.
+
+**Interview question.** "How do you stop one user reading another's data?" **Answer.** Take the user from the verified token, filter every query by it, enforce it again in the database, answer "not found" for other ids, and test it on every table and route.
+
+---
+
+## Entry 18 · Phase 4 · Hashing is not encryption
+
+**What was built.** Passwords and recovery codes are stored as Argon2id hashes; refresh tokens as SHA-256 hashes.
+
+**Key concepts.** **Encryption** is reversible with a key. **Hashing** is one-way: you can check a guess but not recover the original. Passwords use a deliberately **slow** hash with a random **salt** (so equal passwords look different). A long random token needs only a fast hash, because it cannot be guessed.
+
+**Interview question.** "Why not encrypt passwords?" **Answer.** Whoever gets the key gets every password. A slow salted hash leaves an attacker guessing one at a time.
+
+---
+
+## Entry 19 · Phase 4 · Access tokens, refresh tokens and cookies
+
+**What was built.** Sign-in returns a 15-minute access token and a 7-day refresh cookie; the app renews the first with the second.
+
+**Key concepts.** A **JWT** is a signed note: readable by anyone, changeable by nobody without the secret. The **access token** lives in memory, so it disappears with the tab. The **refresh token** is in an `HttpOnly` cookie that scripts cannot read, and it is replaced on every use (**rotation**). If an old one returns later, someone copied it, so the whole sign-in ends.
+
+**Interview question.** "Where do you keep tokens in a web app?" **Answer.** The short-lived one in memory; the long-lived one in an HttpOnly, Secure, SameSite cookie limited to the refresh path, with rotation and reuse detection.
+
+---
+
+## Entry 20 · Phase 4 · Authentication, authorization and CSRF
+
+**Key concepts.** **Authentication** asks "who are you?" (sign-in). **Authorization** asks "may you do this?" (is this your record?). **CSRF** (cross-site request forgery) is another website making your browser send your cookie. We block it with `SameSite=Strict`, a cookie only for `/api/auth`, and a custom header that other sites cannot add.
+
+**Interview question.** "Does a bearer token in a header need CSRF protection?" **Answer.** No: the browser never adds it by itself. Cookies are added automatically, so cookie-based actions need protection.
+
+---
+
+## Entry 21 · Phase 4 · Proposals, history, undo and optimistic locking
+
+**What was built.** One engine: a proposal waits for approval; applying a change writes a history row in the same transaction; undo writes the reverse. Your name is the first thing that uses it.
+
+**Key concepts.** A **transaction** saves several changes together or none. **Optimistic locking**: every record has a version number, and a change based on an old version is refused instead of overwriting. **Idempotency**: repeating a request does not do it twice.
+
+**Interview question.** "Two tabs edit the same record. What happens?" **Answer.** Each sends the version it read; the second no longer matches and gets "conflict, reload".
+
+---
+
+## Entry 22 · Phase 4 · Sign-in in the browser, and testing it
+
+**What was built.** The sign-in state, one shared token refresh, tab syncing, the screen guard, and browser tests on a throw-away database.
+
+**Key concepts.** **Single-flight**: many callers share one request. **BroadcastChannel** lets tabs of one site talk. A screen guard in the browser is for comfort; the **API is the real lock**. To trust a test, break the code on purpose once and watch it fail: we did that for four safety rules.
+
+**Interview question.** "How do you handle an expired access token?" **Answer.** The API answers with a specific code; the client refreshes once, shared by all waiting requests, then retries each once.

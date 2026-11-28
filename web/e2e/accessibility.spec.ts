@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-import { DESKTOP, open, PHONE, ROUTES, sideScroll, THEMES } from "./helpers";
+import { DESKTOP, PHONE, ROUTES, sideScroll, THEMES, visit } from "./helpers";
 
 const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
@@ -15,7 +15,7 @@ for (const [device, viewport] of [
 
       for (const route of ROUTES) {
         test(`@E-51 ${route.name} passes accessibility checks`, async ({ page }) => {
-          await open(page, route.path);
+          await visit(page, route);
 
           const result = await new AxeBuilder({ page }).withTags(WCAG).analyze();
 

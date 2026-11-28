@@ -35,12 +35,12 @@ Boundaries: browser ⇄ proxy ⇄ API ⇄ database; API ⇄ AI gateway ⇄ Groq;
 
 | Topic | Decision |
 |---|---|
-| Password hashing | Argon2id via `argon2-cffi`. Start from OWASP's minimum (memory 19 MiB, 2 iterations, 1 lane) and tune up in Phase 4 until a hash takes about 250 to 500 ms on the hosting platform. Hashes carry their parameters so they can be upgraded at next sign-in. Minimum password length 12, no composition rules, checked against a list of common passwords. |
+| Password hashing | Argon2id via `argon2-cffi`: 64 MiB memory, 3 passes, 1 lane (about 0.3 s on the development laptop; re-measured on the host in Phase 15). Hashes carry their settings and are upgraded at the next sign-in. 12 to 128 characters, NFKC-normalised, no symbol rules; refused if on the NCSC common-password list (`api/app/auth/data/`), equal to the email, or made of fewer than 5 different characters. |
 | Access token | Signed JWT (HS256 with a secret from the environment, `exp` 15 minutes, `sub` = user id, `jti`). Held **in memory only**, never in local or session storage, never in a cookie. |
 | Refresh token | 256-bit random opaque value, **stored hashed** (SHA-256), 7-day expiry, **rotated on every use**, grouped in a family; reuse of a used token revokes the whole family (E-24). |
-| Cookie | `HttpOnly; Secure; SameSite=Strict; Path=/api/auth; Max-Age=604800`. Name `__Host-`-style naming is not possible with a path, so the prefix `__Secure-` is used. |
+| Cookie | `__Secure-nr_refresh`: `HttpOnly; Secure; SameSite=Strict; Path=/api/auth; Max-Age=604800`. Browsers accept it on `127.0.0.1` for local development (checked by a browser test). |
 | CSRF | The cookie is sent only to `/api/auth/*`, is `SameSite=Strict`, and refresh and logout also need the custom header `X-NxtRole-CSRF` set by our script (a cross-site form cannot add a custom header; a cross-origin script request would need CORS, which is not enabled). Every other endpoint uses the `Authorization` header, so there is no ambient credential for another site to ride. |
-| Lockout | 5 failed sign-ins per account and per IP in 15 minutes lock that pair for 15 minutes. Counters in Redis, with a durable copy on the user row. Same message for every failure and for unknown emails (no user enumeration; the same code path and similar timing). |
+| Lockout | 5 wrong attempts for one email from one address lock that pair for 15 minutes; 20 for one email lock the email (D-050). Counted in Redis, with a database copy on the user row that locks at 5 if Redis is down. Unknown emails get the same answers and similar timing. Also at most 5 sign-in attempts a minute per address (`LOGIN_RATE_PER_MINUTE`). |
 | Recovery | One-time recovery code (D-027), hashed, rate limited like sign-in, revokes all sessions, issues a new code. |
 | Transport | HTTPS only; HSTS with a long max-age; no mixed content. |
 | Encryption at rest | The host encrypts the database and storage. In addition, `refresh_token_encrypted`, `secret_encrypted` and `auth_secret` (push) use application-level AES-GCM with a key from the environment, kept separate from the database URL. |
@@ -233,3 +233,20 @@ If a key or token may have leaked: revoke or rotate it first (MCP token revoke, 
 - The sign-in form uses `method="post"`, so a password cannot appear in the address bar if the page script has not loaded. It sends nothing yet.
 - The development showroom (`/design`) is not part of production builds.
 - The search box and agent log hold nothing and call nothing.
+
+## Phase 4 note: sign-in as built
+
+| Control | How it works | Test |
+|---|---|---|
+| Access token | HS256 JWT with `sub`, `sid` (the sign-in), `type`, `jti`, `iat`, `exp`; 15 minutes; 30 seconds clock allowance; the algorithm is fixed when reading. Kept in memory in the browser | `test_passwords_and_tokens.py`, `auth.spec.ts` |
+| Signing out takes effect at once | Every request checks that the token's sign-in is still alive | `test_sessions.py`, `test_account.py` |
+| Refresh token | 32 random bytes, stored as SHA-256, replaced on each use. A used token is tolerated for 10 seconds (two tabs); later it ends the whole sign-in. The browser also lets one tab refresh at a time | `test_sessions.py` |
+| Cross-site requests | `SameSite=Strict`, cookie path `/api/auth`, and the `X-NxtRole-CSRF` header on refresh and sign-out; no CORS | `test_sessions.py`, `test_every_route_is_protected.py` |
+| One user's data | The token names the user; queries filter by it; row-level security enforces it again; other ids answer `not_found` | `test_row_level_security.py`, `test_history.py` |
+| Every route protected | A test walks the API's own list of addresses | `test_every_route_is_protected.py` |
+| Sign-in page | Only a path inside this site is followed after sign-in | `safeNext.test.ts`, `auth.spec.ts` |
+| Screen guard | The web app hides screens from signed-out visitors for convenience; **the API is the lock** | `RequireSignIn.test.tsx` |
+| Logs | No password, token, cookie or email | `test_login.py` |
+| Request size | 1 MB | `test_api_rules.py` |
+
+**Open for production (KI-014):** the local web server forwards a visitor's `X-Forwarded-For` header unchanged and adds nothing, so `TRUSTED_PROXY_COUNT` must stay 0 locally. On the hosting platform, measure what the API receives and set the value so that it is the platform's record of the visitor, never the visitor's own words.

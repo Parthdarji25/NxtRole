@@ -1,5 +1,8 @@
 """Async SQLAlchemy engine and session factory. Creating the engine does not connect."""
 
+from uuid import UUID
+
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -21,3 +24,13 @@ def create_engine(url: str) -> AsyncEngine:
 
 def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(engine, expire_on_commit=False)
+
+
+async def set_current_user(session: AsyncSession, user_id: UUID) -> None:
+    """Tells the database whose rows this transaction may see (row-level security, D-039).
+
+    The setting ends with the transaction, so a reused connection starts with nobody.
+    """
+    await session.execute(
+        text("SELECT set_config('app.user_id', :user_id, true)"), {"user_id": str(user_id)}
+    )

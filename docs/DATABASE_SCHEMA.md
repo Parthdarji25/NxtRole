@@ -2,7 +2,7 @@
 
 Status: **Phase 1 design, 27 Nov 2026.** Engine: PostgreSQL with the `pgvector` extension. Access: SQLAlchemy 2 (typed), migrations with Alembic.
 Inputs: `docs/PRD.md` (data needs per screen, FR-001 to FR-220, Appendix B data classes), decisions D-003, D-026, D-028, D-029, D-034, D-035, D-039.
-Nothing here is built yet; Phase 4 creates the base tables and each later phase adds its own through migrations.
+**Built in Phase 4:** `users`, `refresh_tokens`, `idempotency_keys`, `proposals`, `events` (migrations 0002 and 0003). Each later phase adds its own.
 
 ## 1. Reading guide
 
@@ -228,7 +228,8 @@ Index: `(kind, started_at desc)`.
 | recovery_code_hash | text | not null | Argon2id of the one-time recovery code (D-027) |
 | display_name | text | null | Used only in screens, never sent to AI |
 | is_active | boolean | not null default true | |
-| failed_logins, locked_until | int, timestamptz | default 0, null | Backed by Redis counters; this is the durable copy |
+| failed_logins, last_failed_at, locked_until | int, timestamptz | default 0, null | Redis counts first; this is the durable copy and takes over if Redis is down (D-050) |
+| version | int | not null default 1 | Rises with each profile change |
 (U). No public sign-up route creates rows (D-027).
 
 **user_settings** (one row per user; PK = `user_id`) (U)
@@ -260,7 +261,7 @@ Indexes: `(user_id, family_id)`, `(expires_at)`.
 |---|---|---|
 | key | text | From the `Idempotency-Key` header; `unique(user_id, key)` |
 | request_hash | text | Same key with a different body is an error |
-| response | jsonb | Stored response, replayed on a repeat |
+| status_code, response | int, jsonb | Stored answer, replayed on a repeat |
 | expires_at | timestamptz | 24 hours |
 
 **files** (private storage index)
@@ -680,12 +681,22 @@ still cannot leak rows. The read-only data tool for Ask NxtRole (NFR-SEC-09) use
 timeout and a row limit. Scheduled system work runs with a role allowed to set the user per job. Migrations run as the owner role. A test proves a query with the wrong
 `app.user_id` returns no rows on every **[user]** table.
 
+### Built in Phase 4
+
+| Part | Detail |
+|---|---|
+| App database user | `nxtrole_app`: created by migration 0002 without a password; `setup-local` (or the owner, in production) gives it one. It owns nothing and cannot bypass row-level security |
+| Rights | `users`: read and update. `refresh_tokens`, `idempotency_keys`: read, add, change, remove. `proposals`: read, add, change. `events`: read, add, and change only `undone_by` |
+| Policy | On every table: `user_id` (or `users.id`) equals `NULLIF(current_setting('app.user_id', true), '')::uuid`. Unset means no rows |
+| Before sign-in | Two functions run with the owner's rights and return only an id: `auth_user_id_for_email(text)` and `auth_user_id_for_token(text)` |
+| Owner connection | `MIGRATION_DATABASE_URL`: migrations and the account commands only |
+
 ## 7. Migrations (Alembic)
 
 | Rule | Detail |
 |---|---|
 | One migration per change | Named `NNNN_what_it_does`. Reviewed like code. |
-| Order | Phase 4 creates users, sessions, settings, files, proposals, events, idempotency keys, background jobs. Later phases add their tables (phase column in the mapping in `docs/API_DOCUMENTATION.md`). |
+| Order | Phase 4 creates users, sessions, idempotency keys, proposals and events (D-050). Settings, files, background jobs and run logs are created by the first phase that uses them. Later phases add their tables (phase column in the mapping in `docs/API_DOCUMENTATION.md`). |
 | Safe changes | **Expand then contract**: add the new column (nullable), deploy code that writes both, backfill, deploy code that reads the new one, then drop the old column in a later migration. |
 | Downgrades | Every migration has a `downgrade`. Production data changes are never "downgraded"; a backup is taken first (FR-216). |
 | Extensions | `vector` is created by migration `0001` (Phase 2, built). `citext` (and `pgcrypto` if needed) are added by the Phase 4 migration that creates `users`. |
@@ -696,11 +707,11 @@ timeout and a row limit. Scheduled system work runs with a role allowed to set t
 
 | Phase | Tables added |
 |---|---|
-| 4 | users, user_settings, refresh_tokens, idempotency_keys, files, proposals, events, background_jobs, run_logs |
-| 5 | profile_versions, search_preferences, saved_answers, ai_usage |
+| 4 | users, refresh_tokens, idempotency_keys, proposals, events (built; D-050) |
+| 5 | profile_versions, search_preferences, saved_answers, ai_usage, files, and user_settings when the first setting is saved |
 | 6 | sources, companies, jobs, job_sightings, job_contact_keys, trust_checks, trust_reports, user_job_states, company_watches |
 | 7 | rules, job_scores, eval_labels |
-| 8 | briefs, notifications, push_subscriptions |
+| 8 | briefs, notifications, push_subscriptions, background_jobs, run_logs (earlier if a phase needs them first) |
 | 9 | applications, rounds, notes, offers, tax_tables, follow_ups, coach_reports, interview_logs |
 | 10 | documents, document_versions, agent_runs, research_briefs, mock_interviews, learning_items |
 | 11 | chats, chat_messages, contacts, mcp_tokens, mcp_calls |

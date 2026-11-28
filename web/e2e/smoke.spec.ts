@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { signIn } from "./helpers";
+
 test("the landing page leads to sign in", async ({ page }) => {
   await page.goto("/");
 
@@ -19,6 +21,7 @@ test("the API, database and Redis answer through the /api forwarding", async ({ 
 test("pages are sent with the security headers and run without blocked scripts", async ({
   page,
 }) => {
+  await signIn(page);
   const errors: string[] = [];
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
@@ -31,6 +34,7 @@ test("pages are sent with the security headers and run without blocked scripts",
   expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
   expect(headers["content-security-policy"]).toContain("'nonce-");
   expect(headers["x-powered-by"]).toBeUndefined();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Good morning.");
   await page.keyboard.press("Control+k");
   await expect(page.getByRole("searchbox")).toBeFocused();
   expect(errors).toEqual([]);

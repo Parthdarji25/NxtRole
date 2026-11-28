@@ -1,5 +1,6 @@
 """One error shape for the whole API: {"detail": {"code": "...", "message": "..."}}."""
 
+from collections.abc import Mapping
 from typing import Any
 
 from fastapi import FastAPI, Request
@@ -14,13 +15,26 @@ HTTP_ERRORS = {
 
 
 class AppError(Exception):
-    """An expected problem with a message a beginner understands."""
+    """An expected problem with a message a beginner understands.
 
-    def __init__(self, code: str, message: str, status_code: int = 400) -> None:
+    `extra` adds fields beside the code and message; `headers` adds response headers.
+    """
+
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        status_code: int = 400,
+        *,
+        headers: Mapping[str, str] | None = None,
+        extra: Mapping[str, Any] | None = None,
+    ) -> None:
         super().__init__(message)
         self.code = code
         self.message = message
         self.status_code = status_code
+        self.headers = dict(headers or {})
+        self.extra = dict(extra or {})
 
 
 def error_response(status_code: int, code: str, message: str, **extra: Any) -> JSONResponse:
@@ -33,7 +47,9 @@ def error_response(status_code: int, code: str, message: str, **extra: Any) -> J
 async def handle_app_error(_request: Request, exc: Exception) -> JSONResponse:
     if not isinstance(exc, AppError):
         raise exc
-    return error_response(exc.status_code, exc.code, exc.message)
+    response = error_response(exc.status_code, exc.code, exc.message, **exc.extra)
+    response.headers.update(exc.headers)
+    return response
 
 
 async def handle_validation_error(_request: Request, exc: Exception) -> JSONResponse:

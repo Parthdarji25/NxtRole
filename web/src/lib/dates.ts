@@ -13,3 +13,14 @@ export function longDate(date: Date): string {
     parts.find((entry) => entry.type === type)?.value ?? "";
   return `${part("weekday")}, ${part("day")} ${part("month")}`;
 }
+
+/** For example "27 Nov, 6:10 pm". */
+export function shortDateTime(date: Date): string {
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: TIME_ZONE,
+  }).format(date);
+}

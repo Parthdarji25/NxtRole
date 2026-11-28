@@ -11,6 +11,7 @@ from sqlalchemy.engine import Connection
 
 from app.config import ConfigError, get_settings
 from app.core.loop import new_event_loop
+from app.db import models  # noqa: F401  (registers every table)
 from app.db.base import Base
 from app.db.session import create_engine
 
@@ -23,12 +24,13 @@ target_metadata = Base.metadata
 
 
 def database_url() -> str:
+    # Migrations change the database's structure, so they run as its owner.
     # Tests pass their own address (the test database) through config.attributes.
     override: str | None = config.attributes.get("database_url")
     if override:
         return override
     try:
-        return get_settings().database_url.get_secret_value()
+        return get_settings().require_migration_database_url()
     except ConfigError as error:
         raise SystemExit(str(error)) from None
 

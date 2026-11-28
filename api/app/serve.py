@@ -15,7 +15,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
-        load_settings()
+        load_settings().require_jwt_secret()
     except ConfigError as error:
         print(error, file=sys.stderr)
         return 1

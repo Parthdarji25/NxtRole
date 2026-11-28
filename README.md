@@ -3,7 +3,7 @@
 A personal AI job-search agent for India. It finds real jobs from official sources, checks them for scams, scores the fit against your real
 profile with quoted proof, and helps you apply and follow up, without ever acting behind your back.
 
-**Current state:** design system and app shell (Phase 3). Every screen exists with its layout and empty state; there is no sign-in and no data yet.
+**Current state:** sign-in and the approve-and-undo engine (Phase 4). You can create your account, sign in on several devices and set your name. The screens have no job data yet.
 The plan is in [docs/ROADMAP.md](docs/ROADMAP.md) and the requirements in [docs/PRD.md](docs/PRD.md).
 
 | Folder | What is in it |
@@ -66,8 +66,10 @@ wsl docker compose ps            # wait until both show "healthy"
 # API
 cd api
 uv sync
-uv run alembic upgrade head      # creates the database structure (a "migration")
-uv run python -m app.cli check-config
+uv run python -m app.cli setup-local   # a limited database user and a signing secret, written to api/.env
+uv run alembic upgrade head            # creates the database structure (a "migration")
+uv run python -m app.cli check-config  # every line should say OK
+uv run python -m app.cli create-owner  # your account: type a password, then save the recovery code
 cd ..
 
 # Web
@@ -96,7 +98,7 @@ cd web
 pnpm dev
 ```
 
-Open <http://127.0.0.1:3000> for the landing page, or <http://127.0.0.1:3000/today> for the app screens.
+Open <http://127.0.0.1:3000> for the landing page, or <http://127.0.0.1:3000/login> to sign in.
 To check that the web app reaches the API, database and Redis, open <http://127.0.0.1:3000/api/health/ready>: it should show `{"database":"ok","redis":"ok"}`.
 
 While `pnpm dev` runs, <http://127.0.0.1:3000/design> shows every component, and `/design/states` the loading, empty and error designs. Neither exists in production.
@@ -104,6 +106,19 @@ While `pnpm dev` runs, <http://127.0.0.1:3000/design> shows every component, and
 **See the design mocks:** `node scripts/mock-viewer/server.mjs`, then open <http://127.0.0.1:4173>.
 
 Stop the database and Redis with `wsl docker compose down`. Your data is kept. Adding `-v` **deletes the local data**.
+
+### Your account
+
+There is no sign-up page. These commands run in `api/` and ask in the terminal; nothing you type is shown or saved to a file.
+
+| Command | What it does |
+|---|---|
+| `uv run python -m app.cli create-owner` | Creates your account and shows the recovery code once |
+| `uv run python -m app.cli reset-password` | New password and recovery code; signs every device out |
+| `uv run python -m app.cli list-sessions` | Which devices are signed in |
+| `uv run python -m app.cli revoke-sessions` | Signs every device out (`--session ID` for one) |
+
+Forgot your password but have the recovery code? Open <http://127.0.0.1:3000/login/recover>.
 
 ## 4. Scripts
 
@@ -145,6 +160,9 @@ Every setting comes from an environment variable. The real files are never commi
 | Containers stop on their own after a short while | Check that `.wslconfig` has `instanceIdleTimeout=-1`, run `wsl --shutdown`. If it still happens, keep one Ubuntu window open while you work |
 | Port 5432 or 6379 is already in use | Set another number in `.env` (`POSTGRES_PORT` or `REDIS_PORT`) **and** in the matching addresses in `api/.env`, then `wsl docker compose up -d` |
 | Port 8000 or 3000 is already in use | API: `uv run python -m app.serve --port 8001` and set `API_URL` in `web/.env.local` to match. Web: `pnpm exec next dev --port 3001` |
+| `JWT_SECRET is missing` or `MIGRATION_DATABASE_URL is missing` | In `api/`: `uv run python -m app.cli setup-local`, then `uv run alembic upgrade head` |
+| `check-config` says the database user is unlimited | Same as above |
+| Locked out after wrong passwords | Wait 15 minutes, or `uv run python -m app.cli reset-password` |
 | `NxtRole cannot start because some settings are wrong` | The message names the variable. Compare with the `.env.example` file |
 | `API_URL is missing` | Create `web/.env.local` (section 2, first command) |
 | `powershell` is "not recognized" | You are already in PowerShell: run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force`, then `.\scripts\new-local-env.ps1`. Then fix your PATH (last row) |

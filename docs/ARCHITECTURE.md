@@ -168,8 +168,9 @@ sequenceDiagram
   A-->>B: cookie cleared
 ```
 
-Two tabs: the browser app takes a **single-flight lock** (the Web Locks API, with a `BroadcastChannel` fallback) so that only one tab calls refresh and the other tabs wait for its result (E-23). Recovery by code
-(`/login/recover`, D-027) uses the same token machinery and revokes all sessions.
+Two tabs: the browser takes the **Web Locks** lock so that one tab refreshes at a time, and the server also accepts a just-used token for 10 seconds without issuing another (D-050). A **BroadcastChannel** tells the other tabs about signing in and out. Every request checks that its sign-in is still alive, so signing out a device works at once. Recovery by code (`/login/recover`, D-027) revokes all sessions.
+
+In the web app: `lib/session.ts` (the token, in memory), `lib/api.ts` (adds it, refreshes once, retries), `features/auth/RequireSignIn.tsx` (the screen guard).
 
 ## 6. The morning run
 
