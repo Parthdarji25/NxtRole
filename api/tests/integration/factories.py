@@ -4,12 +4,24 @@ import secrets
 import uuid
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings
-from app.db.models import Event, IdempotencyKey, Proposal, RefreshToken, User
+from app.db.models import (
+    AiUsage,
+    BackgroundJob,
+    Event,
+    File,
+    IdempotencyKey,
+    ProfileVersion,
+    Proposal,
+    RefreshToken,
+    Rule,
+    SearchPreferences,
+    User,
+)
 from app.db.session import create_engine, create_session_factory
 
 
@@ -62,6 +74,19 @@ async def one_row_in_every_table(settings: Settings, email: str) -> uuid.UUID:
                     target_type="profile",
                     target_id=user.id,
                 ),
+                File(
+                    user_id=user.id,
+                    kind="resume",
+                    storage_path="unused",
+                    original_name="unused.pdf",
+                    content_type="application/pdf",
+                    size_bytes=1,
+                ),
+                BackgroundJob(user_id=user.id, kind="profile_extract"),
+                ProfileVersion(user_id=user.id, version_no=1, status="approved", facts=[]),
+                SearchPreferences(user_id=user.id),
+                Rule(user_id=user.id, kind="min_fixed_pay", value={}, origin="you"),
+                AiUsage(user_id=user.id, day=date(2026, 11, 28), provider="groq", model="test"),
             ]
         )
         return user.id

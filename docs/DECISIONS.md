@@ -63,6 +63,8 @@ Status values: **Accepted** (agreed by the founder) · **Superseded by D-xxx**.
 | D-050 | Phase 4: sign-in rules, recovery, lockout, two tabs, first undo, tables | Phase 4 |
 | D-051 | Phase 4 screens approved; build choices | Phase 4 |
 | D-052 | Phase 4 approved | Phase 4 |
+| D-053 | Phase 5: models, typed answers, privacy locks, formats, one approval engine, preferences and rules | Phase 5 |
+| D-054 | Phase 5 screens approved | Phase 5 |
 
 All 13 questions in ROADMAP section I and all conflicts M1 to M22 are covered. Q1 = D-003, Q2 = D-010, Q3 = D-020,
 Q4 = D-011, Q5 = D-012, Q6 = D-014, Q7 = D-015, Q8 = D-009, Q9 = D-008, Q10 = D-016, Q11 and Q12 = D-002, Q13 = D-004.
@@ -673,6 +675,48 @@ Verification sources for these records are listed in `docs/TECH_STACK.md`.
 - **Decision:** Phase 4 is accepted and committed. The open items stay in `docs/KNOWN_ISSUES.md` (KI-006 and KI-014 to KI-017).
 - **Why:** The acceptance criteria are covered by tests, and the founder approved the report.
 - **Alternatives:** Hold the commit until the GitHub checks have run.
+
+## D-053 · Phase 5 approach (amends D-012, D-025, D-033)
+- **Date:** 2026-11-28 · **Status:** Accepted · **From:** Phase 5 plan
+- **Found:** Groq's deprecation page gives 16 August 2026 as the shutdown date of `llama-3.3-70b-versatile` and `llama-3.1-8b-instant` for free and developer plans.
+  Its Services Agreement (June 2026, section 4.2) does not permit training on inputs or outputs without the customer's permission; temporary logs may be kept up to
+  30 days unless Zero Data Retention is on. Section 2 says the services are not for consumer use (the founder to read).
+- **Decision:**
+  1. **Models:** main `openai/gpt-oss-120b`; small tasks and backup `openai/gpt-oss-20b`; judge `qwen/qwen3.8-27b` (a preview model) with `gpt-oss-20b` as its backup.
+     The names are configuration.
+  2. **Typed answers:** Groq's strict structured outputs checked with Pydantic, at most 2 retries. Instructor is not used.
+  3. **Privacy locks:** no AI call with personal data until the founder confirms Zero Data Retention is on; before a resume is read, the owner sees what will be
+     hidden (name, email, phone, address, links) and can add to it.
+  4. **Resume formats:** PDF and Word (`.docx`), up to 5 MB (amends FR-013).
+  5. **The earlier documents win over the Phase 5 prompt:** upload through a short-lived signed address (D-029); address names from `docs/API_DOCUMENTATION.md`;
+     reading runs as a tracked row in `background_jobs` inside the API until the Phase 8 worker.
+  6. **One approval engine:** the facts read from a resume are a proposal (Phase 4 engine); approving creates a profile version; undo restores the previous one.
+     Edits not yet approved are kept in the browser only.
+  7. **Each value is stored once:** job titles and places are preferences; hard filters (minimum fixed pay, remote only, company types to avoid) are rules with
+     origin "you". Sources and memory lists the rules; adding and editing them there arrives in Phase 7.
+  8. **Screens:** setup steps 1 and 2 follow the mocks; the other preference fields are in Settings > Search; the AI models screen waits for Phase 8.
+  9. **Test resume:** an invented, clearly labelled resume; Groq's real answers to it are recorded once with the founder's key. The founder's own resume is only
+     ever uploaded by the founder.
+- **Why:** The designed models no longer exist; fewer libraries; nothing personal leaves without the owner seeing it.
+- **Alternatives:** Instructor; PDF only; a separate approval flow for the profile; everything stored as rules.
+
+---
+
+## D-054 · Phase 5 screens approved
+- **Date:** 2026-11-28 · **Status:** Accepted · **From:** Phase 5 screen pictures
+- **Decision:** The founder approved the new Phase 5 screens and their differences from the mocks:
+  1. **New:** "Check what will be hidden" before a resume goes to AI; the fact review with quotes, edit, remove, add and approve; on a new resume, facts marked
+     New or Changed and missing ones offered to keep (facts the owner wrote are kept); the Privacy statements with no switches; "Approve your profile first" on
+     Resume and Studio, and "Your facts are approved" on Resume afterwards.
+  2. **Upload:** "Choose a PDF or Word file"; on phones an uploaded file shows as a card, and the green "Found in your resume" box is kept; during the identity
+     check and the review the phone's bottom button is plain, so that one button is blue.
+  3. **Step 2:** "Add a title" and "Add a place" boxes; the phone's roles and pay views both count as step 2; the phone salary is a box between − and +;
+     "Most matches for you pay …" is left out (no data).
+  4. **Settings > Search:** adds work style, expected pay, experience range, notice period and company types to skip, with one Save button and Undo. Job age,
+     sources, countries, visa and schedule arrive with job search.
+  5. **Sources and memory:** each rule has "Change" (to Search); Edit and Delete arrive in Phase 7.
+- **Why:** The mocks do not draw these states, and Phase 5 needs them (golden rules 2 and 4; FR-013 to FR-019, FR-199).
+- **Alternatives:** Draw new mocks first (slower); leave the states out (nothing could be checked or approved).
 
 ---
 

@@ -34,6 +34,9 @@ URL_CREDENTIALS = re.compile(r"(?<=://)[^/\s:@]*:[^/\s@]+(?=@)")
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 
 
+QUIET_LIBRARIES = ("httpx", "httpcore", "groq", "pypdf")
+
+
 def redact_text(text: str) -> str:
     text = URL_CREDENTIALS.sub(REDACTED, text)
     return EMAIL.sub(REDACTED, text)
@@ -91,6 +94,10 @@ def configure_logging(level: str = "INFO") -> None:
     root = logging.getLogger()
     root.handlers = [handler]
     root.setLevel(level)
+    # These libraries write web addresses (which can hold keys or passes) and, in debug
+    # mode, the text being sent. Only their warnings are kept, whatever our level is.
+    for name in QUIET_LIBRARIES:
+        logging.getLogger(name).setLevel(logging.WARNING)
     # Uvicorn's own handlers are removed so its messages use the format above.
     for name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
         library_logger = logging.getLogger(name)

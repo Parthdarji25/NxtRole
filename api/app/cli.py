@@ -12,6 +12,7 @@ from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
+from app.ai.check import check_ai
 from app.auth import admin
 from app.config import ENV_FILE, SETUP_HINT, ConfigError, Settings, load_settings
 from app.core.loop import new_event_loop
@@ -106,6 +107,7 @@ async def check_config(env_file: Path | None = ENV_FILE) -> int:
     for name, secret in (
         ("MIGRATION_DATABASE_URL", settings.migration_database_url),
         ("JWT_SECRET", settings.jwt_secret),
+        ("GROQ_API_KEY", settings.groq_api_key),
     ):
         print(f"  {name} = {'set (hidden)' if secret else 'MISSING'}")
     for name, value in (
@@ -149,6 +151,15 @@ def run_setup_local(env_file: Path = ENV_FILE) -> int:
     return 0
 
 
+def run_check_ai(env_file: Path = ENV_FILE) -> int:
+    try:
+        settings = load_settings(env_file)
+    except ConfigError as error:
+        print(error)
+        return 1
+    return asyncio.run(check_ai(settings), loop_factory=new_event_loop)
+
+
 def run_account_command(command: str, session_id: str | None) -> int:
     try:
         settings = load_settings()
@@ -183,6 +194,7 @@ def main(argv: list[str] | None = None) -> int:
     commands.add_parser(
         "setup-local", help="create the app's database user and signing secret on this computer"
     )
+    commands.add_parser("check-ai", help="test the Groq key and the chosen models")
     commands.add_parser("create-owner", help="create your account (asks in the terminal)")
     commands.add_parser("reset-password", help="set a new password and recovery code")
     commands.add_parser("list-sessions", help="show the devices that are signed in")
@@ -194,6 +206,8 @@ def main(argv: list[str] | None = None) -> int:
         return asyncio.run(check_config(), loop_factory=new_event_loop)
     if args.command == "setup-local":
         return run_setup_local()
+    if args.command == "check-ai":
+        return run_check_ai()
     return run_account_command(args.command, getattr(args, "session", None))
 
 

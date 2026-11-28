@@ -4,6 +4,7 @@ Error messages name the variable that is wrong but never repeat its value, becau
 may be a password.
 """
 
+from datetime import date
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -13,6 +14,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 EXAMPLE_FILE = "api/.env.example"
+# Ignored by git (see .gitignore: var/).
+DEFAULT_STORAGE_DIR = ENV_FILE.parent / "var" / "uploads"
 
 DATABASE_PREFIX = "postgresql+psycopg://"
 REDIS_PREFIXES = ("redis://", "rediss://")
@@ -51,6 +54,24 @@ class Settings(BaseSettings):
     # How many forwarding servers in front of the API are ours. Their record of the
     # visitor's address is trusted; anything a visitor sends is not.
     trusted_proxy_count: int = Field(default=0, ge=0, le=5)
+
+    # The AI provider (D-024). Without the key, AI features say they are not set up.
+    groq_api_key: SecretStr | None = None
+    # The day the owner confirmed Zero Data Retention is on in Groq's console. No personal
+    # data is sent to AI without it (D-053).
+    groq_zdr_confirmed_on: date | None = None
+    # Which Groq models play each part (D-053).
+    ai_main_model: str = "openai/gpt-oss-120b"
+    ai_small_model: str = "openai/gpt-oss-20b"
+    ai_judge_model: str = "qwen/qwen3.8-27b"
+    # Groq's limits for each model. Read yours at console.groq.com/settings/limits.
+    ai_requests_per_minute: int = Field(default=30, ge=1)
+    ai_requests_per_day: int = Field(default=1_000, ge=1)
+    ai_tokens_per_minute: int = Field(default=8_000, ge=1_000)
+    ai_tokens_per_day: int = Field(default=200_000, ge=1_000)
+
+    # Where uploaded files are kept on this computer. Production uses private storage.
+    storage_dir: Path = DEFAULT_STORAGE_DIR
 
     # Used only by the automated tests (the owner of the test database).
     test_database_url: SecretStr | None = None

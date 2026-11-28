@@ -28,6 +28,8 @@ OPEN = {
     # These two need the refresh cookie and the CSRF header instead.
     ("post", "/api/auth/refresh"),
     ("post", "/api/auth/logout"),
+    # This one needs the short-lived pass for that one file instead (D-029).
+    ("put", "/api/files/{file_id}/content"),
 }
 
 
@@ -88,6 +90,21 @@ async def test_the_cookie_routes_refuse_a_request_without_the_header(
         response = await client.post(path)
 
     assert (response.status_code, code_of(response)) == (403, "csrf_missing")
+
+
+async def test_the_upload_address_refuses_a_request_without_its_pass(
+    test_settings: Settings,
+) -> None:
+    await make_user(test_settings)
+
+    async with api(test_settings) as client:
+        mine = await device(client)
+        path = f"/api/files/{uuid.uuid4()}/content"
+        no_pass = await client.put(path, content=b"x", headers=mine.headers)
+        sign_in_only = await client.put(f"{path}?token={mine.access_token}", content=b"x")
+
+    assert no_pass.status_code == 422
+    assert (sign_in_only.status_code, code_of(sign_in_only)) == (403, "upload_expired")
 
 
 async def test_a_deleted_account_is_refused_at_once(test_settings: Settings) -> None:

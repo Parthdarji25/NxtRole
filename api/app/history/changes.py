@@ -13,20 +13,13 @@ from typing import Any, Protocol
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.errors import AppError
+from app.history.snapshot import Snapshot, not_found
+from app.preferences.schemas import PreferenceValues
+from app.preferences.target import PreferencesTarget
+from app.profile.schemas import ProfileFacts
+from app.profile.target import CareerProfileTarget
 from app.users import repository as users
 from app.users.schemas import DisplayName
-
-
-def not_found() -> AppError:
-    # The same answer for "does not exist" and "belongs to someone else".
-    return AppError("not_found", "That item does not exist.", status_code=404)
-
-
-@dataclass(frozen=True)
-class Snapshot:
-    values: dict[str, Any]
-    version: int
 
 
 class Target(Protocol):
@@ -46,7 +39,7 @@ class Target(Protocol):
 
 
 class ProfileTarget:
-    """The owner's profile. The only record that can be changed in Phase 4 (D-050)."""
+    """The owner's account details (their name)."""
 
     fields: Collection[str] = ("display_name",)
 
@@ -88,8 +81,14 @@ class Change:
     payload: type[BaseModel]
 
 
-TARGETS: dict[str, Target] = {"profile": ProfileTarget()}
+TARGETS: dict[str, Target] = {
+    "profile": ProfileTarget(),
+    "career_profile": CareerProfileTarget(),
+    "preferences": PreferencesTarget(),
+}
 
 CHANGES: dict[str, Change] = {
     "rename_profile": Change("profile", "profile.name_changed", RenameProfile),
+    "profile_facts": Change("career_profile", "profile.facts_changed", ProfileFacts),
+    "preferences": Change("preferences", "preferences.changed", PreferenceValues),
 }

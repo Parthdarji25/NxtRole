@@ -1,0 +1,32 @@
+Meera Iyer
+Frontend Developer
+14, Lake View Road, Pune 411045
+meera.iyer@example.com | +91 98765 43210 | linkedin.com/in/meera-iyer-synthetic
+Date of Birth: 12 March 1998
+
+Summary
+Frontend developer with 4 years of experience building dashboards and design systems.
+
+Experience
+Frontend Developer, Lantern Works Studio, Jan 2024 - Present
+- Rebuilt the reporting dashboard in Next.js and TypeScript, cutting load time from 4.2 s to 1.1 s.
+- Built a design system of 38 React components used by 6 product teams.
+- Mentored 3 junior developers.
+
+Junior Developer, Blue Harbour Software, Jul 2021 - Dec 2023
+- Delivered 12 customer portals with React and Redux.
+- Raised automated test coverage from 35% to 82% with Jest and Playwright.
+
+Projects
+Trail Notes: an offline-first hiking journal built as a progressive web app.
+
+Skills
+JavaScript, TypeScript, React, Next.js, Redux, Tailwind CSS, Jest, Playwright, Git, Figma
+
+Education
+B.E. in Computer Engineering, Deccan Hills College of Engineering, 2017 - 2021
+
+Certifications
+AWS Certified Cloud Practitioner
+
+Notice period: 60 days

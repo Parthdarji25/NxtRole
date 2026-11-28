@@ -3,8 +3,10 @@
 import asyncio
 import secrets
 import socket
+import tempfile
 from collections.abc import AsyncIterator, Callable, Mapping
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -26,6 +28,16 @@ SETTING_NAMES = (
     "JWT_SECRET",
     "LOGIN_RATE_PER_MINUTE",
     "TRUSTED_PROXY_COUNT",
+    "GROQ_API_KEY",
+    "GROQ_ZDR_CONFIRMED_ON",
+    "AI_MAIN_MODEL",
+    "AI_SMALL_MODEL",
+    "AI_JUDGE_MODEL",
+    "AI_REQUESTS_PER_MINUTE",
+    "AI_REQUESTS_PER_DAY",
+    "AI_TOKENS_PER_MINUTE",
+    "AI_TOKENS_PER_DAY",
+    "STORAGE_DIR",
 )
 
 
@@ -58,6 +70,8 @@ def unreachable_redis_url() -> str:
     return f"redis://127.0.0.1:{unused_port()}/0"
 
 
+TEST_STORAGE_DIR = Path(tempfile.mkdtemp(prefix="nxtrole-test-uploads-"))
+
 # A new signing secret for every test run.
 TEST_JWT_SECRET = secrets.token_urlsafe(48)
 
@@ -68,6 +82,8 @@ def make_settings(database_url: str, redis_url: str, **overrides: Any) -> Settin
         "database_url": SecretStr(database_url),
         "redis_url": SecretStr(redis_url),
         "jwt_secret": SecretStr(TEST_JWT_SECRET),
+        # Never the folder that holds real uploads.
+        "storage_dir": TEST_STORAGE_DIR,
     }
     return Settings(_env_file=None, **(values | overrides))
 

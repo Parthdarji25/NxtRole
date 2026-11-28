@@ -13,8 +13,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import AppError
 from app.history import repository
-from app.history.changes import CHANGES, TARGETS, Change, not_found
+from app.history.changes import CHANGES, TARGETS, Change
 from app.history.models import Event, Proposal
+from app.history.snapshot import not_found
 
 YOU = "you"
 

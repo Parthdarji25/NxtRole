@@ -8,6 +8,7 @@ from typing import Any
 import httpx
 from sqlalchemy import select
 
+from app.ai.transport import Transport
 from app.auth import passwords
 from app.auth.models import RefreshToken
 from app.config import Settings
@@ -53,11 +54,13 @@ async def stored_tokens(settings: Settings) -> list[RefreshToken]:
 
 
 @asynccontextmanager
-async def api(settings: Settings, **changes: Any) -> AsyncIterator[httpx.AsyncClient]:
+async def api(
+    settings: Settings, *, transport: Transport | None = None, **changes: Any
+) -> AsyncIterator[httpx.AsyncClient]:
     """The app as a browser sees it. One trusted forwarder, so a test can pick its address
     with `from_address`; a high sign-in rate unless the test is about the rate limit."""
     values: dict[str, Any] = {"trusted_proxy_count": 1, "login_rate_per_minute": 1000}
-    app = create_app(settings.model_copy(update=values | changes))
+    app = create_app(settings.model_copy(update=values | changes), ai_transport=transport)
     # Secure cookies are only sent to secure addresses.
     async with running_client(app, base_url="https://test") as client:
         yield client
