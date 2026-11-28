@@ -26,7 +26,7 @@ A phase may not be marked done while a **critical** or **high** issue is open (s
 | KI-015 | 2026-11-28 | Sign-in | Password hashing settings were timed on the laptop only | low | open | 15 |
 | KI-016 | 2026-11-28 | Sign-in | While Redis is down, an email without an account never locks, so a patient attacker could tell which email exists during that outage | low | accepted | - |
 | KI-017 | 2026-11-28 | Database | Expired sign-in rows are removed only at the next sign-in; unused request keys only when reused. A clean-up job is planned | low | open | 8 |
-| KI-018 | 2026-11-28 | AI | The real Groq service has not been used yet: no key in `api/.env`, so `check-ai` and the recorded-answer tests have not run. Resume reading is proved only with stand-ins | high | open (founder: add the key and the Zero Data Retention date; then check, record and try) | 5 |
+| KI-018 | 2026-11-28 | AI | The real Groq service had not been used. On 28 Nov 2026 `check-ai` passed and Groq's answer to the synthetic resume was recorded and replayed: 22 facts, none rejected by the quote check. The founder's own resume is the remaining check (Phase 5 acceptance) | high | fixed (Phase 5) | 5 |
 | KI-019 | 2026-11-28 | AI | The free-plan limits are NxtRole's defaults, not read from the founder's account | low | open (founder: send the numbers from Groq's Limits page) | 5 |
 | KI-020 | 2026-11-28 | AI, terms | Groq's Services Agreement, section 2, says the services are not for consumer use. The founder has to read it and decide | medium | open | before launch |
 | KI-021 | 2026-11-28 | Profile | Saved answers (FR-024) are not built. Notice period and expected pay are stored in preferences; there is no `saved_answers` table | medium | open (founder decides the phase; recommended: 10, where packs use them) | 10 |
@@ -37,5 +37,6 @@ A phase may not be marked done while a **critical** or **high** issue is open (s
 | KI-026 | 2026-11-28 | Files | A file reader that runs past 30 seconds is abandoned but keeps running, and has no memory limit | low | open | 8 |
 | KI-027 | 2026-11-28 | Onboarding | After a failed reading, the failure shows again on each visit to step 1 until a new upload (it can be put aside each time) | low | open | 8 |
 | KI-028 | 2026-11-28 | Preferences | A resume that says an old city name (for example Bangalore) is offered beside the saved name (Bengaluru) in setup step 2 | low | open | 8 |
+| KI-029 | 2026-11-28 | Privacy, preferences | A city written only in the address line is hidden from AI with it, so no location fact is found and setup step 2 does not suggest the city. The owner types it | low | open | 8 |
 
 Mock conflicts are tracked in `docs/mocks/MOCK_INVENTORY.md` (M1 to M22) and their decisions in `docs/DECISIONS.md`, not here.

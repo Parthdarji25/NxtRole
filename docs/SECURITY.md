@@ -167,7 +167,7 @@ Test: a table of hostile URLs (`http://169.254.169.254/`, `https://localhost`, a
 
 | Item | Status |
 |---|---|
-| Groq: zero data retention switched on in the console (Data Controls) | **Founder to do.** Until `GROQ_ZDR_CONFIRMED_ON` is set, NxtRole sends no personal data (KI-018) |
+| Groq: zero data retention switched on in the console (Data Controls) | **Done 28 Nov 2026:** the founder showed Global ZDR and Inference APIs ZDR as Enabled and Batch as Off, and recorded the date in `api/.env`. NxtRole cannot check the console itself |
 | Groq: inputs and outputs not used for training | Read 28 Nov 2026: Services Agreement of June 2026, section 4.2, no training without permission; temporary logs up to 30 days unless zero data retention is on; processed in the United States. Section 2 says the services are not for consumer use: **founder to read** (KI-020). The data processing addendum has not been reviewed |
 | Groq: free limits and model names | Models re-read from Groq's documents (D-053). The free-plan limit numbers were not visible there: defaults are used until the founder reads the Limits page (KI-019) |
 | Cerebras: not used (D-024). If switched on later, terms verified first | n/a |
@@ -217,7 +217,7 @@ If a key or token may have leaked: revoke or rotate it first (MCP token revoke, 
 | 2 | `.gitignore`, secret scan, lockfiles, pinned actions, audit jobs, config module with clear missing-variable errors |
 | 3 | **Done:** content security policy with a per-request nonce (`web/src/proxy.ts`); other headers (`next.config.ts`); headers checked by a browser test (see the Phase 3 note below) |
 | 4 | Auth (Argon2id, tokens, cookie, CSRF header, lockout, recovery), RLS and the cross-user test harness, error shape, idempotency, log redaction |
-| 5 | **Done:** upload flow, file checks, gateway with redaction, provider checklist (founder items open: KI-018, KI-019, KI-020). See the Phase 5 note |
+| 5 | **Done:** upload flow, file checks, gateway with redaction, provider checklist (founder items open: KI-019, KI-020). See the Phase 5 note |
 | 6 | SSRF-safe fetcher, source parsers with caps, trust engine |
 | 7, 10, 11 | Prompt-injection test set, claim checking, proposal-only tools, Ask data role, MCP scopes |
 | 8 | Push handling, notification dedupe |

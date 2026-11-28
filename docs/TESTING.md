@@ -74,7 +74,7 @@ The browser tests make new passwords for every run. `api/tests/e2e_server.py` bu
 | `api/tests/unit/test_resume_text.py`, `test_profile_facts.py` | Reading PDF and Word; scanned, locked, huge, long files; the quote check; preference rules |
 | `api/tests/integration/test_gateway.py` | Fallback, retries, pacing, daily limits, privacy locks |
 | `api/tests/integration/test_files.py`, `test_profile.py`, `test_preferences.py` | Upload, duplicates, suggest, approve, versions, undo, rules, other users |
-| `api/tests/integration/test_recorded_ai.py` | The synthetic resume read with Groq's recorded answer. **Skipped until recorded** (KI-018) |
+| `api/tests/integration/test_recorded_ai.py` | The synthetic resume read with Groq's recorded answer. Recorded 28 Nov 2026 |
 | `web/src/features/**/*.test.ts(x)` | Comparing facts, typed values, every state of step 1, step 2, Search, Privacy, rules, the gate |
 | `web/e2e/profile.spec.ts` | Real browser: upload to version 2 with undo, rules, refused and large files, phone flow, accessibility of each state |
 
